@@ -5,20 +5,19 @@ body
 
 #headsUpDisplay
 {
-	background-color: #000015;
-	margin-left: 20%;
-	margin-right: 20%;
-	margin-top: 5%;
+	background-color: #444444;
+	margin-left: 12.1%;
+	margin-right: 12%;
 	height: 20%;
-	color: #444444;
 }
 
 #commandIn
 {
 	background-color: #000015;
+	padding-top: 2%;
 	margin-left: 20%;
 	margin-right: 20%;
-	margin-top: 0%;
+	margin-top: 5%;
 	color: #444444;
 }
 
