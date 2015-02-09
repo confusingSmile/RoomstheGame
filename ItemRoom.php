@@ -31,7 +31,12 @@
 			}
 			
 			function takeItem(){
-				$item = null;
+				$result=0;
+				if($item != null){
+					$result = $item;
+					$item = null;
+				}
+				return $result;
 			}
 			
 			function welcomePlayer(){

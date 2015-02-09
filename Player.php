@@ -13,7 +13,7 @@
 		var $currentRoom;
 		var $activeItemEffects;
 		var $gatheredItems;
-		var $notGatheredItems;
+		var $generatedItems;
 	
 		function Player(){
 			hunger = 100;
@@ -33,7 +33,7 @@
 		}
 		
 		function addNotGatheredItem($item){
-			$notGatheredItems[] = $item;
+			$generatedItems[] = $item;
 		}
 		
 		function obtainItem(){

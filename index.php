@@ -1,16 +1,26 @@
 <html>
 	<head>
+		<link rel="stylesheet" type="text/css" href="csslayout.css" />
 	</head>
 	<body>
 	
 		<?php
+			session_start();
 			if(isset($_SESSION['user'])){
+				//avoiding the "undefined index" error by making sure $output is set.
+				if(!(isset($output))){
+					$output = "";
+				}
 			
-				echo "<form action=\"index.php\" method=\"post\">
-						  <textarea>".$output."</textarea>
-						  <input type=\"text\" name=\"input\" value=\"\">
-						  <input type=\"submit\" value=\"OK\">
-					  </form>";
+				echo "<div id=\"headsUpDisplay\">
+					  </div>
+					  <div id=\"commandIn\">
+						  <form action=\"index.php\" method=\"post\">
+							  <center><textarea cols=\"100\" rows=\"20\">".$output."</textarea><br><br>
+							  <input type=\"text\" id=\"commandTextField\" name=\"input\" value=\"\">
+							  <input type=\"submit\" value=\"OK\"></center><br>
+						  </form>
+					  </div>";
 			
 			
 			} else {
