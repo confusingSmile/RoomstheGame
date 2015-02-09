@@ -1,6 +1,7 @@
 <?php
 	class DatabaseExtension{
 		
+		var $connection;
 			
 		function DatabaseExtension(){
 			
@@ -15,7 +16,8 @@
 			$query = "SELECT * 
 					  FROM questions
 					  WHERE difficulty='".$dificulty."';"; 
-			//execute multi query  
+			//execute multi query 
+			$mysqli = $this->connection;
 			if ($mysqli->multi_query($query)) {
 				do {         
 				
@@ -48,7 +50,7 @@
 		
 		//consider merging with question
 		function getHint(){
-			$this->connect();
+			include("dbconnectlocal.inc.php");
 			$hint = "";
 			$max = 1;
 			$query = "SELECT max(hint_number)
@@ -96,7 +98,7 @@
 		
 		function getFlavourText($criterium){
 			$flavourText = "";
-			$this->connect();
+			include("dbconnectlocal.inc.php");
 			$query = "SELECT text 
 					  FROM flavour_text
 					  WHERE displayed_when=''".$criterium.""; 
@@ -132,19 +134,23 @@
 					  FROM users
 					  WHERE username = '".$username."'"; 
 			//execute multi query  
+			
+			$mysqli = $this->connection;
 			if ($mysqli->multi_query($query)) {
 				do {         
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
 						while ($row = $queryResult->fetch_row()) {                              
-							$correctPassword = $row["password"];            
-						}             
-					$queryResult->close();         
-					}         
+							$correctPassword = $row[0];  				
+						} 
+						
+					$queryResult->close();        
+					}
+				
 					  
 					if($password == $correctPassword){
-						$result = true
+						$result = true;		
 					}					
 				} 
 				while ($mysqli->next_result()); 
@@ -157,7 +163,7 @@
 		
 		function getItemIcon($itemNumber){
 			$result = "";
-			$this->connect();
+			include("dbconnectlocal.inc.php");
 			$query = "SELECT item_icon
 					   FROM items
 					   WHERE item_id = '".$itemNumber."'"; 
@@ -185,7 +191,7 @@
 		//TODO check if this one is being used at all
 		function getItemName($itemNumber){
 			$result = "";
-			$this->connect();
+			include("dbconnectlocal.inc.php");
 			$query = "SELECT item_name
 					   FROM items
 					   WHERE item_id = '".$itemNumber."'"; 
@@ -217,7 +223,7 @@
 				$obstacleType = $room->getObstacle();
 			}
 			$itemName = addslashes($itemName);
-			$this->connect();
+			include("dbconnectlocal.inc.php");
 			$query = "SELECT result
 					  FROM item_use
 					  WHERE item_name = '".$itemName."' 
@@ -245,6 +251,7 @@
 		
 		function connect(){
 			include("dbconnectlocal.inc.php");
+			$this->connection = $mysqli;
 		}
 	}
 ?>
