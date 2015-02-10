@@ -10,6 +10,8 @@
 				//avoiding the "undefined index" error by making sure $output is set.
 				if(!(isset($output))){
 					$output = "";
+				}else{
+					$output = "";
 				}
 			
 				echo "<div id=\"commandIn\">

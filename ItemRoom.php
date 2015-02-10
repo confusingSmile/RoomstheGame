@@ -40,6 +40,7 @@
 			}
 			
 			function welcomePlayer(){
+				return "welcome to an ItemRoom";
 				
 			}
 			

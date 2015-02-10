@@ -7,6 +7,8 @@
 		*	currentRoom: the Room that the player is visiting.
 		*	activeItemEffects: utility items' effects that are currently active
 		*	gatheredItems: items the player can use
+		*	generatedItems: items that the player can obtain or has obtained
+		*	doorsUnlocked: the amount of keyDoors the player has unlocked
 		*/
 		var $hunger;
 		var $nextFood;
@@ -14,6 +16,7 @@
 		var $activeItemEffects;
 		var $gatheredItems;
 		var $generatedItems;
+		var $doorsUnlocked;
 	
 		function Player(){
 			hunger = 100;
@@ -32,8 +35,24 @@
 			return $activeItemEffects;
 		}
 		
+		//integer indicating the amount of keyDoors the player has unlocked
+		function doorsUnlocked(){
+			return $doorsUnlocked;
+		}
+		
 		function addNotGatheredItem($item){
 			$generatedItems[] = $item;
+		}
+		
+		function unlockKeyDoor(){
+			$output = "Nothing to unlock.";
+			if($currentRoom->getClass() == LockedDoorRoom){
+				if($currentRoom->exitBlocked == true){
+					$output = "The door slowly opens...";
+				} 
+				
+			}
+			return $output;
 		}
 		
 		function obtainItem(){
@@ -63,18 +82,29 @@
 			$currentRoom->requestFood();
 		}
 		
-		//TODO return statement!!!
+		
 		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 		function travel($direction){
 			$output = "";
-			if($currentRoom->exitBlocked() == false){
-				$nextRoom = //RoomFactory will make a new Room
-				$currentRoom -> registrateNeigbour($nextRoom, $direction);
-				$currentRoom = $currentRoom->getNeighbour($direction);
-				$currentRoom->generateNeighbours();
-				$currentRoom->welcomePlayer;
+			//if true the player is moving back into a room that has already generated. 
+			if($currentRoom->getNeighbour($direction) == null){	
+				if($currentRoom->exitBlocked() == false){
+					$nextRoom = //RoomFactory will make a new Room
+					//keeping track of generated items
+					$generatingItem = $nextRoom->getItem()
+					if($generatingItem != 0){
+						$generatingItem;
+					} 
+					$currentRoom -> registrateNeigbour($nextRoom, $direction);
+					$currentRoom = $currentRoom->getNeighbour($direction);
+					$currentRoom->generateNeighbours();
+					$output =  $currentRoom->welcomePlayer;
+				}else{
+					$output =  "The door won't open.";
+				}
 			}else{
-				$output =  "The door won't open.";
+				$currentRoom = $currentRoom->getNeighbour($direction);
+				$output =  $currentRoom->welcomePlayer;
 			}
 			
 			return $output;

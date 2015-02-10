@@ -30,7 +30,7 @@
 					//doing something with whatever comes after use (expecting item name) 
 					break;
 				case "unlock":
-					//output = $player->getCurrentRoom()->
+					//output = $player->unlockKeyDoor() 
 					break;
 					
 			return $output;

@@ -41,7 +41,8 @@
 			}
 			
 			function welcomePlayer(){
-				
+				return "welcome to a HintRoom.";
+				//$this.giveHint();
 			}
 			
 			function getExitBlocked(){

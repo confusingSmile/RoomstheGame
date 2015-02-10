@@ -46,6 +46,8 @@
 			}
 			
 			function welcomePlayer(){
+				return "welcome to an ObstacleRoom.";
+				//something stating what the obstacle entails. 
 				
 			}
 			

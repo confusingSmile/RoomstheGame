@@ -50,7 +50,8 @@
 			}
 			
 			function welcomePlayer(){
-				
+				return "welcome to a QuestionRoom.";
+				//$this->askQuestion();
 			}
 			
 			function getExitBlocked(){
