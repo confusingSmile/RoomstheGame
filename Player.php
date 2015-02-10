@@ -11,7 +11,6 @@
 		*	doorsUnlocked: the amount of keyDoors the player has unlocked
 		*/
 		var $hunger;
-		var $nextFood;
 		var $currentRoom;
 		var $activeItemEffects;
 		var $gatheredItems;
@@ -40,7 +39,7 @@
 			return $doorsUnlocked;
 		}
 		
-		function addNotGatheredItem($item){
+		function addNotGeneratedItem($item){
 			$generatedItems[] = $item;
 		}
 		
@@ -90,7 +89,7 @@
 					//keeping track of generated items
 					$generatingItem = $nextRoom->getItem();
 					if($generatingItem != 0){
-						$generatingItem;
+						$this->generatedItems[] = $generatingItem;
 					} 
 					$this->currentRoom -> registrateNeigbour($nextRoom, $direction);
 					$this->currentRoom = $this->currentRoom->getNeighbour($direction);
