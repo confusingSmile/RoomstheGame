@@ -1,6 +1,8 @@
 <?php
 	class CommandProcessor{
 		
+		
+		
 		function CommandProcessor(){
 			
 		}
@@ -10,12 +12,13 @@
 			str_replace("/", "" , $command);
 			strip_tags($command);
 			$command = explode(" ", $command);
-			switch($command[0])
+			switch($command[0]){
 				case "?":
 					showHelp();
 					break;
 				case "down":
 					//output = player->travel(0);
+					break;
 				case "left":
 					//$output = $player->travel(1);
 					break;
@@ -32,8 +35,14 @@
 				case "unlock":
 					//output = $player->unlockKeyDoor() 
 					break;
-					
+			
+			}
 			return $output;
+		}
+		
+		function generateOutput($oldOutput, $output){
+			$placeHolder = $this->output;
+			return "".$oldOutput."<br>".$output."";
 		}
 		
 		function showHelp(){

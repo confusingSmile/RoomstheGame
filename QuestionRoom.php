@@ -1,19 +1,17 @@
 <?php
 		class QuestionRoom extends Room{	
 			
-			var $question
+			var $question;
 			var $nextDificulty;
 			
 			function QuestionRoom(){
 				$db = new DatabaseExtension();
+				//nextDifficulty may become an inner class maybe...? 
 				$nextDificulty = "easy";
 				$question = $db->getQuestion("easy");
 			}
 			
-			function QuestionRoom($roomNumber, $dificulty){
-				$db = new DatabaseExtension();
-				$question = $db->getQuestion($dificulty);
-			}
+			
 			
 			function getFoodPresent(){
 				return $foodPresent;

@@ -13,7 +13,31 @@
 				}else{
 					$output = "";
 				}
-				$player = new Player();
+				//importing the nessecary classes
+				include("CommandProcessor.php");
+				include("Room.php");
+				include("HintRoom.php");
+				include("IntroRoom.php");
+				include("ItemRoom.php");
+				include("LockedDoorRoom.php");
+				include("Obstacle.php");
+				include("ObstacleRoom.php");
+				include("RoomFactory.php");
+				include("Player.php");
+				include("QuestionRoom.php");
+				
+				//starting the game
+				$player = "";
+				if(!isset($_SESSION['player'])){
+					$player = new Player();
+					$_SESSION['player'] = $player;
+				} else {
+					$player = $_SESSION['player'];
+					unserialize($_SESSION['player']);
+					$player->travel(1);
+				}
+				
+				
 				echo "<div id=\"commandIn\">
 						  <div id=\"headsUpDisplay\">
 						  </div>

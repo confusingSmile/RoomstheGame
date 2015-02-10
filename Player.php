@@ -19,8 +19,8 @@
 		var $doorsUnlocked;
 	
 		function Player(){
-			hunger = 100;
-			currentRoom = new IntroRoom();
+			$hunger = 100;
+			$currentRoom = new IntroRoom();
 		}
 		
 		function getGatheredItems(){
@@ -91,7 +91,7 @@
 				if($currentRoom->exitBlocked() == false){
 					$nextRoom = //RoomFactory will make a new Room
 					//keeping track of generated items
-					$generatingItem = $nextRoom->getItem()
+					$generatingItem = $nextRoom->getItem();
 					if($generatingItem != 0){
 						$generatingItem;
 					} 
