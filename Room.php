@@ -13,11 +13,6 @@
 		var $foodPresent;
 		var $exitBlocked = false;
 		
-		abstract function getFoodPresent();
-		
-		abstract function takeFood();
-		
-		abstract function addFood();
 		
 		abstract function getItem();
 		

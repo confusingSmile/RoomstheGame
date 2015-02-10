@@ -5,18 +5,6 @@
 				
 			}
 			
-			function getFoodPresent(){
-				return $foodPresent;
-			}
-			
-			function takeFood(){
-				$result = 0;
-				if($foodPresent == true){
-					$foodPresent = false;
-					$result = 1;
-				}
-				return $result;
-			}
 			
 			function takeItem(){
 				$result=0;
@@ -27,9 +15,6 @@
 				return $result;
 			}
 			
-			function addFood(){
-				$foodPresent = true;
-			}
 			
 			function getItem(){
 				$result=0;

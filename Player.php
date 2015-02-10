@@ -20,7 +20,7 @@
 	
 		function Player(){
 			$hunger = 100;
-			$currentRoom = new IntroRoom();
+			$this->currentRoom = new IntroRoom();
 		}
 		
 		function getGatheredItems(){
@@ -28,7 +28,7 @@
 		}
 		
 		function getCurrentRoom(){
-			return $currentRoom;
+			return $this->currentRoom;
 		}
 		
 		function getCurrentItemEffects(){
@@ -46,8 +46,8 @@
 		
 		function unlockKeyDoor(){
 			$output = "Nothing to unlock.";
-			if($currentRoom->getClass() == LockedDoorRoom){
-				if($currentRoom->exitBlocked == true){
+			if($this->currentRoom->getClass() == LockedDoorRoom){
+				if($this->currentRoom->exitBlocked == true){
 					$output = "The door slowly opens...";
 				} 
 				
@@ -57,10 +57,10 @@
 		
 		function obtainItem(){
 			$result = 0;
-			if($currentRoom->getItem() != null){
-				$gatheredItems[] = $currentRoom->getItem();
+			if($this->currentRoom->getItem() != null){
+				$gatheredItems[] = $this->currentRoom->getItem();
 				//statement to remove the item from the non-gathered list
-				$currentRoom->takeItem();
+				$this->currentRoom->takeItem();
 				$result = 1;
 			}
 			return $result;
@@ -78,33 +78,30 @@
 			
 		}
 		
-		function requestFood(){
-			$currentRoom->requestFood();
-		}
 		
 		
 		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 		function travel($direction){
 			$output = "";
 			//if true the player is moving back into a room that has already generated. 
-			if($currentRoom->getNeighbour($direction) == null){	
-				if($currentRoom->exitBlocked() == false){
+			if($this->currentRoom->getNeighbour($direction) == null){	
+				if($this->currentRoom->exitBlocked() == false){
 					$nextRoom = //RoomFactory will make a new Room
 					//keeping track of generated items
 					$generatingItem = $nextRoom->getItem();
 					if($generatingItem != 0){
 						$generatingItem;
 					} 
-					$currentRoom -> registrateNeigbour($nextRoom, $direction);
-					$currentRoom = $currentRoom->getNeighbour($direction);
-					$currentRoom->generateNeighbours();
-					$output =  $currentRoom->welcomePlayer;
+					$this->currentRoom -> registrateNeigbour($nextRoom, $direction);
+					$this->currentRoom = $this->currentRoom->getNeighbour($direction);
+					$this->currentRoom->generateNeighbours();
+					$output =  $this->currentRoom->welcomePlayer;
 				}else{
 					$output =  "The door won't open.";
 				}
 			}else{
-				$currentRoom = $currentRoom->getNeighbour($direction);
-				$output =  $currentRoom->welcomePlayer;
+				$this->currentRoom = $this->currentRoom->getNeighbour($direction);
+				$output =  $this->currentRoom->welcomePlayer;
 			}
 			
 			return $output;

@@ -30,10 +30,10 @@
 				$player = "";
 				if(!isset($_SESSION['player'])){
 					$player = new Player();
-					$_SESSION['player'] = $player;
+					$_SESSION['player'] = serialize($player);
 				} else {
-					$player = $_SESSION['player'];
-					unserialize($_SESSION['player']);
+					$player = unserialize($_SESSION['player']);
+					//unserialize($_SESSION['player']);
 					$player->travel(1);
 				}
 				
