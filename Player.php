@@ -18,7 +18,7 @@
 		var $doorsUnlocked;
 	
 		function Player(){
-			$hunger = 100;
+			$hunger = 300;
 			$this->currentRoom = new IntroRoom();
 		}
 		
@@ -39,7 +39,7 @@
 			return $doorsUnlocked;
 		}
 		
-		function addNotGeneratedItem($item){
+		function addGeneratedItem($item){
 			$generatedItems[] = $item;
 		}
 		
@@ -89,7 +89,7 @@
 					//keeping track of generated items
 					$generatingItem = $nextRoom->getItem();
 					if($generatingItem != 0){
-						$this->generatedItems[] = $generatingItem;
+						addGeneratedItem($generatingItem);
 					} 
 					$this->currentRoom -> registrateNeigbour($nextRoom, $direction);
 					$this->currentRoom = $this->currentRoom->getNeighbour($direction);

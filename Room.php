@@ -10,7 +10,6 @@
 		*/
 		var $neighbours;
 		var $item;
-		var $foodPresent;
 		var $exitBlocked = false;
 		
 		
