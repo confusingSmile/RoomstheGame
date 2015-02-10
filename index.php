@@ -13,7 +13,7 @@
 				}else{
 					$output = "";
 				}
-			
+				$player = new Player();
 				echo "<div id=\"commandIn\">
 						  <div id=\"headsUpDisplay\">
 						  </div>

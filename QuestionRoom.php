@@ -4,7 +4,7 @@
 			var $question
 			var $nextDificulty;
 			
-			function QuestionRoom($number){
+			function QuestionRoom(){
 				$db = new DatabaseExtension();
 				$nextDificulty = "easy";
 				$question = $db->getQuestion("easy");

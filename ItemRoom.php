@@ -1,7 +1,7 @@
 <?php
 		class ItemRoom extends Room{	
 			
-			function ItemRoom($number){
+			function ItemRoom(){
 				
 			}
 			

@@ -2,7 +2,7 @@
 		class LockedDoorRoom extends Room{	
 			
 			
-			function LockedDoorRoom($number){
+			function LockedDoorRoom(){
 				$exitBlocked = true;
 			}
 			

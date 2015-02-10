@@ -3,7 +3,7 @@
 		
 			var $obstacle;
 			
-			function ObstacleRoom($number){
+			function ObstacleRoom(){
 				$obstacle = new obstacle();
 			}
 			
