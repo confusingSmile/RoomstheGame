@@ -12,7 +12,7 @@
 		}
 		
 		function getObstacleName(){
-			return $obstacleName;
+			return $this->obstacleName;
 		}
 	}
 ?>

@@ -1,15 +1,14 @@
 <?php
 	class RoomFactory{
 	
-		var $generatedRooms;
-		var $generatedItems;
 	
 		function RoomFactory(){
 			
 		}
 		
-		function createRoom($roomNumber){
+		function createRoom($generatedItems){
 			$creation = "";
+			$creation = new QuestionRoom();
 			
 			return $creation;
 		}

@@ -15,6 +15,7 @@
 				}
 				//importing the nessecary classes
 				include("CommandProcessor.php");
+				include("DatabaseExtension.php");
 				include("Room.php");
 				include("HintRoom.php");
 				include("IntroRoom.php");
@@ -34,7 +35,7 @@
 				} else {
 					$player = unserialize($_SESSION['player']);
 					//unserialize($_SESSION['player']);
-					$player->travel(1);
+					$output = $player->travel(1);
 				}
 				
 				

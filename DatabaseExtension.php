@@ -4,7 +4,7 @@
 		var $connection;
 			
 		function DatabaseExtension(){
-			
+			//TODO fix database queries and array keys, also add $mysqli = $this->connection;
 		}
 		
 		function getQuestion($dificulty){
@@ -153,8 +153,8 @@
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_row()) {                              
-							$correctPassword = $row[0]; 
+						while ($row = $queryResult->fetch_assoc()) {                              
+							$correctPassword = $row["password"]; 
 						
 						} 
 						
