@@ -32,8 +32,9 @@ when the player moves the game:
 		the game checks if the door is locked
 				if the door is not locked:
 					a new Room is being generated (NYI) 
-					that Room will get neighbours assigned (currently a mess) 
-					the player will move on to the next Room
+					that Room will get the current Room assigned as being its neighbour
+					the current Room will get the next Room assigned as its neighbour (now they know about each other) 					
+					the player will move on to the next Room 
 					the room will "welcome" the player, printing its welcome message
 				if the door is locked:
 					it will say "The door won't open."
@@ -47,5 +48,16 @@ when the player moves the game:
 
 
 
+Game mechanics:
+Hunger: you start with 300 points of "hunger", and every new Room you enter, you lose one point of hunger, 
+	until you reach 0. Then it is Game Over.
 
-Room/Obstacle generating rules: to be decided
+Room/Obstacle generating mechanics: to be decided. current plan is to have them 
+	generate as long as there is possibility to generate the required items, and have the items be more likely to generate when 
+	a room requiring it has generated
+
+Room physics: If you go left to one room, you can go right to go back to the previous room, but no matter how many times you go left,
+	you won't be back in that first room, you have to start going right again until you're back. 
+
+Questions: Not well-thought out yet. plan is to have 1 door going to a "better" room, than the other doors. 
+Hints: similar to questions, except they don't end with a "?" 
