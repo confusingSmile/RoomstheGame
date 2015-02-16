@@ -19,6 +19,7 @@
 				include("Room.php");
 				include("HintRoom.php");
 				include("IntroRoom.php");
+				include("Item.php");
 				include("ItemRoom.php");
 				include("LockedDoorRoom.php");
 				include("Obstacle.php");
@@ -29,13 +30,32 @@
 				
 				//starting the game
 				$player = "";
-				$hunger = "testtesttesttestttesttest";
+				$hunger = "Hunger: ";
 				if(!isset($_SESSION['player'])){
+					
 					$player = new Player();
+					$output = $player->getCurrentRoom()->welcomePlayer();
 					$_SESSION['player'] = serialize($player);
+					$_SESSION['output'] = $output;
+					
 				} else {
+					
 					$player = unserialize($_SESSION['player']);
-					$output = $player->travel(1);
+					$command = $_POST['input'];
+					
+					if(isset($_POST['input'])){
+						
+						$command = $_POST['input'];
+						
+					} else {
+						
+						$command = "";
+						
+					}
+					
+					$commandProcessor = new CommandProcessor();
+					$output = $_SESSION['output']."\n".$commandProcessor->processCommand($command, $player);
+					$_SESSION['output'] = $output;
 					$_SESSION['player'] = serialize($player);
 					$hunger = "Hunger: ".$player->getHunger();
 				}

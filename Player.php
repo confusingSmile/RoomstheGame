@@ -51,7 +51,7 @@
 		
 		function unlockKeyDoor(){
 			$output = "Nothing to unlock.";
-			if($this->currentRoom->getClass() == LockedDoorRoom){
+			if(get_class($this->currentRoom) == "LockedDoorRoom"){
 				if($this->currentRoom->exitBlocked == true){
 					$output = "The door slowly opens...";
 				} 
@@ -95,7 +95,7 @@
 					//create the room
 					$nextRoom = $factory->createRoom($this->generatedItems);
 					//make the next room know the way back here
-					$nextRoom->registrateNeigbour($this, ($direction - 2));
+					$nextRoom->registrateNeigbour($this->currentRoom, (($direction + 2)%4));
 					//keeping track of generated items
 					$generatingItem = $nextRoom->getItem();
 					if($generatingItem != 0){
@@ -114,7 +114,7 @@
 				}
 			}else{
 				$this->currentRoom = $this->currentRoom->getNeighbour($direction);
-				$output =  $this->currentRoom->welcomePlayer;
+				$output = $this->currentRoom->welcomePlayer();
 			}
 			
 			return $output;
@@ -123,6 +123,8 @@
 		function gameOver(){
 			//maybe send something to the CommandProcessor
 		}
+		
+		
 		
 	}
 ?>

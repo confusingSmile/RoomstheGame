@@ -4,7 +4,8 @@
 			var $question;
 			var $nextDificulty;
 			
-			function QuestionRoom(){
+			//$dificulty: "easy" "medium" "hard"
+			function QuestionRoom($dificulty){
 				//$db = new DatabaseExtension();
 				//nextDifficulty may become an inner class maybe...? 
 				$nextDificulty = "easy";

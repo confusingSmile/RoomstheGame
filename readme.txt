@@ -1,4 +1,5 @@
-the player starts in a room with 300 points. 
+the player starts in a room 
+		   starts with 300 points. 
 with every new Room the player enters, the player loses a point (NYI) 
 	this does indeed mean, moving back to any generated room does NOT cost any points
 

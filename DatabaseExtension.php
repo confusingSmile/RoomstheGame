@@ -23,7 +23,7 @@
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_row()) {                              
+						while ($row = $queryResult->fetch_assoc()) {                              
 							$result["question"][] = $row["question"];
 							$result["correct_answer"][] = $row["correct_answer"];
 							$result["wrong_answer1"][] = $row["wrong_answer1"];
@@ -73,7 +73,7 @@
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_row()) {                              
+						while ($row = $queryResult->fetch_assoc()) {                              
 							$max = $row["hint_number"];            
 						}             
 					$queryResult->close();         
@@ -93,7 +93,7 @@
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_row()) {                              
+						while ($row = $queryResult->fetch_assoc()) {                              
 							$hint = $row["hint_text"];            
 						}             
 					$queryResult->close();         
@@ -120,7 +120,7 @@
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_row()) {                              
+						while ($row = $queryResult->fetch_assoc()) {                              
 							$flavourText = $row["text"];            
 						}             
 					$queryResult->close();         
@@ -186,7 +186,7 @@
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_row()) {                              
+						while ($row = $queryResult->fetch_assoc()) {                              
 							$result = $row["item_icon"];            
 						}             
 					$queryResult->close();         
@@ -214,7 +214,7 @@
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_row()) {                              
+						while ($row = $queryResult->fetch_assoc()) {                              
 							$result = $row["item_name"];            
 						}             
 					$queryResult->close();         
@@ -247,7 +247,7 @@
 				
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_row()) {                              
+						while ($row = $queryResult->fetch_assoc()) {                              
 							$itemUseResult = $row["result"];            
 						}             
 					$queryResult->close();         

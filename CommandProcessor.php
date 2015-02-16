@@ -8,13 +8,13 @@
 		}
 		
 		function processCommand($command, $player){
-			$output = "Invalid command";
+			$output = "Invalid command.";
 			str_replace("/", "" , $command);
 			strip_tags($command);
 			$command = explode(" ", $command);
 			switch($command[0]){
 				case "?":
-					showHelp();
+					$output = $this->showHelp();
 					break;
 				case "down":
 					$output = $player->travel(0);

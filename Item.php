@@ -1,4 +1,4 @@
-<?
+<?php
 	class Item{
 		//itemID: an integer indicating which item it is (not unique outside the database).
 		//itemName: the name of the Item
@@ -7,8 +7,11 @@
 		var $itemName;
 		var $itemIcon;
 		
-		function Item(){
-			
+		function Item($itemID){
+			$this->itemID = $itemID;
+			$db = new DatabaseExtension();
+			$this->itemName = $db->getItemName($itemID);
+			$this->itemIcon = $db->getItemIcon($itemID);
 		}
 		
 		function getItemName(){
