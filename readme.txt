@@ -61,3 +61,30 @@ Room physics: If you go left to one room, you can go right to go back to the pre
 
 Questions: Not well-thought out yet. plan is to have 1 door going to a "better" room, than the other doors. 
 Hints: similar to questions, except they don't end with a "?" 
+
+
+
+Commands:
+/?, /help: should bring up some help text like in most command-line interfaces
+/left, /right, /up, /down: move left right up and down respectively
+/use: use an item
+/unlock (subject to change) use a key, may be merged with /use, becoming /use key
+/search searches the room for items
+/pick up <item name>  pick up an item
+
+
+
+
+methods and when they're used: 
+Player:
+	getGeneratedItems() used by RoomFactory and Item to generate objects appropriate to the player's progression
+	getGatheredItems() used by...wait do I need this? I can use $this when calling useItem() 
+	useItem() used by the game when the /use command is given
+	travel() used by the game when the /left, /right etc. commands are issued
+	getCurrentRoom() used in travel() 
+	getCurrentItemEffects() not used yet
+	getDoorsUnlocked() currently unused but will be used  by the game to display progression
+	unlockKeyDoor() used when the /unlock (/use item key)  command is issued
+	getHunger() used by the game to display hunger
+	obtainItem() used when the /pick up  command is used
+	

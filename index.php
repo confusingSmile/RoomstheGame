@@ -29,18 +29,21 @@
 				
 				//starting the game
 				$player = "";
+				$hunger = "testtesttesttestttesttest";
 				if(!isset($_SESSION['player'])){
 					$player = new Player();
 					$_SESSION['player'] = serialize($player);
 				} else {
 					$player = unserialize($_SESSION['player']);
-					//unserialize($_SESSION['player']);
 					$output = $player->travel(1);
+					$_SESSION['player'] = serialize($player);
+					$hunger = "Hunger: ".$player->getHunger();
 				}
 				
 				
 				echo "<div id=\"commandIn\">
 						  <div id=\"headsUpDisplay\">
+							".$hunger."
 						  </div>
 							  <form action=\"index.php\" method=\"post\">
 								  <center><textarea cols=\"100\" rows=\"20\">".$output."</textarea><br><br>

@@ -38,8 +38,8 @@
 				return $this->exitBlocked;
 			}
 			
-			function registrateNeigbour($room, $direction){
-				$this->neighboours[$direction] = $room;
+			function registrateNeigbour(&$room, $direction){
+				$this->neighbours[$direction] = $room;
 			}
 			
 			function unlock(){

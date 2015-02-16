@@ -20,6 +20,12 @@
 		function Player(){
 			$this->hunger = 300;
 			$this->currentRoom = new IntroRoom();
+			//doesn't do anything yet
+			$this->currentRoom->welcomePlayer();
+		}
+		
+		function getHunger(){
+			return $this->hunger;
 		}
 		
 		function getGatheredItems(){
@@ -87,7 +93,7 @@
 				if($this->currentRoom->getExitBlocked() == false){
 					$factory = new RoomFactory();
 					//create the room
-					$nextRoom = $factory -> createRoom($this->generatedItems);
+					$nextRoom = $factory->createRoom($this->generatedItems);
 					//make the next room know the way back here
 					$nextRoom->registrateNeigbour($this, ($direction - 2));
 					//keeping track of generated items
@@ -96,10 +102,11 @@
 						addGeneratedItem($generatingItem);
 					} 
 					//make this room know the next room
-					$this->currentRoom -> registrateNeigbour($nextRoom, $direction);
+					$this->currentRoom->registrateNeigbour($nextRoom, $direction);
 					//actually enter the next room
-					$output = $this->currentRoom->getNeighbour($direction);
-					//$this->currentRoom = $this->currentRoom->getNeighbour($direction);
+					$this->currentRoom = $this->currentRoom->getNeighbour($direction);
+					//which costs hunger, so subtract 1 hunger;
+					$this->hunger --;
 					
 					$output =  $this->currentRoom->welcomePlayer();
 				}else{

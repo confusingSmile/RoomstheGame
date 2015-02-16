@@ -19,7 +19,7 @@
 		
 		abstract function getExitBlocked();
 		
-		abstract function registrateNeigbour($room, $direction);
+		abstract function registrateNeigbour(&$room, $direction);
 		
 		//executes a script; normally some flavour text, or the introduction to the game. 
 		abstract function welcomePlayer();

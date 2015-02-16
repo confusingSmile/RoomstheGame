@@ -38,8 +38,8 @@
 				return $this->exitBlocked;
 			}
 			
-			function registrateNeigbour($room, $direction){
-				$this->neighboours[$direction] = $room;
+			function registrateNeigbour(&$room, $direction){
+				$this->neighbours[$direction] = $room;
 			}
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
