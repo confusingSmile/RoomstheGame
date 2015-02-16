@@ -44,7 +44,11 @@
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 			function getNeighbour($direction){
-				return $this->neighbours[$direction];
+				$output = null;
+				if(isset($this->neighbours[$direction])){
+					$output = $this->neighbours[$direction];
+				}
+				return $output;
 			}
 			
 			
