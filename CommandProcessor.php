@@ -9,11 +9,14 @@
 		
 		function processCommand($command, $player){
 			$output = "Invalid command.";
-			str_replace("/", "" , $command);
+			$command = ltrim($command, "/");
 			strip_tags($command);
 			$command = explode(" ", $command);
 			switch($command[0]){
 				case "?":
+					$output = $this->showHelp();
+					break;
+				case "help":
 					$output = $this->showHelp();
 					break;
 				case "down":
@@ -28,6 +31,9 @@
 				case "right":
 					$output = $player->travel(3);
 					break;
+				case "search":
+					// player search $output = ;
+					break;
 				case "use":
 					//output = not really a command
 					//doing something with whatever comes after use (expecting item name) 
@@ -40,13 +46,9 @@
 			return $output;
 		}
 		
-		function generateOutput($oldOutput, $output){
-			$placeHolder = $this->output;
-			return "".$oldOutput."<br>".$output."";
-		}
 		
 		function showHelp(){
-			return "commands";
+			return "help";
 		}
 		
 		

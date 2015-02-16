@@ -5,20 +5,21 @@
 		function RoomFactory(){
 			
 		}
-		
-		function createRoom($generatedItems){
+		//Not sure what to call the 2nd parameter
+		function createRoom($generatedItems, $additionalInfo = ""){
 			$creation = "";
+			//balance:
+			/*
+			
+			*/
+			$random = rand(0, 99);
+			switch($random){
+				
+			}
 			$creation = new QuestionRoom(1);
 			
 			return $creation;
 		}
 		
-		function fillRoom(&$room){
-			$filledRoom = $room;
-			//make new Item(); 
-			$item = new Item();
-			//room-> additem function
-			return $filledRoom;
-		}
 	}
 ?>

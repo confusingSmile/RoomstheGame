@@ -71,6 +71,14 @@
 			return $result;
 		}
 		
+		function searchRoomForItem(){
+			$result = false;
+			if($this->currentRoom->getItem() != null){
+				$result = true;
+			}
+			return $result;
+		}
+		
 		/*uses an item
 		*	item: the Item the player wants to use
 		*	room: the Room the player wants to use the item in
@@ -84,7 +92,7 @@
 		}
 		
 		
-		
+		//TODO generate certain rooms after question rooms, to be handled here 
 		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 		function travel($direction){
 			$output = "";
@@ -103,9 +111,8 @@
 					} 
 					//make this room know the next room
 					$this->currentRoom->registrateNeigbour($nextRoom, $direction);
-					//actually enter the next room
+					//actually enter the next room, which costs hunger, so subtract 1 hunger;
 					$this->currentRoom = $this->currentRoom->getNeighbour($direction);
-					//which costs hunger, so subtract 1 hunger;
 					$this->hunger --;
 					
 					$output =  $this->currentRoom->welcomePlayer();

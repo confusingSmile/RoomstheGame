@@ -28,19 +28,7 @@
 							$result["correct_answer"][] = $row["correct_answer"];
 							$result["wrong_answer1"][] = $row["wrong_answer1"];
 							$result["wrong_answer2"][] = $row["wrong_answer2"];
-							//use this code to test column names:
-							/*
 							
-							if(array_key_exists("password", $row)){
-							echo "true";
-							}else{
-							for($i=0; $i <count(array_keys($row)); $i++){
-
-							echo array_keys($row)[$i];
-							}
-							}
-							
-							*/
 						}             
 					$queryResult->close();         
 					}         

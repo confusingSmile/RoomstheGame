@@ -8,8 +8,10 @@
 			function QuestionRoom($dificulty){
 				//$db = new DatabaseExtension();
 				//nextDifficulty may become an inner class maybe...? 
-				$nextDificulty = "easy";
+				$nextDificulty = $dificulty;
 				//$question = $db->getQuestion("easy");
+				//random number to decide type of item
+				//random number to decide item itself
 			}
 			
 			
