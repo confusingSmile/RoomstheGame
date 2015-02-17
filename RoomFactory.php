@@ -5,7 +5,7 @@
 		function RoomFactory(){
 			
 		}
-		//Not sure what to call the 2nd parameter
+		//Not sure what to call the 2nd parameter, maybe just require the Room the player is in, but...meh
 		function createRoom($generatedItems, $additionalInfo = ""){
 			$creation = "";
 			//balance:

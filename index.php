@@ -1,6 +1,10 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="csslayout.css" />
+		<script language=javascript>
+		//keeping a textarea scrolled down doesn't seem to be working yet
+			document.getElementById("commandTextField").scrollTop = document.getElementById("commandTextField").scrollHeight;
+		</script>
 	</head>
 	<body>
 	
@@ -11,6 +15,8 @@
 				if(!(isset($output))){
 					$output = "";
 				}else{
+					//well this looks useless, but this will be the introductory story
+					//the IntroRoom welcoming message is more of a guide to the game
 					$output = "";
 				}
 				//importing the nessecary classes

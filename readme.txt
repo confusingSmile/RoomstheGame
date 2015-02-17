@@ -1,7 +1,8 @@
 the player starts in a room 
 		   starts with 300 points. 
-with every new Room the player enters, the player loses a point (NYI) 
+with every new Room the player enters, the player loses a point  
 	this does indeed mean, moving back to any generated room does NOT cost any points
+	Also, every room has 4 doors, 1 of which is the one you entered from
 
 There are 6 types of rooms in this game, 
 The types of Rooms are:
@@ -29,7 +30,7 @@ when the player moves the game:
 	if the player moves into an old Room:
 		the player will move back without any issues
 		the room will "welcome" the player, printing its welcome message
-	if the player moves into an old Room:
+	if the player moves into a new Room:
 		the game checks if the door is locked
 				if the door is not locked:
 					a new Room is being generated (NYI) 
