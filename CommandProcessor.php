@@ -32,14 +32,31 @@
 					$output = $player->travel(3);
 					break;
 				case "search":
-					// player search $output = ;
+					$output = $player->searchRoomForItem();
 					break;
 				case "use":
-					//output = not really a command
-					//doing something with whatever comes after use (expecting item name) 
+					if(isset($command[1])){
+						$output = $player->useItem($command[1]);
+					}					
+					$output="";
 					break;
 				case "unlock":
-					$output = $player->unlockKeyDoor();
+					if(isset($command[1])){
+						switch($command[1]){
+							case "down":
+								$output = $player->unlockKeyDoor(0);
+								break;
+							case "left":
+								$output = $player->unlockKeyDoor(1);
+								break;
+							case "up":
+								$output = $player->unlockKeyDoor(2);
+								break;
+							case "right":
+								$output = $player->unlockKeyDoor(3);
+								break;
+						}
+					}
 					break;
 			
 			}

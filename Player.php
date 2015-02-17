@@ -49,13 +49,10 @@
 			$this->generatedItems[] = $item;
 		}
 		
-		function unlockKeyDoor(){
+		function unlockKeyDoor($direction){
 			$output = "Nothing to unlock.";
 			if(get_class($this->currentRoom) == "LockedDoorRoom"){
-				if($this->currentRoom->exitBlocked == true){
-					$output = "The door slowly opens...";
-				} 
-				
+				$output = $this->currentRoom->getDoor($direction)->unblock();				
 			}
 			return $output;
 		}
@@ -72,9 +69,9 @@
 		}
 		
 		function searchRoomForItem(){
-			$result = false;
+			$result = "No items in this room.";
 			if($this->currentRoom->getItem() != null){
-				$result = true;
+				$result = "There seems to be something here.";
 			}
 			return $result;
 		}
@@ -83,8 +80,9 @@
 		*	item: the Item the player wants to use
 		*	room: the Room the player wants to use the item in
 		*/
-		function useItem($item, $room){
+		function useItem($itemname){
 			$result = 0;
+			$room = "";
 			//db query about effect of using that item in that room. 1 for works, 0 for does nothing, -1 for game over
 			//statement to remove the item from the item list
 			return $result;
@@ -98,7 +96,7 @@
 			$output = "";
 			//if true the player is moving back into a room that has already generated. 
 			if($this->currentRoom->getNeighbour($direction) == null){	
-				if($this->currentRoom->getExitBlocked() == false){
+				if($this->currentRoom->getDoor($direction)->getBlocked() == false){
 					$factory = new RoomFactory();
 					//create the room
 					$nextRoom = $factory->createRoom($this->generatedItems);

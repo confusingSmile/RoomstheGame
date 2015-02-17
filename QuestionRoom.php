@@ -6,6 +6,9 @@
 			
 			//$dificulty: "easy" "medium" "hard"
 			function QuestionRoom($dificulty){
+				for($i=0;$i<4;$i++){
+					$this->doors[$i] = new Door();
+				}
 				//$db = new DatabaseExtension();
 				$nextDificulty = $dificulty;
 				//$question = $db->getQuestion("easy");
@@ -37,8 +40,8 @@
 				//$this->askQuestion();
 			}
 			
-			function getExitBlocked(){
-				return $this->exitBlocked;
+			function getDoor($direction){
+				return $this->doors[$direction];
 			}
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east

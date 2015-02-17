@@ -4,20 +4,19 @@
 		
 		/*
 		*	neighbours: an array of the four Rooms next to this Room. 
-		*	item: an Item, if present; null if there are not Items
-		*	foodPresent: boolean indicating whether or not food is present in this room
-		*	exitBlocked: boolean indicating whether or not the player is trapped in this room
+		*	item: an Item, if present; null if there are no Items
+		*	doors: the doors in this Room
 		*/
 		var $neighbours;
 		var $item;
-		var $exitBlocked = false;
+		var $doors;
 		
 		
 		abstract function getItem();
 		
 		abstract function takeItem();
 		
-		abstract function getExitBlocked();
+		abstract function getDoor($direction);
 		
 		abstract function registrateNeigbour(&$room, $direction);
 		

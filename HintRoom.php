@@ -5,6 +5,9 @@
 			//TODO getHint
 			
 			function HintRoom(){
+				for($i=0;$i<4;$i++){
+					$this->doors[$i] = new Door();
+				}
 				$db = new DatabaseExtension();
 				$this->hint = $db->getHint();
 			}
@@ -33,8 +36,8 @@
 				return "welcome to a HintRoom.\n".$this->hint;
 			}
 			
-			function getExitBlocked(){
-				return $this->exitBlocked;
+			function getDoor($direction){
+				return $this->doors[$direction];
 			}
 			
 			function registrateNeigbour(&$room, $direction){

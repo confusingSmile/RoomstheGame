@@ -2,7 +2,9 @@
 		class IntroRoom extends Room{	
 			
 			function IntroRoom(){
-				
+				for($i=0;$i<4;$i++){
+					$this->doors[$i] = new Door();
+				}
 			}
 			
 			
@@ -38,8 +40,8 @@
 				return $output;
 			}
 			
-			function getExitBlocked(){
-				return $this->exitBlocked;
+			function getDoor($direction){
+				return $this->doors[$direction];
 			}
 			
 			function registrateNeigbour(&$room, $direction){

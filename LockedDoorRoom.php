@@ -3,7 +3,9 @@
 			
 			
 			function LockedDoorRoom(){
-				$this->exitBlocked = true;
+				for($i=0;$i<4;$i++){
+					$this->doors[$i] = new Door(true);
+				}
 			}
 			
 			
@@ -38,8 +40,8 @@
 				return $output;
 			}
 			
-			function getExitBlocked(){
-				return $this->exitBlocked;
+			function getDoor($direction){
+				return $this->doors[$direction];
 			}
 			
 			function registrateNeigbour(&$room, $direction){
@@ -47,7 +49,7 @@
 			}
 			
 			function unlock(){
-				$this->exitBlocked = false;
+				$this->doors[$direction] = false;
 			}
 		}	
 			

@@ -20,13 +20,14 @@
 					$output = "";
 				}
 				//importing the nessecary classes
+				//include("Building.php");
 				include("CommandProcessor.php");
 				include("DatabaseExtension.php");
+				include("Door.php");
 				include("Room.php");
 				include("HintRoom.php");
 				include("IntroRoom.php");
 				include("Item.php");
-				include("ItemRoom.php");
 				include("LockedDoorRoom.php");
 				include("Obstacle.php");
 				include("ObstacleRoom.php");

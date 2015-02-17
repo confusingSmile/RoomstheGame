@@ -4,12 +4,21 @@
 			var $obstacle;
 			
 			function ObstacleRoom(){
-				$this->obstacle = new obstacle();
-				$this->exitBlocked = true;
+				$this->obstacle = new Obstacle();
+				for($i=0;$i<4;$i++){
+					$this->doors[$i] = new Door(true);
+				}
 			}
 			
 			function getObstacle(){
 				return $this->obstacle->getObstacleName();
+			}
+			
+			function clearObstacle($itemName, &$room){
+				$result = "No obstacle to clear.";
+				$db = new DatabaseExtension();
+				$result = $db -> getItemUseResult($itemName, $room);
+				return $result;
 			}
 			
 			
@@ -45,8 +54,8 @@
 				return $output;
 			}
 			
-			function getExitBlocked(){
-				return $this->exitBlocked;
+			function getDoor($direction){
+				return $this->doors[$direction];
 			}
 			
 			function registrateNeigbour(&$room, $direction){

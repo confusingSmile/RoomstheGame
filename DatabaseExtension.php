@@ -217,7 +217,7 @@
 			return $result;
 		}
 		
-		function getItemUseResult($itemName, $room){
+		function getItemUseResult($itemName, &$room){
 			$itemUseResult = 0;
 			$obstacleType = $room->getClass();
 			if($obstacleType == "ObstacleRoom"){
