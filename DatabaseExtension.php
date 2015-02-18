@@ -172,7 +172,7 @@
 		
 		
 		function getItemName($itemNumber){
-			$result = $itemNumber."";
+			$result = "No item with number".$itemNumber;
 			include("dbconnectlocal.inc.php");
 			$query = "SELECT item_name
 					   FROM items

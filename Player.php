@@ -98,7 +98,7 @@
 				$itemKey = array_search($itemName, $this->gatheredItems);
 				$this->gatheredItems[$itemKey] = null;
 			} else if($effect == 1){
-				$result = "The obstacle cleared.";
+				$result = $this->currentRoom->clearObstacle();
 			}
 			return $result;
 			

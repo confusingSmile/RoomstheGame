@@ -76,7 +76,7 @@
 							</div>
 						  </div>
 							  <form action=\"index.php\" method=\"post\">
-								  <center><textarea cols=\"100\" rows=\"20\">".$output."</textarea><br><br>
+								  <center><textarea cols=\"100\" rows=\"20\" readonly>".$output."</textarea><br><br>
 								  <input type=\"text\" id=\"commandTextField\" name=\"input\" value=\"\">
 								  <input type=\"submit\" value=\"OK\"></center><br>
 							  </form>
