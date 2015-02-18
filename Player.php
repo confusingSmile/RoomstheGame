@@ -57,7 +57,7 @@
 				$pickedUpItem = $this->currentRoom->getItem()->getItemName();
 				$this->gatheredItems[] = $pickedUpItem;
 				$this->currentRoom->takeItem();
-				$result = $pickedUpItem;
+				$result = "Obtained a(n)".$pickedUpItem.".";
 			}
 			return $result;
 		}
@@ -82,7 +82,7 @@
 			//check if the player HAS the item:
 			if($this->gatheredItems != null){
 				if(!(in_array($itemName, $this->gatheredItems))){
-					$result = "You don't have that item...";
+					$result = "You don't have that item... (".$itemName.")";
 				} else {
 					$db = new DatabaseExtension();
 					$effect = $db->getItemUseResult($itemName, $room);
@@ -91,7 +91,7 @@
 				$result = "You don't have any items...";
 			}
 			
-			if($effect == -1){
+			if($effect == 2){
 				$result = "That...may not have been a good idea. Now you're Game Over";
 				
 				//removing the item from the list

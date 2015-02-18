@@ -13,9 +13,10 @@
 			if($itemID == -1){
 				$max = $db->getMaxItemID();
 				$this->itemID = rand(1, $max);
-			}
-			$this->itemName = $db->getItemName($itemID);
-			$this->itemIcon = $db->getItemIcon($itemID);
+			} 
+			
+			$this->itemName = $db->getItemName($this->itemID);
+			$this->itemIcon = $db->getItemIcon($this->itemID);
 		}
 		
 		function getItemName(){

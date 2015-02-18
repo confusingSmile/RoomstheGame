@@ -172,7 +172,7 @@
 		
 		
 		function getItemName($itemNumber){
-			$result = "";
+			$result = $itemNumber."";
 			include("dbconnectlocal.inc.php");
 			$query = "SELECT item_name
 					   FROM items
@@ -200,7 +200,7 @@
 		
 		function getItemUseResult($itemName, &$room){
 			$itemUseResult = 0;
-			$obstacleType = $room->getClass();
+			$obstacleType = get_class($room);
 			if($obstacleType == "ObstacleRoom"){
 				$obstacleType = $room->getObstacle()->getObstacleName();
 			}

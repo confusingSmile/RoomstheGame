@@ -1,0 +1,5 @@
+INSERT INTO items(item_id, item_name, item_icon) VALUES('','','');
+
+INSERT INTO items(item_id, item_name, item_icon) VALUES('','b','c');
+INSERT INTO items(item_id, item_name, item_icon) VALUES('','example','c');
+INSERT INTO items(item_id, item_name, item_icon) VALUES('','example2','c');
