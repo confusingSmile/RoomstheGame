@@ -8,6 +8,11 @@
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door(true);
 				}
+				
+				$random = rand(1, 2);
+				if($random == 1){
+					$this->item = new Item();
+				}
 			}
 			
 			function getObstacle(){
@@ -23,7 +28,7 @@
 			
 			
 			function getItem(){
-				$result=0;
+				$result=null;
 				if($this->item != null){
 					$result = $this->item;
 				}
@@ -40,8 +45,9 @@
 			}
 			
 			function welcomePlayer(){
-				return "welcome to an ObstacleRoom.";
-				//something stating what the obstacle entails. 
+				$output="";
+				$output = $this->Obstacle->getObstacleText();
+				return $output; 
 				
 			}
 			
@@ -62,9 +68,6 @@
 				$this->neighbours[$direction] = $room;
 			}
 			
-			function generateNeighbours(){
-			
-			}
 		}	
 			
 ?>

@@ -7,9 +7,13 @@
 		var $itemName;
 		var $itemIcon;
 		
-		function Item($itemID){
+		function Item($itemID = -1){
 			$this->itemID = $itemID;
 			$db = new DatabaseExtension();
+			if($itemID == -1){
+				$max = $db->getMaxItemID();
+				$this->itemID = rand(1, $max);
+			}
 			$this->itemName = $db->getItemName($itemID);
 			$this->itemIcon = $db->getItemIcon($itemID);
 		}

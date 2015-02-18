@@ -48,7 +48,6 @@
 				} else {
 					
 					$player = unserialize($_SESSION['player']);
-					$command = $_POST['input'];
 					
 					if(isset($_POST['input'])){
 						
@@ -62,6 +61,7 @@
 					
 					$commandProcessor = new CommandProcessor();
 					$output = $_SESSION['output']."\n".$commandProcessor->processCommand($command, $player);
+					$output = rtrim($output, "\n");
 					$_SESSION['output'] = $output;
 					$_SESSION['player'] = serialize($player);
 					$hunger = "Hunger: ".$player->getHunger();
@@ -71,6 +71,9 @@
 				echo "<div id=\"commandIn\">
 						  <div id=\"headsUpDisplay\">
 							".$hunger."
+							<div id=\"logout\">
+								<a href=\"logout.php\">Exit Game</a>
+							</div>
 						  </div>
 							  <form action=\"index.php\" method=\"post\">
 								  <center><textarea cols=\"100\" rows=\"20\">".$output."</textarea><br><br>
@@ -83,8 +86,8 @@
 			} else {
 					
 				echo "<form action=\"login.php\" method=\"post\">
-						  <input type=\"text\" name=\"username\" value=\"\">
-						  <input type=\"text\" name=\"password\" value=\"\">
+						  <input type=\"text\" name=\"username\" value=\"lol\">
+						  <input type=\"password\" name=\"password\" value=\"lol\">
 						  <input type=\"submit\" value=\"Log in\">
 					  </form>";
 				

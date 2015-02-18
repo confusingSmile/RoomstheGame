@@ -9,11 +9,13 @@
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
+				$random = rand(1, 2);
+				if($random == 1){
+					$this->item = new Item();
+				}
 				//$db = new DatabaseExtension();
 				$nextDificulty = $dificulty;
 				//$question = $db->getQuestion("easy");
-				//random number to decide type of item
-				//random number to decide item itself
 			}
 			
 			

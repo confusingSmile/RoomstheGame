@@ -4,7 +4,7 @@
 		var $connection;
 			
 		function DatabaseExtension(){
-			//TODO fix database queries and array keys, also add $mysqli = $this->connection;
+			
 		}
 		
 		function getQuestion($dificulty){
@@ -39,8 +39,7 @@
 			} 
 			//close connection  
 			$mysqli->close();
-			$max = count($result["question"]);
-			$randomNumber = (rand(1, $max) - 1);
+			//TODO
 			$chosenQuestion["question"] = $result["question"][$randomNumber];
 			$chosenQuestion["correct_answer"] = $result["correct_answer"][$randomNumber];
 			$chosenQuestion["wrong_answer1"] = $result["wrong_answer1"][$randomNumber];
@@ -50,28 +49,10 @@
 		
 		//consider merging with question
 		function getHint(){
-			include("dbconnectlocal.inc.php");
 			$hint = "";
-			$max = 1;
-			$query = "SELECT max(hint_number)
-					  FROM hints"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$max = $row["hint_number"];            
-						}             
-					$queryResult->close();         
-					}         
-					     
-				} 
-				while ($mysqli->next_result()); 
-			
-			} 
-			$hintNumber = rand(1, $max);
+			$maxHintNumber = $this->getMaxHintNumber();
+			$hintNumber = rand(1, $maxHintNumber);
+			include("dbconnectlocal.inc.php");
 			$query = "SELECT hint_text
 					  FROM hints
 					  WHERE hint_number = '".$hintNumber."'"; 
@@ -189,7 +170,7 @@
 			return $result;
 		}
 		
-		//TODO check if this one is being used at all
+		
 		function getItemName($itemNumber){
 			$result = "";
 			include("dbconnectlocal.inc.php");
@@ -221,7 +202,7 @@
 			$itemUseResult = 0;
 			$obstacleType = $room->getClass();
 			if($obstacleType == "ObstacleRoom"){
-				$obstacleType = $room->getObstacle();
+				$obstacleType = $room->getObstacle()->getObstacleName();
 			}
 			$itemName = addslashes($itemName);
 			include("dbconnectlocal.inc.php");
@@ -247,7 +228,143 @@
 			} 
 			//close connection  
 			$mysqli->close();
+			//making sure no invalid values are being returned
+			if($itemUseResult != 1 && $itemUseResult != 0 && $itemUseResult != -1){
+				$itemUseResult = 0;
+			}
 			return $itemUseResult;
+		}
+		
+		function getMaxItemID(){
+			$result = "";
+			include("dbconnectlocal.inc.php");
+			$query = "SELECT max(item_id) 'item_id'
+					   FROM items"; 
+			//execute multi query  
+			if ($mysqli->multi_query($query)) {
+				do {         
+				
+					//store result set 
+					if ($queryResult = $mysqli->use_result()) {             
+						while ($row = $queryResult->fetch_assoc()) {                              
+							$result = $row["item_id"];            
+						}             
+					$queryResult->close();         
+					}         
+					     
+				} 
+				while ($mysqli->next_result()); 
+			
+			} 
+			//close connection  
+			$mysqli->close();
+			return $result;
+		}
+		
+		function getMaxObstacleID(){
+			$result = "";
+			include("dbconnectlocal.inc.php");
+			$query = "SELECT max(obstacle_id) 'obstacle_id'
+					   FROM obstacle"; 
+			//execute multi query  
+			if ($mysqli->multi_query($query)) {
+				do {         
+				
+					//store result set 
+					if ($queryResult = $mysqli->use_result()) {             
+						while ($row = $queryResult->fetch_assoc()) {                              
+							$result = $row["item_id"];            
+						}             
+					$queryResult->close();         
+					}         
+					     
+				} 
+				while ($mysqli->next_result()); 
+			
+			} 
+			//close connection  
+			$mysqli->close();
+			return $result;
+		}
+		
+		function getObstacleName($obstacleId){
+			$result = "";
+			include("dbconnectlocal.inc.php");
+			$query = "SELECT obstacle_name
+					   FROM obstacle
+					   WHERE obstacle_id ='".$obstacleId."'"; 
+			//execute multi query  
+			if ($mysqli->multi_query($query)) {
+				do {         
+				
+					//store result set 
+					if ($queryResult = $mysqli->use_result()) {             
+						while ($row = $queryResult->fetch_assoc()) {                              
+							$result = $row["obstacle_name"];            
+						}             
+					$queryResult->close();         
+					}         
+					     
+				} 
+				while ($mysqli->next_result()); 
+			
+			} 
+			//close connection  
+			$mysqli->close();
+			return $result;
+		}
+		
+		function getObstacleText($obstacleId){
+			$result = "";
+			include("dbconnectlocal.inc.php");
+			$query = "SELECT obstacle_text
+					   FROM obstacle
+					   WHERE obstacle_id ='".$obstacleId."'"; 
+			//execute multi query  
+			if ($mysqli->multi_query($query)) {
+				do {         
+				
+					//store result set 
+					if ($queryResult = $mysqli->use_result()) {             
+						while ($row = $queryResult->fetch_assoc()) {                              
+							$result = $row["obstacle_text"];            
+						}             
+					$queryResult->close();         
+					}         
+					     
+				} 
+				while ($mysqli->next_result()); 
+			
+			} 
+			//close connection  
+			$mysqli->close();
+			return $result;
+		}
+		
+		function getMaxHintNumber(){
+			$result = "";
+			include("dbconnectlocal.inc.php");
+			$query = "SELECT max(hint_number) 'hint_number'
+					   FROM hints"; 
+			//execute multi query  
+			if ($mysqli->multi_query($query)) {
+				do {         
+				
+					//store result set 
+					if ($queryResult = $mysqli->use_result()) {             
+						while ($row = $queryResult->fetch_assoc()) {                              
+							$result = $row["item_id"];            
+						}             
+					$queryResult->close();         
+					}         
+					     
+				} 
+				while ($mysqli->next_result()); 
+			
+			} 
+			//close connection  
+			$mysqli->close();
+			return $result;
 		}
 		
 		function connect(){

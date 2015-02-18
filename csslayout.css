@@ -34,3 +34,32 @@ body
 	background-color: #444444;
 	
 }
+
+#logout
+{
+	float: top;
+	float:right;
+	margin-left: 12.1%;
+	margin-right: 2%;
+	background-color: #444444;
+}
+
+#logout a:link
+{
+	color: #000000;
+}
+
+#logout a:visited
+{
+	color: #000000;
+}
+
+#logout a:hover
+{
+	color: #FFFF00;
+}
+
+#logout a:active
+{
+	color: #000000;
+}

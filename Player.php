@@ -5,14 +5,12 @@
 		*	hunger: integer starting at 300, indicating how not-hungry the player is. 
 		*		If it reaches 0, the player "dies".
 		*	currentRoom: the Room that the player is visiting.
-		*	activeItemEffects: utility items' effects that are currently active
 		*	gatheredItems: items the player can use
 		*	generatedItems: items that the player can obtain or has obtained
 		*	doorsUnlocked: the amount of keyDoors the player has unlocked
 		*/
 		var $hunger;
 		var $currentRoom;
-		var $activeItemEffects;
 		var $gatheredItems;
 		var $generatedItems;
 		var $doorsUnlocked;
@@ -36,10 +34,6 @@
 			return $this->currentRoom;
 		}
 		
-		function getCurrentItemEffects(){
-			return $this->activeItemEffects;
-		}
-		
 		//integer indicating the amount of keyDoors the player has unlocked
 		function doorsUnlocked(){
 			return $this->doorsUnlocked;
@@ -60,10 +54,10 @@
 		function obtainItem(){
 			$result = 0;
 			if($this->currentRoom->getItem() != null){
-				$this->gatheredItems[] = $this->currentRoom->getItem();
-				//statement to remove the item from the non-gathered list
+				$pickedUpItem = $this->currentRoom->getItem()->getItemName();
+				$this->gatheredItems[] = $pickedUpItem;
 				$this->currentRoom->takeItem();
-				$result = 1;
+				$result = $pickedUpItem;
 			}
 			return $result;
 		}
@@ -78,19 +72,40 @@
 		
 		/*uses an item
 		*	item: the Item the player wants to use
-		*	room: the Room the player wants to use the item in
+		*	@return: String for the textarea in index.php
 		*/
-		function useItem($itemname){
-			$result = 0;
-			$room = "";
-			//db query about effect of using that item in that room. 1 for works, 0 for does nothing, -1 for game over
-			//statement to remove the item from the item list
+		function useItem($itemName){
+			$result = "Nothing happened...";
+			$effect = 0;
+			$room = $this->currentRoom;
+			
+			//check if the player HAS the item:
+			if($this->gatheredItems != null){
+				if(!(in_array($itemName, $this->gatheredItems))){
+					$result = "You don't have that item...";
+				} else {
+					$db = new DatabaseExtension();
+					$effect = $db->getItemUseResult($itemName, $room);
+				}
+			} else {
+				$result = "You don't have any items...";
+			}
+			
+			if($effect == -1){
+				$result = "That...may not have been a good idea. Now you're Game Over";
+				
+				//removing the item from the list
+				$itemKey = array_search($itemName, $this->gatheredItems);
+				$this->gatheredItems[$itemKey] = null;
+			} else if($effect == 1){
+				$result = "The obstacle cleared.";
+			}
 			return $result;
 			
 		}
 		
 		
-		//TODO generate certain rooms after question rooms, to be handled here 
+		
 		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 		function travel($direction){
 			$output = "";
@@ -104,8 +119,8 @@
 					$nextRoom->registrateNeigbour($this->currentRoom, (($direction + 2)%4));
 					//keeping track of generated items
 					$generatingItem = $nextRoom->getItem();
-					if($generatingItem != 0){
-						addGeneratedItem($generatingItem);
+					if($generatingItem != null){
+						$this->addGeneratedItem($generatingItem);
 					} 
 					//make this room know the next room
 					$this->currentRoom->registrateNeigbour($nextRoom, $direction);

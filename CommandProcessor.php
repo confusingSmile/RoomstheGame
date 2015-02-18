@@ -13,6 +13,9 @@
 			strip_tags($command);
 			$command = explode(" ", $command);
 			switch($command[0]){
+				case "":
+					$output="";
+					break;
 				case "?":
 					$output = $this->showHelp();
 					break;
@@ -34,11 +37,18 @@
 				case "search":
 					$output = $player->searchRoomForItem();
 					break;
+				case "pick":
+					if(isset($command[1])){
+						if($command[1] == "up"){
+							$output = $player->obtainItem();
+						}
+					}
+					break;
 				case "use":
+					$output="";
 					if(isset($command[1])){
 						$output = $player->useItem($command[1]);
-					}					
-					$output="";
+					}	
 					break;
 				case "unlock":
 					if(isset($command[1])){
