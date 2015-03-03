@@ -7,15 +7,14 @@
 			
 		}
 		
-		function getQuestion($dificulty){
+		function getQuestion(){
 			$chosenQuestion["error"] = "404 question not found";
 			$result = "";
 			//open connection
 			$this->connect();
 			
 			$query = "SELECT * 
-					  FROM questions
-					  WHERE difficulty='".$dificulty."';"; 
+					  FROM questions;"; 
 			//execute multi query 
 			$mysqli = $this->connection;
 			if ($mysqli->multi_query($query)) {
@@ -39,11 +38,16 @@
 			} 
 			//close connection  
 			$mysqli->close();
-			//TODO
+			
+			$randomNumber = 0; 
+			$randomNumber = (rand(1, (count($result["question"]))) - 1); 
+			
+			
 			$chosenQuestion["question"] = $result["question"][$randomNumber];
 			$chosenQuestion["correct_answer"] = $result["correct_answer"][$randomNumber];
-			$chosenQuestion["wrong_answer1"] = $result["wrong_answer1"][$randomNumber];
-			$chosenQuestion["wrong_answer2"] = $result["wrong_answer2"][$randomNumber];
+			$chosenQuestion["answer"][] = $result["correct_answer"][$randomNumber];
+			$chosenQuestion["answer"][] = $result["wrong_answer1"][$randomNumber];
+			$chosenQuestion["answer"][] = $result["wrong_answer2"][$randomNumber];
 			return $chosenQuestion;
 		}
 		
@@ -353,7 +357,7 @@
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
 						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["item_id"];            
+							$result = $row["hint_number"];            
 						}             
 					$queryResult->close();         
 					}         

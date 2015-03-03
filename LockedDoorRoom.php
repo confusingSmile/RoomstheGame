@@ -53,9 +53,7 @@
 				$this->neighbours[$direction] = $room;
 			}
 			
-			function unlock(){
-				$this->doors[$direction] = false;
-			}
+			
 		}	
 			
 ?>

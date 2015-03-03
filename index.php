@@ -1,10 +1,6 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="csslayout.css" />
-		<script language=javascript>
-		//keeping a textarea scrolled down doesn't seem to be working yet
-			document.getElementById("commandTextField").scrollTop = document.getElementById("commandTextField").scrollHeight;
-		</script>
 	</head>
 	<body>
 	
@@ -20,7 +16,7 @@
 					$output = "";
 				}
 				//importing the nessecary classes
-				//include("Building.php");
+				include("Building.php");
 				include("CommandProcessor.php");
 				include("DatabaseExtension.php");
 				include("Door.php");
@@ -31,13 +27,13 @@
 				include("LockedDoorRoom.php");
 				include("Obstacle.php");
 				include("ObstacleRoom.php");
-				include("RoomFactory.php");
 				include("Player.php");
 				include("QuestionRoom.php");
 				
 				//starting the game
 				$player = "";
 				$hunger = "Hunger: ";
+				$progress = "Progress: 0";
 				if(!isset($_SESSION['player'])){
 					
 					$player = new Player();
@@ -60,20 +56,23 @@
 					}
 					
 					$commandProcessor = new CommandProcessor();
-					$output = $_SESSION['output']."\n".$commandProcessor->processCommand($command, $player);
-					$output = rtrim($output, "\n");
+					$output = $commandProcessor->processCommand($command, $player)."\n".$_SESSION['output'];
+					$output = ltrim($output);
 					$_SESSION['output'] = $output;
 					$_SESSION['player'] = serialize($player);
 					$hunger = "Hunger: ".$player->getHunger();
+					$progress = "Progress: ".$player->getDoorsUnlocked()."/10";
 				}
 				
 				
 				echo "<div id=\"commandIn\">
 						  <div id=\"headsUpDisplay\">
-							".$hunger."
 							<div id=\"logout\">
 								<a href=\"logout.php\">Exit Game</a>
 							</div>
+							".$hunger."
+							
+							<br>".$progress."
 						  </div>
 							  <form action=\"index.php\" method=\"post\">
 								  <center><textarea cols=\"100\" rows=\"20\" readonly>".$output."</textarea><br><br>

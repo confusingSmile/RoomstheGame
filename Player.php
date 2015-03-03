@@ -8,18 +8,21 @@
 		*	gatheredItems: items the player can use
 		*	generatedItems: items that the player can obtain or has obtained
 		*	doorsUnlocked: the amount of keyDoors the player has unlocked
+		*	building: the place with the Rooms. The Player and the Room should know each other (right?) 
 		*/
 		var $hunger;
 		var $currentRoom;
 		var $gatheredItems;
 		var $generatedItems;
 		var $doorsUnlocked;
+		var $building;
 	
 		function Player(){
 			$this->hunger = 300;
 			$this->currentRoom = new IntroRoom();
 			//doesn't do anything yet
 			$this->currentRoom->welcomePlayer();
+			$this->building = new Building($this);
 		}
 		
 		function getHunger(){
@@ -35,7 +38,7 @@
 		}
 		
 		//integer indicating the amount of keyDoors the player has unlocked
-		function doorsUnlocked(){
+		function getDoorsUnlocked(){
 			return $this->doorsUnlocked;
 		}
 		
@@ -46,7 +49,17 @@
 		function unlockKeyDoor($direction){
 			$output = "Nothing to unlock.";
 			if(get_class($this->currentRoom) == "LockedDoorRoom"){
-				$output = $this->currentRoom->getDoor($direction)->unblock();				
+				$output = $this->currentRoom->getDoor($direction)->unblock();	
+					$firstUnlockThisRoom = true; 
+					for($i=($direction+1);$i<($direction+3);$i++){
+						$j = $i%4;
+						if($this->currentRoom->getDoor($j)->getBlocked() == false){
+							$firstUnlockThisRoom = false;
+						}
+					}
+					if($firstUnlockThisRoom == true){
+						$this->doorsUnlocked ++;
+					}
 			}
 			return $output;
 		}
@@ -112,9 +125,8 @@
 			//if true the player is moving back into a room that has already generated. 
 			if($this->currentRoom->getNeighbour($direction) == null){	
 				if($this->currentRoom->getDoor($direction)->getBlocked() == false){
-					$factory = new RoomFactory();
 					//create the room
-					$nextRoom = $factory->createRoom($this->generatedItems);
+					$nextRoom = $this->building->createRoom($direction);
 					//make the next room know the way back here
 					$nextRoom->registrateNeigbour($this->currentRoom, (($direction + 2)%4));
 					//keeping track of generated items

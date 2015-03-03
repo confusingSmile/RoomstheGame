@@ -2,10 +2,8 @@
 		class QuestionRoom extends Room{	
 			
 			var $question;
-			var $nextDificulty;
 			
-			//$dificulty: "easy" "medium" "hard"
-			function QuestionRoom($dificulty){
+			function QuestionRoom(){
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
@@ -13,9 +11,10 @@
 				if($random == 1){
 					$this->item = new Item();
 				}
-				//$db = new DatabaseExtension();
-				$nextDificulty = $dificulty;
-				//$question = $db->getQuestion("easy");
+				$db = new DatabaseExtension();
+				$this->question = $db->getQuestion(); 
+				shuffle($this->question["answer"]); 
+				
 			}
 			
 			
@@ -38,8 +37,15 @@
 			}
 			
 			function welcomePlayer(){
-				return "welcome to a QuestionRoom.";
-				//$this->askQuestion();
+				$result = "welcome to a QuestionRoom. this room's question is: ".$this->question["question"]."\n";
+				$directions = array("down: ", "left: ", "up: ", "right: ");
+				for($i=0;$i<4;$i++){
+					if(isset($this->question["answer"][$i]) && $this->question["answer"][$i] != null){
+						$result .= $directions[$i]."".$this->question["answer"][$i].", ";
+					}
+				}
+				$result = rtrim($result, ", ");
+				return $result.".";
 			}
 			
 			function getDoor($direction){
@@ -57,7 +63,12 @@
 			
 			function registrateNeigbour(&$room, $direction){
 				$this->neighbours[$direction] = $room;
+				if(isset($this->question["answer"][$direction])){
+					$this->question["answer"][] = $this->question["answer"][$direction];
+					$this->question["answer"][$direction] = null;
+				}
 			}
+			
 			
 			
 		}	
