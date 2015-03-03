@@ -2,6 +2,7 @@
 		class HintRoom extends Room{	
 			
 			var $hint;
+			var $answer;
 			//TODO getHint
 			
 			function HintRoom(){
@@ -14,11 +15,17 @@
 					$this->item = new Item();
 				}
 				
-				$db = new DatabaseExtension();
-				$this->hint = $db->getHint();
+				$this->prepareHint();			
+				
 			}
 			
+			function getHint(){
+				return $this->hint;
+			}
 			
+			function getAnswer(){
+				return $this->answer;
+			}
 			
 			function takeItem(){
 				$result=0;
@@ -59,6 +66,12 @@
 				return $output;
 			}
 			
+			function prepareHint(){
+				$db = new DatabaseExtension();
+				$hintData = $db->getHint();
+				$this->hint = $hintData["text"];
+				$this->answer = $hintData["answer"];
+			}
 			
 		}	
 			

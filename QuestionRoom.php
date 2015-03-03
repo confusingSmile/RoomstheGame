@@ -17,7 +17,9 @@
 				
 			}
 			
-			
+			function getQuestion(){
+				return $this->question;
+			}
 			
 			function getItem(){
 				$result=0;

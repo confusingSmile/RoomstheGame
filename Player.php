@@ -13,7 +13,6 @@
 		var $hunger;
 		var $currentRoom;
 		var $gatheredItems;
-		var $generatedItems;
 		var $doorsUnlocked;
 		var $building;
 	
@@ -42,9 +41,6 @@
 			return $this->doorsUnlocked;
 		}
 		
-		function addGeneratedItem($item){
-			$this->generatedItems[] = $item;
-		}
 		
 		function unlockKeyDoor($direction){
 			$output = "Nothing to unlock.";
@@ -122,20 +118,12 @@
 		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 		function travel($direction){
 			$output = "";
+			$buildingOutput = "";
 			//if true the player is moving back into a room that has already generated. 
 			if($this->currentRoom->getNeighbour($direction) == null){	
 				if($this->currentRoom->getDoor($direction)->getBlocked() == false){
 					//create the room
-					$nextRoom = $this->building->createRoom($direction);
-					//make the next room know the way back here
-					$nextRoom->registrateNeigbour($this->currentRoom, (($direction + 2)%4));
-					//keeping track of generated items
-					$generatingItem = $nextRoom->getItem();
-					if($generatingItem != null){
-						$this->addGeneratedItem($generatingItem);
-					} 
-					//make this room know the next room
-					$this->currentRoom->registrateNeigbour($nextRoom, $direction);
+					$buildingOutput = $this->building->createRoom($direction);
 					//actually enter the next room, which costs hunger, so subtract 1 hunger;
 					$this->currentRoom = $this->currentRoom->getNeighbour($direction);
 					$this->hunger --;
@@ -149,7 +137,7 @@
 				$output = $this->currentRoom->welcomePlayer();
 			}
 			
-			return $output;
+			return $buildingOutput."\n".$output;
 		}
 		
 		function gameOver(){

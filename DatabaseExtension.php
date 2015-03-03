@@ -57,17 +57,19 @@
 			$maxHintNumber = $this->getMaxHintNumber();
 			$hintNumber = rand(1, $maxHintNumber);
 			include("dbconnectlocal.inc.php");
-			$query = "SELECT hint_text
+			$query = "SELECT hint_text, hint_answer
 					  FROM hints
 					  WHERE hint_number = '".$hintNumber."'"; 
 			//execute multi query  
 			if ($mysqli->multi_query($query)) {
 				do {         
 				
+						
 					//store result set 
 					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$hint = $row["hint_text"];            
+							while ($row = $queryResult->fetch_assoc()) {                              
+							$hint["text"] = $row["hint_text"];
+							$hint["answer"] = $row["hint_answer"];
 						}             
 					$queryResult->close();         
 					}         
