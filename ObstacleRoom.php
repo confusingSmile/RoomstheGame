@@ -1,10 +1,13 @@
 <?php
 		class ObstacleRoom extends Room{	
 		
+		
+			//$clear: whether or not the obstacle has been cleared. 
 			var $obstacle;
+			var $clear; 
 			
-			function ObstacleRoom(){
-				$this->obstacle = new Obstacle();
+			function ObstacleRoom($obstacle){
+				$this->obstacle = $obstacle;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door(true);
 				}
@@ -16,13 +19,26 @@
 			}
 			
 			function getObstacle(){
-				return $this->obstacle->getObstacleName();
+				return $this->obstacle;
 			}
 			
-			function clearObstacle($itemName, &$room){
+			function clearObstacle($itemName){
 				$result = "No obstacle to clear.";
-				$db = new DatabaseExtension();
-				$result = $db -> getItemUseResult($itemName, $room);
+				if($this->clear == false){
+					$db = new DatabaseExtension();
+					$effect = $db -> getItemUseResult($itemName, $this->obstacle);
+					if($effect == 2){
+							$result = "That...may not have been a good idea. Now you're Game Over.";
+
+							
+						} else if($effect == 1){
+							$result = "Obstacle cleared";
+							for($i=0;$i<4;$i++){
+								$uselessVariable = $this->doors[$i]->unblock();
+							}
+							$this->clear = true;
+						}
+				}
 				return $result;
 			}
 			
@@ -45,8 +61,7 @@
 			}
 			
 			function welcomePlayer(){
-				$output="";
-				$output = $this->Obstacle->getObstacleText();
+				$output="".$this->obstacle->getObstacleText()."<--".$this->obstacle->getObstacleId()."";
 				return $output; 
 				
 			}

@@ -61,12 +61,12 @@
 		}
 		
 		function obtainItem(){
-			$result = 0;
+			$result = "There is no item.";
 			if($this->currentRoom->getItem() != null){
-				$pickedUpItem = $this->currentRoom->getItem()->getItemName();
-				$this->gatheredItems[] = $pickedUpItem;
+				$pickedUpItem = $this->currentRoom->getItem();
+				$this->gatheredItems[] = $pickedUpItem->getItemName();
 				$this->currentRoom->takeItem();
-				$result = "Obtained a(n)".$pickedUpItem.".";
+				$result = "Obtained a(n)".$pickedUpItem->getItemName().".";
 			}
 			return $result;
 		}
@@ -86,29 +86,23 @@
 		function useItem($itemName){
 			$result = "Nothing happened...";
 			$effect = 0;
-			$room = $this->currentRoom;
 			
 			//check if the player HAS the item:
 			if($this->gatheredItems != null){
 				if(!(in_array($itemName, $this->gatheredItems))){
 					$result = "You don't have that item... (".$itemName.")";
 				} else {
-					$db = new DatabaseExtension();
-					$effect = $db->getItemUseResult($itemName, $room);
+					$roomType = get_class($this->currentRoom);
+					if($roomType == "ObstacleRoom"){
+						$result = $this->currentRoom->clearObstacle($itemName);
+						
+					} 
 				}
 			} else {
 				$result = "You don't have any items...";
 			}
 			
-			if($effect == 2){
-				$result = "That...may not have been a good idea. Now you're Game Over";
-				
-				//removing the item from the list
-				$itemKey = array_search($itemName, $this->gatheredItems);
-				$this->gatheredItems[$itemKey] = null;
-			} else if($effect == 1){
-				$result = $this->currentRoom->clearObstacle();
-			}
+			
 			return $result;
 			
 		}

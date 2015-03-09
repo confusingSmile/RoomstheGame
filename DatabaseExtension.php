@@ -11,7 +11,7 @@
 			$chosenQuestion["error"] = "404 question not found";
 			$result = "";
 			//open connection
-			$this->connect();
+			include("dbconnectlocal.inc.php");
 			
 			$query = "SELECT * 
 					  FROM questions;"; 
@@ -116,13 +116,13 @@
 			$username = addslashes($username);
 			$password = addslashes($password);
 			$password = md5($password);
-			$this->connect();
+			include("dbconnectlocal.inc.php");
 			$query = "SELECT password
 					  FROM users
 					  WHERE username = '".$username."'"; 
 			//execute multi query  
 			
-			$mysqli = $this->connection;
+			
 			if ($mysqli->multi_query($query)) {
 				do {         
 				
@@ -204,18 +204,44 @@
 			return $result;
 		}
 		
-		function getItemUseResult($itemName, &$room){
+		function getItemId($itemName){
+			$result = "No item with name".$itemName;
+			include("dbconnectlocal.inc.php");
+			$query = "SELECT item_id
+					   FROM items
+					   WHERE item_name = '".$itemName."'"; 
+			//execute multi query  
+			if ($mysqli->multi_query($query)) {
+				do {         
+				
+					//store result set 
+					if ($queryResult = $mysqli->use_result()) {             
+						while ($row = $queryResult->fetch_assoc()) {                              
+							$result = $row["item_id"];            
+						}             
+					$queryResult->close();         
+					}         
+					     
+				} 
+				while ($mysqli->next_result()); 
+			
+			} 
+			//close connection  
+			$mysqli->close();
+			return $result;
+		}
+		
+		function getItemUseResult($itemName, &$obstacle){
 			$itemUseResult = 0;
-			$obstacleType = get_class($room);
-			if($obstacleType == "ObstacleRoom"){
-				$obstacleType = $room->getObstacle()->getObstacleName();
-			}
+			$obstacleId = $obstacle->getObstacleId();
+		
 			$itemName = addslashes($itemName);
+			$itemId = $this->getItemId($itemName);
 			include("dbconnectlocal.inc.php");
 			$query = "SELECT result
 					  FROM item_use
-					  WHERE item_name = '".$itemName."' 
-							AND obstacle_type = '".$obstacleType."'"; 
+					  WHERE item_id = '".$itemId."' 
+							AND obstacle_id = '".$obstacleId."'"; 
 			//execute multi query  
 			if ($mysqli->multi_query($query)) {
 				do {         
@@ -227,7 +253,7 @@
 						}             
 					$queryResult->close();         
 					}         
-					     
+						 
 				} 
 				while ($mysqli->next_result()); 
 			
@@ -235,7 +261,8 @@
 			//close connection  
 			$mysqli->close();
 			//making sure no invalid values are being returned
-			if($itemUseResult != 1 && $itemUseResult != 0 && $itemUseResult != -1){
+			
+			if($itemUseResult != 2 && $itemUseResult != 1 && $itemUseResult != 0 && $itemUseResult != -1){
 				$itemUseResult = 0;
 			}
 			return $itemUseResult;
@@ -267,29 +294,37 @@
 			return $result;
 		}
 		
-		function getMaxObstacleID(){
-			$result = "";
+		function getObstaclesClearedByItems($generatedItems){
 			include("dbconnectlocal.inc.php");
-			$query = "SELECT max(obstacle_id) 'obstacle_id'
-					   FROM obstacle"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
+			for($i=0;$i < count($generatedItems); $i++){
+				$query = "SELECT obstacle_id
+						  FROM item_use, items
+						  WHERE item_use.item_id = items.item_id
+							AND items.item_name = '".$generatedItems[$i]."'
+							AND result = '1'"; 
+				//execute multi query  
+				if ($mysqli->multi_query($query)) {
+					do {         
+					
+						//store result set 
+						if ($queryResult = $mysqli->use_result()) {             
+							while ($row = $queryResult->fetch_assoc()) {                              
+								$result[] = $row["obstacle_id"];            
+							}             
+						$queryResult->close();         
+						}         
+							 
+					} 
+					while ($mysqli->next_result()); 
 				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["item_id"];            
-						}             
-					$queryResult->close();         
-					}         
-					     
 				} 
-				while ($mysqli->next_result()); 
+			}
 			
-			} 
 			//close connection  
 			$mysqli->close();
+			if(!(isset($result[0]))){
+				$result[0] = "error";
+			}
 			return $result;
 		}
 		
@@ -373,9 +408,5 @@
 			return $result;
 		}
 		
-		function connect(){
-			include("dbconnectlocal.inc.php");
-			$this->connection = $mysqli;
-		}
 	}
 ?>

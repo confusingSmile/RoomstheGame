@@ -1,12 +1,16 @@
 <?php
 		class QuestionRoom extends Room{	
 			
-			var $question;
+			var $question; 
+			var $answer;
+			var $test;
 			
 			function QuestionRoom(){
+				
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
+				
 				$random = rand(1, 2);
 				if($random == 1){
 					$this->item = new Item();
@@ -15,10 +19,23 @@
 				$this->question = $db->getQuestion(); 
 				shuffle($this->question["answer"]); 
 				
+				$this->answer = "0";
+				for($j=0;$j<3;$j++){
+					if($this->question["answer"][($j)] == $this->question["correct_answer"]){
+						$this->answer = $j;
+					}
+				}
+				
+				$this->test = rand(1,10000);
+				
 			}
 			
 			function getQuestion(){
 				return $this->question;
+			}
+			
+			function getAnswer(){
+				return $this->answer;
 			}
 			
 			function getItem(){
@@ -39,7 +56,7 @@
 			}
 			
 			function welcomePlayer(){
-				$result = "welcome to a QuestionRoom. this room's question is: ".$this->question["question"]."\n";
+				$result = "welcome to a QuestionRoom. this room's question is: ".$this->question["question"]."\n".$this->test."";
 				$directions = array("down: ", "left: ", "up: ", "right: ");
 				for($i=0;$i<4;$i++){
 					if(isset($this->question["answer"][$i]) && $this->question["answer"][$i] != null){

@@ -35,26 +35,24 @@
 			
 			*/
 			$random = rand(0, 99);
-			$randomPH = rand(1,2);
 			$creation = "";
-			
-			if($randomPH == 2){
+			$db = new DatabaseExtension();
+			if($db->getObstaclesClearedByItems($this->generatedItems)[0] != "error"){
+				$creation = new ObstacleRoom(new Obstacle($this->generatedItems));
+			}else {
 				$creation = new HintRoom();
-			} else if($randomPH==1){
-				$creation = new QuestionRoom();
-			} else {
-				$creation = new IntroRoom();
 			}
+			$correctExit = false;
+			$lastRoom = get_class($this->player->getCurrentRoom());
 			
+			
+			if(($lastRoom == "QuestionRoom" || $lastRoom == "HintRoom") && $this->player->getCurrentRoom()->getAnswer() == $direction){
+				$correctExit = true;
+				$output = "correct";
+			}
 			
 			switch($random){
 				
-			}
-			
-			if(get_class($this->player->getCurrentRoom()) == "QuestionRoom"){
-				$output = ($this->player->getCurrentRoom()->getQuestion()["answer"][$direction] == $this->player->getCurrentRoom()->getQuestion()["correct_answer"]);
-			} else if(get_class($this->player->getCurrentRoom()) == "HintRoom"){
-				$output = ($this->player->getCurrentRoom()->getAnswer() == $direction);
 			}
 			
 			
@@ -65,7 +63,7 @@
 			//keeping track of generated items
 					$generatingItem = $creation->getItem();
 					if($generatingItem != null){
-						$this->addGeneratedItem($generatingItem);
+						$this->addGeneratedItem($generatingItem->getItemName());
 					}
 			//make this room know the next room
 					$this->player->getCurrentRoom()->registrateNeigbour($creation, $direction);
