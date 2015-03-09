@@ -18,11 +18,10 @@
 		}
 		
 		function createRoom($direction){
-			$output = "";
 			//rules: 
 			/*
 				QuestionRoom -> correct -> LockedDoorRoom
-				QuestionRoom -> wrong -> QuestionRoom
+				QuestionRoom -> wrong -> 60% Hint-, 40% QuestionRoom
 				ObstacleRoom -> QuestionRoom
 				HintRoom -> wrong -> HintRoom 
 				HintRoom -> correct -> 25% chance on ObstacleRoom 
@@ -30,34 +29,58 @@
 				
 				
 			*/
-			//balance:
+			//balance: Someday maybe...
 			/*
 			
 			*/
+			$output = "";
 			$random = rand(0, 99);
 			$creation = "";
+			$obstacleRoomPossible = false; 
 			$db = new DatabaseExtension();
-			if($db->getObstaclesClearedByItems($this->generatedItems)[0] != "error"){
-				$creation = new ObstacleRoom(new Obstacle($this->generatedItems));
-			}else {
-				$creation = new HintRoom();
-			}
-			$correctExit = false;
-			$lastRoom = get_class($this->player->getCurrentRoom());
 			
+			if($db->getObstaclesClearedByItems($this->generatedItems)[0] != "error"){
+				$obstacleRoomPossible = true;
+			}
+			
+			$lastRoom = get_class($this->player->getCurrentRoom());
+			$correctExit = false;
 			
 			if(($lastRoom == "QuestionRoom" || $lastRoom == "HintRoom") && $this->player->getCurrentRoom()->getAnswer() == $direction){
 				$correctExit = true;
 				$output = "correct";
 			}
 			
-			switch($random){
-				
+			//create the room
+			
+			switch($lastRoom){
+				case "HintRoom":
+					if($correctExit == true && $random < 25 && $obstacleRoomPossible == true){
+						$creation = new ObstacleRoom(new Obstacle($this->generatedItems));
+					} else {
+						$creation = new hintRoom();
+					}
+					break;
+				case "IntroRoom":
+					$creation = new HintRoom();
+					break;
+				case "LockedDoorRoom":
+					$creation = new HintRoom();
+					break;
+				case "ObstacleRoom":
+					$creation = new QuestionRoom();
+					break;
+				case "QuestionRoom":
+					if($correctExit == true){
+						$creation = new LockedDoorRoom();
+					} else if($random < 60){
+						$creation = new HintRoom();
+					} else {
+						$creation = new QuestionRoom();
+					}
+					break;
 			}
 			
-			
-			//create the room
-			//$creation = new HintRoom();
 			//make the next room know the way back here
 			$creation->registrateNeigbour($this->player->getCurrentRoom(), (($direction + 2)%4));
 			//keeping track of generated items

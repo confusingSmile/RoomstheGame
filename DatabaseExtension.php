@@ -16,7 +16,6 @@
 			$query = "SELECT * 
 					  FROM questions;"; 
 			//execute multi query 
-			$mysqli = $this->connection;
 			if ($mysqli->multi_query($query)) {
 				do {         
 				

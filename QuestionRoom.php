@@ -3,7 +3,6 @@
 			
 			var $question; 
 			var $answer;
-			var $test;
 			
 			function QuestionRoom(){
 				
@@ -25,8 +24,6 @@
 						$this->answer = $j;
 					}
 				}
-				
-				$this->test = rand(1,10000);
 				
 			}
 			
@@ -56,7 +53,7 @@
 			}
 			
 			function welcomePlayer(){
-				$result = "welcome to a QuestionRoom. this room's question is: ".$this->question["question"]."\n".$this->test."";
+				$result = "welcome to a QuestionRoom. this room's question is: ".$this->question["question"]."\n";
 				$directions = array("down: ", "left: ", "up: ", "right: ");
 				for($i=0;$i<4;$i++){
 					if(isset($this->question["answer"][$i]) && $this->question["answer"][$i] != null){
