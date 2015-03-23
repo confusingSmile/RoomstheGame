@@ -62,11 +62,23 @@
 					$_SESSION['output'] = $output;
 					$_SESSION['player'] = serialize($player);
 					$hunger = "Hunger: ".$player->getHunger();
+					$items = $player->getGatheredItems();
 					if($player->getDoorsUnlocked() != null){
 						$progress = "Progress: ".$player->getDoorsUnlocked()."/10";
 					} else {
 						$progress = "Progress: 0/10";
 					}
+					
+					if(is_array($items)){
+						for($i = 0; $i < count($items); $i++){
+							echo "<div class=\"item\">
+										<img src=\"".$items[$i]/*->*/."\">
+										</img>
+								  </div>";
+						}
+					}
+					
+					
 					
 				}
 				
