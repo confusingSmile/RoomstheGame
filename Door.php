@@ -8,6 +8,7 @@
 			
 		}
 		
+		//"unlocks" the Door if it's locked. 
 		function unblock(){
 			$result = "The door won't open.";
 			if($this->blocked == true){

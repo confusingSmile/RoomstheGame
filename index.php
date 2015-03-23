@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="csslayout.css" />
+		<title>Rooms: the game</title>
 	</head>
 	<body>
 	
@@ -33,7 +34,7 @@
 				//starting the game
 				$player = "";
 				$hunger = "Hunger: ";
-				$progress = "Progress: 0";
+				$progress = "Progress: ";
 				if(!isset($_SESSION['player'])){
 					
 					$player = new Player();
@@ -61,7 +62,12 @@
 					$_SESSION['output'] = $output;
 					$_SESSION['player'] = serialize($player);
 					$hunger = "Hunger: ".$player->getHunger();
-					$progress = "Progress: ".$player->getDoorsUnlocked()."/10";
+					if($player->getDoorsUnlocked() != null){
+						$progress = "Progress: ".$player->getDoorsUnlocked()."/10";
+					} else {
+						$progress = "Progress: 0/10";
+					}
+					
 				}
 				
 				
@@ -74,7 +80,7 @@
 							
 							<br>".$progress."
 						  </div>
-							  <form action=\"index.php\" method=\"post\">
+							  <form action=\"index.php\" method=\"post\" name=\"gameWindow\">
 								  <center><textarea cols=\"100\" rows=\"20\" readonly>".$output."</textarea><br><br>
 								  <input type=\"text\" id=\"commandTextField\" name=\"input\" value=\"\">
 								  <input type=\"submit\" value=\"OK\"></center><br>

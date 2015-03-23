@@ -41,7 +41,7 @@
 			return $this->doorsUnlocked;
 		}
 		
-		
+		//unlocks the Door if it's locked. 
 		function unlockKeyDoor($direction){
 			$output = "Nothing to unlock.";
 			if(get_class($this->currentRoom) == "LockedDoorRoom"){

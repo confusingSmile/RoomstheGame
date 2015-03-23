@@ -4,7 +4,7 @@
 		
 		/*
 		*	player: the player
-		*	generatedItems: items that the player can obtain or has obtained
+		*	generatedItems: items present in this game of RoomsTheGame. 
 		*/
 		var $player;
 		var $generatedItems;
@@ -29,11 +29,12 @@
 				
 				
 			*/
-			//balance: Someday maybe...
+			//balance: Maybe later...
 			/*
 			
 			*/
 			$output = "";
+			//a random number, used for chance-based events (in this case: which Room to generate) 
 			$random = rand(0, 99);
 			$creation = "";
 			$obstacleRoomPossible = false; 
@@ -51,8 +52,7 @@
 				$output = "correct";
 			}
 			
-			//create the room
-			
+			//create the Room, based on the previous Room and how that Room has been handled by the Player. 
 			switch($lastRoom){
 				case "HintRoom":
 					if($correctExit == true && $random < 25 && $obstacleRoomPossible == true){

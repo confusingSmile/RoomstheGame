@@ -7,6 +7,7 @@
 			
 		}
 		
+		//returns a random Question (actually just an array) 
 		function getQuestion(){
 			$chosenQuestion["error"] = "404 question not found";
 			$result = "";
@@ -50,7 +51,7 @@
 			return $chosenQuestion;
 		}
 		
-		//consider merging with question
+		//returns a random Hint (just an array) 
 		function getHint(){
 			$hint = "";
 			$maxHintNumber = $this->getMaxHintNumber();
@@ -82,33 +83,7 @@
 			return $hint;
 		}
 		
-		function getFlavourText($criterium){
-			$flavourText = "";
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT text 
-					  FROM flavour_text
-					  WHERE displayed_when=''".$criterium.""; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$flavourText = $row["text"];            
-						}             
-					$queryResult->close();         
-					}         
-					    
-				} 
-				while ($mysqli->next_result()); 
-			
-			} 
-			//close connection  
-			$mysqli->close();
-			return $flavourText;
-		}
-		
+		//authenticates the user, logging in to the game. 	
 		function authenticate($username, $password){
 			$result = false;
 			$correctPassword = "";
@@ -148,6 +123,7 @@
 			return $result;
 		}
 		
+		//related stuff should be implemented sometime. 
 		function getItemIcon($itemNumber){
 			$result = "";
 			include("dbconnectlocal.inc.php");
@@ -175,7 +151,7 @@
 			return $result;
 		}
 		
-		
+		//returns the name if an Item. 
 		function getItemName($itemNumber){
 			$result = "No item with number".$itemNumber;
 			include("dbconnectlocal.inc.php");
@@ -203,6 +179,7 @@
 			return $result;
 		}
 		
+		//returns the ID of an Item. 
 		function getItemId($itemName){
 			$result = "No item with name".$itemName;
 			include("dbconnectlocal.inc.php");
@@ -230,6 +207,7 @@
 			return $result;
 		}
 		
+		//returns the result of using an item in a certain situation. 
 		function getItemUseResult($itemName, &$obstacle){
 			$itemUseResult = 0;
 			$obstacleId = $obstacle->getObstacleId();
@@ -267,6 +245,7 @@
 			return $itemUseResult;
 		}
 		
+		//returns the highest itemID currently in use. 
 		function getMaxItemID(){
 			$result = "";
 			include("dbconnectlocal.inc.php");
@@ -293,6 +272,7 @@
 			return $result;
 		}
 		
+		//returns the IDs of Obstacles that can be cleared by any of the currently generated items. 
 		function getObstaclesClearedByItems($generatedItems){
 			include("dbconnectlocal.inc.php");
 			for($i=0;$i < count($generatedItems); $i++){
@@ -327,6 +307,7 @@
 			return $result;
 		}
 		
+		//returns the name of an Obstacle based on its ID 
 		function getObstacleName($obstacleId){
 			$result = "";
 			include("dbconnectlocal.inc.php");
@@ -354,6 +335,7 @@
 			return $result;
 		}
 		
+		//Still needs to be implemented. 
 		function getObstacleText($obstacleId){
 			$result = "";
 			include("dbconnectlocal.inc.php");
@@ -381,6 +363,7 @@
 			return $result;
 		}
 		
+		//returns the highest hint number currently in use 
 		function getMaxHintNumber(){
 			$result = "";
 			include("dbconnectlocal.inc.php");

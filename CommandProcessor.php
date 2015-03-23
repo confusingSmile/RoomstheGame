@@ -9,6 +9,8 @@
 		
 		function processCommand($command, $player){
 			$output = "Invalid command.";
+			//the intention was for commands to start with "/", but for now it will be optional 
+			//Anyway, the "/" is pretty useless. (just for style/tradition?) 
 			$command = ltrim($command, "/");
 			strip_tags($command);
 			$command = explode(" ", $command);
