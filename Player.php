@@ -64,7 +64,7 @@
 			$result = "There is no item.";
 			if($this->currentRoom->getItem() != null){
 				$pickedUpItem = $this->currentRoom->getItem();
-				$this->gatheredItems[] = $pickedUpItem->getItemName();
+				$this->gatheredItems[] = $pickedUpItem;
 				$this->currentRoom->takeItem();
 				$result = "Obtained a(n)".$pickedUpItem->getItemName().".";
 			}
@@ -88,8 +88,14 @@
 			$effect = 0;
 			
 			//check if the player HAS the item:
+			$itemGathered = false; 
+			for($i = 0; $i < count($this->gatheredItems); $i++){
+				if($itemName == $this->gatheredItems[$i]->getItemName()){
+					$itemGathered = true; 
+				}
+			}
 			if($this->gatheredItems != null){
-				if(!(in_array($itemName, $this->gatheredItems))){
+				if(!($itemGathered == true)){
 					$result = "You don't have that item... (".$itemName.")";
 				} else {
 					$roomType = get_class($this->currentRoom);
