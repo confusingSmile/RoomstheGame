@@ -70,10 +70,6 @@
 						$progress = "Progress: 0/10";
 					}
 					
-					
-					
-					
-					
 				}
 				
 				
