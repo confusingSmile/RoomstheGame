@@ -28,6 +28,7 @@ body
 {
 	position: absolute;
 	top: 0px;
+	width:100%;
 	height: auto;
 }
 
@@ -53,7 +54,7 @@ body
 #commandIn #commandTextField
 {
 	background-color: #444444;
-	width: 90%;
+	width: 94%;
 	
 }
 
@@ -66,7 +67,7 @@ body
 	height: 45%;
 	color: #000000;
 	background-color: #555555;
-	overflow-y:scroll;
+	overflow-y:auto;
 }
 
 #logout
@@ -74,6 +75,8 @@ body
 	position: absolute;
 	top: 0px;
 	right: 0px;
+	padding-top: 5px;
+	padding-right: 5px;
 	background-color: #444444;
 }
 
