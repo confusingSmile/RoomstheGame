@@ -35,6 +35,7 @@
 				$player = "";
 				$hunger = "Hunger: ";
 				$progress = "Progress: ";
+				$items = null;
 				if(!isset($_SESSION['player'])){
 					
 					$player = new Player();
@@ -57,7 +58,7 @@
 					}
 					
 					$commandProcessor = new CommandProcessor();
-					$output = $commandProcessor->processCommand($command, $player)."\n".$_SESSION['output'];
+					$output = $commandProcessor->processCommand($command, $player)."<br>".$_SESSION['output'];
 					$output = ltrim($output);
 					$_SESSION['output'] = $output;
 					$_SESSION['player'] = serialize($player);
@@ -69,35 +70,51 @@
 						$progress = "Progress: 0/10";
 					}
 					
-					if(is_array($items)){
-						for($i = 0; $i < count($items); $i++){
-							echo "<div class=\"item\">
-										<img src=\"".$items[$i]/*->*/."\">
-										</img>
-								  </div>";
-						}
-					}
+					
 					
 					
 					
 				}
 				
 				
-				echo "<div id=\"commandIn\">
+				echo "<div id=\"container\">
 						  <div id=\"headsUpDisplay\">
-							<div id=\"logout\">
-								<a href=\"logout.php\">Exit Game</a>
+							<div id=\"status\">
+								<div id=\"logout\">
+									<a href=\"logout.php\">Exit Game</a>
+								</div>
+								".$hunger."
+								
+								<br>".$progress."
 							</div>
-							".$hunger."
-							
-							<br>".$progress."
-						  </div>
-							  <form action=\"index.php\" method=\"post\" name=\"gameWindow\">
-								  <center><textarea cols=\"100\" rows=\"20\" readonly>".$output."</textarea><br><br>
-								  <input type=\"text\" id=\"commandTextField\" name=\"input\" value=\"\">
-								  <input type=\"submit\" value=\"OK\"></center><br>
-							  </form>
-					  </div>";
+							<div id=\"items\">";
+							if(is_array($items)){
+								for($i = 0; $i < count($items); $i++){
+									//for now it displayes images/itemName.jpg, but it will display itemIcon. 
+									echo "<div class=\"item\">
+											<img src=\"images/".$items[$i]->getItemName().".jpg\" 
+												title=\"".$items[$i]->getItemName()."\" alt=\"".$items[$i]->getItemName()."\"
+												width=\"43\" height=\"33\">
+											</img>
+										  </div>";
+									}
+								}
+				//first </div>: end items
+				echo "
+							</div>
+								</div>
+								<div id=\"outputArea\">
+									".$output."
+								</div>
+								<div id=\"commandIn\">
+								  <form action=\"index.php\" method=\"post\" name=\"gameWindow\">
+									  
+									  <br><br>
+									  <input type=\"text\" id=\"commandTextField\" name=\"input\" value=\"\">
+									  <input type=\"submit\" value=\"OK\"></center><br>
+								  </form>
+								</div>
+						</div>";
 			
 			
 			} else {
