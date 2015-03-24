@@ -64,7 +64,10 @@
 			$result = "There is no item.";
 			if($this->currentRoom->getItem() != null){
 				$pickedUpItem = $this->currentRoom->getItem();
-				$this->gatheredItems[] = $pickedUpItem;
+				if(!(in_array($pickedUpItem, $this->gatheredItems)) ){
+					$this->gatheredItems[] = $pickedUpItem;
+				}
+				
 				$this->currentRoom->takeItem();
 				$result = "Obtained a(n)".$pickedUpItem->getItemName().".";
 			}

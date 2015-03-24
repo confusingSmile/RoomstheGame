@@ -86,7 +86,7 @@
 							<div id=\"items\">";
 							if(is_array($items)){
 								for($i = 0; $i < count($items); $i++){
-									//for now it displayes images/itemName.jpg, but it will display itemIcon. 
+									//for now it displays images/itemName.jpg, but it will display itemIcon. 
 									echo "<div class=\"item\">
 											<img src=\"images/".$items[$i]->getItemName().".jpg\" 
 												title=\"".$items[$i]->getItemName()."\" alt=\"".$items[$i]->getItemName()."\"
