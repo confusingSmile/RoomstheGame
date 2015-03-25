@@ -64,12 +64,19 @@
 			$result = "There is no item.";
 			if($this->currentRoom->getItem() != null){
 				$pickedUpItem = $this->currentRoom->getItem();
-				if(!(in_array($pickedUpItem, $this->gatheredItems)) ){
+				if($this->gatheredItems != null){
+					if(!(in_array($pickedUpItem, $this->gatheredItems)) ){
+						$this->gatheredItems[] = $pickedUpItem;
+						$result = "Obtained a(n)".$pickedUpItem->getItemName().".";
+					} else {
+						$result = "You already have this item: ".$pickedUpItem->getItemName().".";
+					}
+					
+				} else {
 					$this->gatheredItems[] = $pickedUpItem;
+					$result = "Obtained a(n)".$pickedUpItem->getItemName().".";
 				}
-				
 				$this->currentRoom->takeItem();
-				$result = "Obtained a(n)".$pickedUpItem->getItemName().".";
 			}
 			return $result;
 		}
