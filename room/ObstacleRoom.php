@@ -79,7 +79,7 @@
 				return $this->doors[$direction];
 			}
 			
-			function registrateNeigbour(&$room, $direction){
+			function registrateNeigbour(Room $room, $direction){
 				$this->neighbours[$direction] = $room;
 			}
 			

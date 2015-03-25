@@ -18,28 +18,25 @@
 			exit;
 		}
 	
-		//avoiding the "undefined index" error by making sure $output is set.
-		if(!(isset($output))){
-			$output = "";
-		}else{
-			//well this looks useless, but this will be the introductory story
-			//the IntroRoom welcoming message is more of a guide to the game
-			$output = "";
-		}
+		//resetting the output. 
+		$output = "";
+		
 		//importing the nessecary classes
 		include("Building.php");
 		include("CommandProcessor.php");
 		include("DatabaseExtension.php");
 		include("Door.php");
-		include("Room.php");
-		include("HintRoom.php");
-		include("IntroRoom.php");
 		include("Item.php");
-		include("LockedDoorRoom.php");
 		include("Obstacle.php");
-		include("ObstacleRoom.php");
 		include("Player.php");
-		include("QuestionRoom.php");
+		
+		//include rooms
+		include("room/Room.php");
+		include("room/HintRoom.php");
+		include("room/IntroRoom.php");
+		include("room/LockedDoorRoom.php");
+		include("room/ObstacleRoom.php");
+		include("room/QuestionRoom.php");
 		
 		//starting the game
 		$player = "";
@@ -95,13 +92,12 @@
 				</div>
 				<div id="items">
 					<?php 
-					if(is_array($items)){
-						for($i = 0; $i < count($items); $i++){
-							//for now it displays images/itemName.jpg, but it will display itemIcon. 
+					if($items){
+						foreach($items as $gatheredItem){
 							?>
 							<div class="item">
-								<img src="images/<?php echo $items[$i]->getItemName(); ?>.jpg" 
-									title="<?php echo $items[$i]->getItemName(); ?>" alt="<?php echo $items[$i]->getItemName(); ?>"
+								<img src="images/<?php echo $gatheredItem->getItemName(); ?>.jpg" 
+									title="<?php echo $gatheredItem->getItemName(); ?>" alt="<?php echo $gatheredItem->getItemName(); ?>"
 									width="43px" height="33px">
 								</img>
 							</div>

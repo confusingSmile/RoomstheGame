@@ -30,7 +30,10 @@
 							
 						}             
 					$queryResult->close();         
-					}         
+					}          
+					if(!$mysqli->more_results()){
+						break;
+					}        
 					    
 				} 
 				while ($mysqli->next_result()); 
@@ -73,6 +76,9 @@
 						}             
 					$queryResult->close();         
 					}         
+					if(!$mysqli->more_results()){
+						break;
+					}         
 					     
 				} 
 				while ($mysqli->next_result()); 
@@ -113,7 +119,10 @@
 					  
 					if($password == $correctPassword){
 						$result = true;		
-					}					
+					}	         
+					if(!$mysqli->more_results()){
+						break;
+					}				
 				} 
 				while ($mysqli->next_result()); 
 			
@@ -140,7 +149,10 @@
 							$result = $row["item_icon"];            
 						}             
 					$queryResult->close();         
-					}         
+					}            
+					if(!$mysqli->more_results()){
+						break;
+					}      
 					     
 				} 
 				while ($mysqli->next_result()); 
@@ -168,7 +180,10 @@
 							$result = $row["item_name"];            
 						}             
 					$queryResult->close();         
-					}         
+					}              
+					if(!$mysqli->more_results()){
+						break;
+					}    
 					     
 				} 
 				while ($mysqli->next_result()); 
@@ -196,7 +211,10 @@
 							$result = $row["item_id"];            
 						}             
 					$queryResult->close();         
-					}         
+					}                  
+					if(!$mysqli->more_results()){
+						break;
+					}
 					     
 				} 
 				while ($mysqli->next_result()); 
@@ -229,7 +247,10 @@
 							$itemUseResult = $row["result"];            
 						}             
 					$queryResult->close();         
-					}         
+					}              
+					if(!$mysqli->more_results()){
+						break;
+					}    
 						 
 				} 
 				while ($mysqli->next_result()); 
@@ -262,7 +283,9 @@
 						}             
 					$queryResult->close();         
 					}         
-					     
+					if(!$mysqli->more_results()){
+						break;
+					}
 				} 
 				while ($mysqli->next_result()); 
 			
@@ -291,7 +314,10 @@
 								$result[] = $row["obstacle_id"];            
 							}             
 						$queryResult->close();         
-						}         
+						}                  
+					if(!$mysqli->more_results()){
+						break;
+					}
 							 
 					} 
 					while ($mysqli->next_result()); 
@@ -324,7 +350,10 @@
 							$result = $row["obstacle_name"];            
 						}             
 					$queryResult->close();         
-					}         
+					}                  
+					if(!$mysqli->more_results()){
+						break;
+					}
 					     
 				} 
 				while ($mysqli->next_result()); 
@@ -352,7 +381,10 @@
 							$result = $row["obstacle_text"];            
 						}             
 					$queryResult->close();         
-					}         
+					}               
+					if(!$mysqli->more_results()){
+						break;
+					}   
 					     
 				} 
 				while ($mysqli->next_result()); 
@@ -379,7 +411,10 @@
 							$result = $row["hint_number"];            
 						}             
 					$queryResult->close();         
-					}         
+					}                  
+					if(!$mysqli->more_results()){
+						break;
+					}
 					     
 				} 
 				while ($mysqli->next_result()); 
