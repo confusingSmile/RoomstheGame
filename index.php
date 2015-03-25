@@ -26,15 +26,17 @@
 		include("CommandProcessor.php");
 		include("DatabaseExtension.php");
 		include("Door.php");
-		include("Room.php");
-		include("HintRoom.php");
-		include("IntroRoom.php");
 		include("Item.php");
-		include("LockedDoorRoom.php");
 		include("Obstacle.php");
-		include("ObstacleRoom.php");
 		include("Player.php");
-		include("QuestionRoom.php");
+		
+		//include rooms
+		include("room/Room.php");
+		include("room/HintRoom.php");
+		include("room/IntroRoom.php");
+		include("room/LockedDoorRoom.php");
+		include("room/ObstacleRoom.php");
+		include("room/QuestionRoom.php");
 		
 		//starting the game
 		$player = "";
@@ -94,8 +96,8 @@
 						foreach($items as $gatheredItem){
 							?>
 							<div class="item">
-								<img src="images/<?php echo $gatheredItem[$i]->getItemName(); ?>.jpg" 
-									title="<?php echo $gatheredItem[$i]->getItemName(); ?>" alt="<?php echo $gatheredItem[$i]->getItemName(); ?>"
+								<img src="images/<?php echo $gatheredItem->getItemName(); ?>.jpg" 
+									title="<?php echo $gatheredItem->getItemName(); ?>" alt="<?php echo $gatheredItem->getItemName(); ?>"
 									width="43px" height="33px">
 								</img>
 							</div>

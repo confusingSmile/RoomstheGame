@@ -77,7 +77,7 @@
 				return $output;
 			}
 			
-			function registrateNeigbour(&$room, $direction){
+			function registrateNeigbour(Room $room, $direction){
 				$this->neighbours[$direction] = $room;
 				if(isset($this->question["answer"][$direction])){
 					$this->question["answer"][] = $this->question["answer"][$direction];
