@@ -12,11 +12,12 @@
 			//the intention was for commands to start with "/", but for now it will be optional 
 			//Anyway, the "/" is pretty useless. (just for style/tradition?) 
 			$command = ltrim($command, "/");
+			$command = ltrim($command, "<br>");
 			strip_tags($command);
 			$command = explode(" ", $command);
 			switch($command[0]){
 				case "":
-					$output="";
+					//do nothing. Error message already is the default. 
 					break;
 				case "?":
 					$output = $this->showHelp();
