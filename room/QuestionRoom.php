@@ -1,8 +1,8 @@
 <?php
 		class QuestionRoom extends Room{	
 			
-			var $question; 
-			var $answer;
+			private $question; 
+			private $answer;
 			
 			function QuestionRoom(){
 				
@@ -14,6 +14,7 @@
 				if($random == 1){
 					$this->item = new Item();
 				}
+				
 				$db = new DatabaseExtension();
 				$this->question = $db->getQuestion(); 
 				shuffle($this->question["answer"]); 
@@ -36,16 +37,15 @@
 			}
 			
 			function getItem(){
-				$result=0;
-				if($this->item != null){
-					$result = $this->item;
+				if($this->item){
+					return $this->item;
 				}
-				return $result;
+				return 0;
 			}
 			
 			function takeItem(){
 				$result=0;
-				if($this->item != null){
+				if($this->item){
 					$result = $this->item;
 					$this->item = null;
 				}
@@ -53,7 +53,7 @@
 			}
 			
 			function welcomePlayer(){
-				$result = "welcome to a QuestionRoom. this room's question is: ".$this->question["question"]."\n";
+				$result = "welcome to a QuestionRoom. this room's question is: ".$this->question["question"]."<br>";
 				$directions = array("down: ", "left: ", "up: ", "right: ");
 				for($i=0;$i<4;$i++){
 					if(isset($this->question["answer"][$i]) && $this->question["answer"][$i] != null){
@@ -70,11 +70,10 @@
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 			function getNeighbour($direction){
-				$output = null;
 				if(isset($this->neighbours[$direction])){
-					$output = $this->neighbours[$direction];
+					return $this->neighbours[$direction];
 				}
-				return $output;
+				return null;
 			}
 			
 			function registrateNeigbour(Room $room, $direction){
