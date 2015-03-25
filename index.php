@@ -18,14 +18,9 @@
 			exit;
 		}
 	
-		//avoiding the "undefined index" error by making sure $output is set.
-		if(!(isset($output))){
-			$output = "";
-		}else{
-			//well this looks useless, but this will be the introductory story
-			//the IntroRoom welcoming message is more of a guide to the game
-			$output = "";
-		}
+		//resetting the output. 
+		$output = "";
+		
 		//importing the nessecary classes
 		include("Building.php");
 		include("CommandProcessor.php");
@@ -95,13 +90,12 @@
 				</div>
 				<div id="items">
 					<?php 
-					if(is_array($items)){
-						for($i = 0; $i < count($items); $i++){
-							//for now it displays images/itemName.jpg, but it will display itemIcon. 
+					if($items){
+						foreach($items as $gatheredItem){
 							?>
 							<div class="item">
-								<img src="images/<?php echo $items[$i]->getItemName(); ?>.jpg" 
-									title="<?php echo $items[$i]->getItemName(); ?>" alt="<?php echo $items[$i]->getItemName(); ?>"
+								<img src="images/<?php echo $gatheredItem[$i]->getItemName(); ?>.jpg" 
+									title="<?php echo $gatheredItem[$i]->getItemName(); ?>" alt="<?php echo $gatheredItem[$i]->getItemName(); ?>"
 									width="43px" height="33px">
 								</img>
 							</div>

@@ -10,11 +10,11 @@
 		*	doorsUnlocked: the amount of keyDoors the player has unlocked
 		*	building: the place with the Rooms. The Player and the Room should know each other (right?) 
 		*/
-		var $hunger;
-		var $currentRoom;
-		var $gatheredItems;
-		var $doorsUnlocked;
-		var $building;
+		private $hunger;
+		private $currentRoom;
+		private $gatheredItems = array();
+		private $doorsUnlocked;
+		private $building;
 	
 		function Player(){
 			$this->hunger = 300;
@@ -28,6 +28,11 @@
 			return $this->hunger;
 		}
 		
+		/**
+		 * Returns a list of gathered items
+		 *
+		 * @return array
+		 */
 		function getGatheredItems(){
 			return $this->gatheredItems;
 		}
@@ -64,20 +69,17 @@
 			$result = "There is no item.";
 			if($this->currentRoom->getItem() != null){
 				$pickedUpItem = $this->currentRoom->getItem();
-				if($this->gatheredItems != null){
-					if(!(in_array($pickedUpItem, $this->gatheredItems)) ){
-						$this->gatheredItems[] = $pickedUpItem;
-						$result = "Obtained a(n)".$pickedUpItem->getItemName().".";
-					} else {
-						$result = "You already have this item: ".$pickedUpItem->getItemName().".";
-					}
-					
-				} else {
+								
+				if(!(in_array($pickedUpItem, $this->gatheredItems)) ){
 					$this->gatheredItems[] = $pickedUpItem;
-					$result = "Obtained a(n)".$pickedUpItem->getItemName().".";
+					$result = 'Obtained a(n)' . $pickedUpItem->getItemName(). '.';
+				} else {
+					$result = 'You already have this item: ' . $pickedUpItem->getItemName() . '.';
 				}
+				
 				$this->currentRoom->takeItem();
 			}
+			
 			return $result;
 		}
 		
@@ -89,38 +91,25 @@
 			return $result;
 		}
 		
-		/*uses an item
-		*	item: the Item the player wants to use
-		*	@return: String for the textarea in index.php
-		*/
-		function useItem($itemName){
-			$result = "Nothing happened...";
-			$effect = 0;
-			
-			//check if the player HAS the item:
-			$itemGathered = false; 
-			for($i = 0; $i < count($this->gatheredItems); $i++){
-				if($itemName == $this->gatheredItems[$i]->getItemName()){
-					$itemGathered = true; 
-				}
-			}
-			if($this->gatheredItems != null){
-				if(!($itemGathered == true)){
-					$result = "You don't have that item... (".$itemName.")";
-				} else {
-					$roomType = get_class($this->currentRoom);
-					if($roomType == "ObstacleRoom"){
-						$result = $this->currentRoom->clearObstacle($itemName);
-						
-					} 
-				}
-			} else {
-				$result = "You don't have any items...";
+		/**
+		 * uses an item
+		 *
+		 * @param string $itemName the Item the player wants to use
+		 *
+		 * @return string for the textarea in index.php
+		 */
+		function useItem($itemName){		
+			if (empty($this->gatheredItems)) {
+				return 'You don\'t have any items...';
 			}
 			
+			foreach($this->gatheredItems as $gatheredItem){
+				if($itemName === $gatheredItem->getItemName() && get_class($this->currentRoom) === "ObstacleRoom"){
+					return $this->currentRoom->clearObstacle($itemName);
+				}
+			}
 			
-			return $result;
-			
+			return 'Nothing happened...';
 		}
 		
 		
