@@ -17,7 +17,7 @@
 			$command = explode(" ", $command);
 			switch($command[0]){
 				case "":
-					$output="";
+					//do nothing. Error message already is the default. 
 					break;
 				case "?":
 					$output = $this->showHelp();
