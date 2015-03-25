@@ -4,7 +4,7 @@
 	
 	require("DatabaseExtension.php");
 	$db = new DatabaseExtension();
-	if($db->authenticate($username, $password) == true){
+	if($db->authenticate($username, $password)){
 		session_start();
 		$_SESSION['user'] = $username;
 		header("Location: index.php");
