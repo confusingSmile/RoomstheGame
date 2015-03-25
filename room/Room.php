@@ -7,9 +7,9 @@
 		*	item: an Item, if present; null if there are no Items
 		*	doors: the doors in this Room
 		*/
-		private $neighbours;
-		private $item;
-		private $doors;
+		var $neighbours;
+		var $item;
+		var $doors;
 		
 		
 		abstract function getItem();

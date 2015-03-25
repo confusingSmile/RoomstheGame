@@ -1,8 +1,8 @@
 <?php
 		class HintRoom extends Room{	
 			
-			private $hint;
-			private $answer;
+			var $hint;
+			var $answer;
 			//TODO getHint
 			
 			function HintRoom(){
@@ -29,7 +29,7 @@
 			
 			function takeItem(){
 				$result=0;
-				if($this->item){
+				if($this->item != null){
 					$result = $this->item;
 					$this->item = null;
 				}
@@ -38,10 +38,11 @@
 			
 			
 			function getItem(){
-				if($this->item){
-					return $this->item;
+				$result=0;
+				if($this->item != null){
+					$result = $this->item;
 				}
-				return 0;
+				return $result;
 			}
 			
 			function welcomePlayer(){
@@ -58,10 +59,11 @@
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 			function getNeighbour($direction){
+				$output = null;
 				if(isset($this->neighbours[$direction])){
-					return $this->neighbours[$direction];
+					$output = $this->neighbours[$direction];
 				}
-				return null;
+				return $output;
 			}
 			
 			function prepareHint(){

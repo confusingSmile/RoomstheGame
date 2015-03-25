@@ -1,9 +1,9 @@
 <?php
 	class Obstacle{
 		
-		private  $obstacleName;
-		private  $obstacleId;
-		private  $obstacleText;
+		var $obstacleName;
+		var $obstacleId;
+		var $obstacleText;
 		
 		function Obstacle($generatedItems){
 			//ask the database what the maximum is for a random obstacleId 

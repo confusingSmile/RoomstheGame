@@ -6,8 +6,8 @@
 		*	player: the player
 		*	generatedItems: items present in this game of RoomsTheGame. 
 		*/
-		private $player;
-		private $generatedItems;
+		var $player;
+		var $generatedItems;
 		
 		function Building($player){
 			$this->player = $player; 
@@ -85,8 +85,8 @@
 			$creation->registrateNeigbour($this->player->getCurrentRoom(), (($direction + 2)%4));
 			//keeping track of generated items
 					$generatingItem = $creation->getItem();
-					if($generatingItem){
-						$this->addGeneratedItem($generatingItem);
+					if($generatingItem != null){
+						$this->addGeneratedItem($generatingItem->getItemName());
 					}
 			//make this room know the next room
 					$this->player->getCurrentRoom()->registrateNeigbour($creation, $direction);

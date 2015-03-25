@@ -3,13 +3,13 @@
 		
 		
 			//$clear: whether or not the obstacle has been cleared. 
-			private $obstacle;
-			private $clear; 
+			var $obstacle;
+			var $clear; 
 			
 			function ObstacleRoom($obstacle){
 				$this->obstacle = $obstacle;
 				for($i=0;$i<4;$i++){
-					$this->doors[$i] = new Door();
+					$this->doors[$i] = new Door(true);
 				}
 				
 				$random = rand(1, 2);
@@ -44,15 +44,16 @@
 			
 			
 			function getItem(){
-				if($this->item){
-					return $this->item;
+				$result=null;
+				if($this->item != null){
+					$result = $this->item;
 				}
-				return 0;
+				return $result;
 			}
 			
 			function takeItem(){
 				$result=0;
-				if($this->item){
+				if($this->item != null){
 					$this->result = $this->item;
 					$this->item = null;
 				}
@@ -67,10 +68,11 @@
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 			function getNeighbour($direction){
+				$output = null;
 				if(isset($this->neighbours[$direction])){
-					return $this->neighbours[$direction];
+					$output = $this->neighbours[$direction];
 				}
-				return null;
+				return $output;
 			}
 			
 			function getDoor($direction){

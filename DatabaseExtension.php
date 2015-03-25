@@ -1,7 +1,7 @@
 <?php
 	class DatabaseExtension{
 		
-		private $connection;
+		var $connection;
 			
 		function DatabaseExtension(){
 			
@@ -302,7 +302,7 @@
 				$query = "SELECT obstacle_id
 						  FROM item_use, items
 						  WHERE item_use.item_id = items.item_id
-							AND items.item_name = '".$generatedItems[$i]->getItemName()."'
+							AND items.item_name = '".$generatedItems[$i]."'
 							AND result = '1'"; 
 				//execute multi query  
 				if ($mysqli->multi_query($query)) {
