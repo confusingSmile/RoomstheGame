@@ -7,7 +7,7 @@
 			
 		}
 		
-		function processCommand($command, $player){
+		function processCommand($command, Player $player){
 			//the intention was for commands to start with '/', but for now it will be optional 
 			//Anyway, the '/' is pretty useless. (just for style/tradition?) 
 			$command = ltrim($command, '/');

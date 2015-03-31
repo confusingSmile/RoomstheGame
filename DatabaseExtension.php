@@ -226,7 +226,7 @@
 		}
 		
 		//returns the result of using an item in a certain situation. 
-		function getItemUseResult($itemName, &$obstacle){
+		function getItemUseResult($itemName, Obstacle $obstacle){
 			$itemUseResult = 0;
 			$obstacleId = $obstacle->getObstacleId();
 		
