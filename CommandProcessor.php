@@ -8,77 +8,75 @@
 		}
 		
 		function processCommand($command, $player){
-			$output = "Invalid command.";
-			//the intention was for commands to start with "/", but for now it will be optional 
-			//Anyway, the "/" is pretty useless. (just for style/tradition?) 
-			$command = ltrim($command, "/");
-			$command = ltrim($command, "<br>");
+			//the intention was for commands to start with '/', but for now it will be optional 
+			//Anyway, the '/' is pretty useless. (just for style/tradition?) 
+			$command = ltrim($command, '/');
+			$command = ltrim($command, '<br>');
 			strip_tags($command);
-			$command = explode(" ", $command);
+			$command = explode(' ', $command);
 			switch($command[0]){
-				case "":
+				case '':
 					//do nothing. Error message already is the default. 
 					break;
-				case "?":
-					$output = $this->showHelp();
+				case '?':
+					return $this->showHelp();
 					break;
-				case "help":
-					$output = $this->showHelp();
+				case 'help':
+					return $this->showHelp();
 					break;
-				case "down":
-					$output = $player->travel(0);
+				case 'down':
+					return $player->travel(0);
 					break;
-				case "left":
-					$output = $player->travel(1);
+				case 'left':
+					return $player->travel(1);
 					break;
-				case "up":
-					$output = $player->travel(2);
+				case 'up':
+					return $player->travel(2);
 					break;
-				case "right":
-					$output = $player->travel(3);
+				case 'right':
+					return $player->travel(3);
 					break;
-				case "search":
-					$output = $player->searchRoomForItem();
+				case 'search':
+					return $player->searchRoomForItem();
 					break;
-				case "pick":
+				case 'pick':
 					if(isset($command[1])){
-						if($command[1] == "up"){
-							$output = $player->obtainItem();
+						if($command[1] == 'up'){
+							return $player->obtainItem();
 						}
 					}
 					break;
-				case "use":
-					$output="";
+				case 'use':
 					if(isset($command[1])){
-						$output = $player->useItem($command[1]);
+						return $player->useItem($command[1]);
 					}	
 					break;
-				case "unlock":
+				case 'unlock':
 					if(isset($command[1])){
 						switch($command[1]){
-							case "down":
-								$output = $player->unlockKeyDoor(0);
+							case 'down':
+								return $player->unlockKeyDoor(0);
 								break;
-							case "left":
-								$output = $player->unlockKeyDoor(1);
+							case 'left':
+								return $player->unlockKeyDoor(1);
 								break;
-							case "up":
-								$output = $player->unlockKeyDoor(2);
+							case 'up':
+								return $player->unlockKeyDoor(2);
 								break;
-							case "right":
-								$output = $player->unlockKeyDoor(3);
+							case 'right':
+								return $player->unlockKeyDoor(3);
 								break;
 						}
 					}
 					break;
 			
 			}
-			return $output;
+			return 'Invalid command.';
 		}
 		
 		
 		function showHelp(){
-			return "help";
+			return 'help';
 		}
 		
 		

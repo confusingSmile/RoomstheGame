@@ -9,11 +9,11 @@
 		private $player;
 		private $generatedItems;
 		
-		function Building($player){
+		function Building(Player $player){
 			$this->player = $player; 
 		}
 		
-		function addGeneratedItem($item){
+		function addGeneratedItem(Item $item){
 			$this->generatedItems[] = $item;
 		}
 		
@@ -33,44 +33,44 @@
 			/*
 			
 			*/
-			$output = "";
+			$output = '';
 			//a random number, used for chance-based events (in this case: which Room to generate) 
 			$random = rand(0, 99);
-			$creation = "";
+			$creation = '';
 			$obstacleRoomPossible = false; 
 			$db = new DatabaseExtension();
 			
-			if($db->getObstaclesClearedByItems($this->generatedItems)[0] != "error"){
+			if($db->getObstaclesClearedByItems($this->generatedItems)[0] != 'error'){
 				$obstacleRoomPossible = true;
 			}
 			
 			$lastRoom = get_class($this->player->getCurrentRoom());
 			$correctExit = false;
 			
-			if(($lastRoom == "QuestionRoom" || $lastRoom == "HintRoom") && $this->player->getCurrentRoom()->getAnswer() == $direction){
+			if(($lastRoom == 'QuestionRoom' || $lastRoom == 'HintRoom') && $this->player->getCurrentRoom()->getAnswer() == $direction){
 				$correctExit = true;
-				$output = "correct";
+				$output = 'correct';
 			}
 			
 			//create the Room, based on the previous Room and how that Room has been handled by the Player. 
 			switch($lastRoom){
-				case "HintRoom":
+				case 'HintRoom':
 					if($correctExit == true && $random < 25 && $obstacleRoomPossible == true){
 						$creation = new ObstacleRoom(new Obstacle($this->generatedItems));
 					} else {
 						$creation = new hintRoom();
 					}
 					break;
-				case "IntroRoom":
+				case 'IntroRoom':
 					$creation = new HintRoom();
 					break;
-				case "LockedDoorRoom":
+				case 'LockedDoorRoom':
 					$creation = new HintRoom();
 					break;
-				case "ObstacleRoom":
+				case 'ObstacleRoom':
 					$creation = new QuestionRoom();
 					break;
-				case "QuestionRoom":
+				case 'QuestionRoom':
 					if($correctExit == true){
 						$creation = new LockedDoorRoom();
 					} else if($random < 60){

@@ -19,29 +19,29 @@
 		}
 	
 		//resetting the output. 
-		$output = "";
+		$output = '';
 		
 		//importing the nessecary classes
-		include("Building.php");
-		include("CommandProcessor.php");
-		include("DatabaseExtension.php");
-		include("Door.php");
-		include("Item.php");
-		include("Obstacle.php");
-		include("Player.php");
+		include('Building.php');
+		include('CommandProcessor.php');
+		include('DatabaseExtension.php');
+		include('Door.php');
+		include('Item.php');
+		include('Obstacle.php');
+		include('Player.php');
 		
 		//include rooms
-		include("room/Room.php");
-		include("room/HintRoom.php");
-		include("room/IntroRoom.php");
-		include("room/LockedDoorRoom.php");
-		include("room/ObstacleRoom.php");
-		include("room/QuestionRoom.php");
+		include('room/Room.php');
+		include('room/HintRoom.php');
+		include('room/IntroRoom.php');
+		include('room/LockedDoorRoom.php');
+		include('room/ObstacleRoom.php');
+		include('room/QuestionRoom.php');
 		
 		//starting the game
-		$player = "";
-		$hunger = "Hunger: ";
-		$progress = "Progress: ";
+		$player = '';
+		$hunger = 'Hunger: ';
+		$progress = 'Progress: ';
 		$items = null;
 		if(!isset($_SESSION['player'])){
 			
@@ -65,16 +65,16 @@
 			}
 			
 			$commandProcessor = new CommandProcessor();
-			$output = $commandProcessor->processCommand($command, $player)."<br>".$_SESSION['output'];
+			$output = $commandProcessor->processCommand($command, $player).'<br>'.$_SESSION['output'];
 			$output = ltrim($output);
 			$_SESSION['output'] = $output;
 			$_SESSION['player'] = serialize($player);
-			$hunger = "Hunger: ".$player->getHunger();
+			$hunger = 'Hunger: '.$player->getHunger();
 			$items = $player->getGatheredItems();
 			if($player->getDoorsUnlocked() != null){
-				$progress = "Progress: ".$player->getDoorsUnlocked()."/10";
+				$progress = 'Progress: '.$player->getDoorsUnlocked().'/10';
 			} else {
-				$progress = "Progress: 0/10";
+				$progress = 'Progress: 0/10';
 			}
 			
 		}
