@@ -1,6 +1,7 @@
 {
     "require": {
         "monolog/monolog": "1.2.*",
-        "twig/twig": "~1.0"
+        "twig/twig": "~1.0",
+        "doctrine/dbal": "2.5.1"
     }
 }

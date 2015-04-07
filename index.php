@@ -22,6 +22,7 @@
 		$output = '';
 		
 		//importing the nessecary classes
+		require('vendor/autoload.php');
 		include('Building.php');
 		include('CommandProcessor.php');
 		include('DatabaseExtension.php');
@@ -66,7 +67,8 @@
 			
 			$commandProcessor = new CommandProcessor();
 			$output = $commandProcessor->processCommand($command, $player).'<br>'.$_SESSION['output'];
-			$output = ltrim($output);
+			//for some reason '\n' needs to be specified in this function. 
+			$output = ltrim($output, '\n');
 			$_SESSION['output'] = $output;
 			$_SESSION['player'] = serialize($player);
 			$hunger = 'Hunger: '.$player->getHunger();

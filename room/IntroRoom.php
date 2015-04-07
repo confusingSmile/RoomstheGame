@@ -24,7 +24,7 @@
 			
 			
 			function getItem(){
-				if($this->item){
+				if(isset($this->item)){
 					return $this->item;
 				}
 				return 0;

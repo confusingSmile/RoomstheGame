@@ -38,14 +38,14 @@
 			
 			
 			function getItem(){
-				if($this->item){
+				if(isset($this->item)){
 					return $this->item;
 				}
 				return 0;
 			}
 			
 			function welcomePlayer(){
-				return "welcome to a HintRoom.\n".$this->hint;
+				return "welcome to a HintRoom.".$this->hint;
 			}
 			
 			function getDoor($direction){
