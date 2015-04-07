@@ -1,4 +1,6 @@
 <?php
+
+	namespace Game\Room;
 	abstract class Room{
 		
 		

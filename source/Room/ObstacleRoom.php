@@ -1,4 +1,9 @@
 <?php
+		namespace Game\Room;
+		use Game\Room\Room;
+		use Game\Item;
+		use Game\DatabaseExtension;
+		
 		class ObstacleRoom extends Room{	
 		
 		
@@ -6,7 +11,7 @@
 			private $obstacle;
 			private $clear; 
 			
-			function ObstacleRoom($obstacle){
+			function __construct($obstacle){
 				$this->obstacle = $obstacle;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();

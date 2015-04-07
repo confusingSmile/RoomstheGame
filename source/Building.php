@@ -1,5 +1,11 @@
 <?php
-
+	namespace Game;
+	use Game\Player\Player;
+	use Game\Room\IntroRoom;
+	use Game\Room\HintRoom;
+	use Game\Room\LockedDoorRoom;
+	use Game\Room\ObstacleRoom;
+	use Game\Room\QuestionRoom;
 	class Building{
 		
 		/*
@@ -9,7 +15,7 @@
 		private $player;
 		private $generatedItems;
 		
-		function Building(Player $player){
+		function __construct(Player $player){
 			$this->player = $player; 
 		}
 		
@@ -47,30 +53,28 @@
 			$lastRoom = get_class($this->player->getCurrentRoom());
 			$correctExit = false;
 			
-			if(($lastRoom == 'QuestionRoom' || $lastRoom == 'HintRoom') && $this->player->getCurrentRoom()->getAnswer() == $direction){
+			if(($lastRoom == 'Game\Room\QuestionRoom' || $lastRoom == 'Game\Room\HintRoom') && $this->player->getCurrentRoom()->getAnswer() == $direction){
 				$correctExit = true;
 				$output = 'correct';
 			}
 			
 			//create the Room, based on the previous Room and how that Room has been handled by the Player. 
 			switch($lastRoom){
-				case 'HintRoom':
+				case 'Game\Room\HintRoom':
 					if($correctExit == true && $random < 25 && $obstacleRoomPossible == true){
 						$creation = new ObstacleRoom(new Obstacle($this->generatedItems));
 					} else {
 						$creation = new hintRoom();
 					}
 					break;
-				case 'IntroRoom':
+				case 'Game\Room\IntroRoom':
+				case 'Game\Room\LockedDoorRoom':
 					$creation = new HintRoom();
 					break;
-				case 'LockedDoorRoom':
-					$creation = new HintRoom();
-					break;
-				case 'ObstacleRoom':
+				case 'Game\Room\ObstacleRoom':
 					$creation = new QuestionRoom();
 					break;
-				case 'QuestionRoom':
+				case 'Game\Room\QuestionRoom':
 					if($correctExit == true){
 						$creation = new LockedDoorRoom();
 					} else if($random < 60){

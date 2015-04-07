@@ -1,4 +1,10 @@
 <?php
+
+
+	namespace Game\Player;
+
+	use Game\Room\IntroRoom;
+	use Game\Building;
 	class Player{
 	
 		/*
@@ -16,7 +22,7 @@
 		private $doorsUnlocked;
 		private $building;
 	
-		function Player(){
+		function __construct(){
 			$this->hunger = 300;
 			$this->currentRoom = new IntroRoom();
 			$this->currentRoom->welcomePlayer();
@@ -47,7 +53,7 @@
 		
 		//unlocks the Door if it's locked. 
 		function unlockKeyDoor($direction){
-			if(get_class($this->currentRoom) == 'LockedDoorRoom'){	
+			if(get_class($this->currentRoom) == 'Game\Room\LockedDoorRoom'){	
 				$firstUnlockThisRoom = true; 
 				for($i=0;$i<4;$i++){
 					$j = $i%4;
@@ -69,12 +75,12 @@
 				
 				if(!(in_array($pickedUpItem, $this->gatheredItems)) ){
 					$this->gatheredItems[] = $pickedUpItem;
+					$this->currentRoom->takeItem();
 					return 'Obtained a(n)' . $pickedUpItem->getItemName(). '.';
 				} else {
 					return 'You already have this item: ' . $pickedUpItem->getItemName() . '.';
 				}
 				
-				$this->currentRoom->takeItem();
 			}
 			
 			return 'There is no item.';
@@ -100,7 +106,7 @@
 			}
 			
 			foreach($this->gatheredItems as $gatheredItem){
-				if($itemName === $gatheredItem->getItemName() && get_class($this->currentRoom) === 'ObstacleRoom'){
+				if($itemName === $gatheredItem->getItemName() && get_class($this->currentRoom) === 'Game\Room\ObstacleRoom'){
 					return $this->currentRoom->clearObstacle($itemName);
 				}
 			}

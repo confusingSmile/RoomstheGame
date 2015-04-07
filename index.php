@@ -5,6 +5,14 @@
 	</head>
 	<body>
 		<?php
+		require('vendor/autoload.php');
+		use Game\Room\QuestionRoom;
+		use Game\Room\HintRoom;
+		use Game\Room\IntroRoom;
+		use Game\Room\ObstacleRoom;
+		use Game\Room\LockedDoorRoom;
+		use Game\Player\Player;
+		use Game\CommandProcessor;
 		session_start();
 		
 		if(!isset($_SESSION['user'])){
@@ -22,22 +30,22 @@
 		$output = '';
 		
 		//importing the nessecary classes
-		require('vendor/autoload.php');
-		include('Building.php');
-		include('CommandProcessor.php');
-		include('DatabaseExtension.php');
-		include('Door.php');
-		include('Item.php');
-		include('Obstacle.php');
-		include('Player.php');
+		
+		//include('Building.php');
+		//include('source/CommandProcessor.php');
+		//include('DatabaseExtension.php');
+		//include('Door.php');
+		//include('Item.php');
+		//include('Obstacle.php');
+		//include('Player.php');
 		
 		//include rooms
-		include('room/Room.php');
-		include('room/HintRoom.php');
-		include('room/IntroRoom.php');
-		include('room/LockedDoorRoom.php');
-		include('room/ObstacleRoom.php');
-		include('room/QuestionRoom.php');
+		//include('room/Room.php');
+		//include('room/HintRoom.php');
+		//include('room/IntroRoom.php');
+		//include('room/LockedDoorRoom.php');
+		//include('room/ObstacleRoom.php');
+		//include('room/QuestionRoom.php');
 		
 		//starting the game
 		$player = '';

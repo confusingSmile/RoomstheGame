@@ -1,10 +1,15 @@
 <?php
+		namespace Game\Room;
+		use Game\Room\Room;
+		use Game\Item;
+		use Game\DatabaseExtension;
+		
 		class QuestionRoom extends Room{	
 			
 			private $question; 
 			private $answer;
 			
-			function QuestionRoom(){
+			function __construct(){
 				
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();

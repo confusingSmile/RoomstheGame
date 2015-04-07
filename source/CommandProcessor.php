@@ -1,9 +1,13 @@
 <?php
+	
+	namespace Game;
+	use Game\Player\Player;
+	
 	class CommandProcessor{
 		
 		
 		
-		function CommandProcessor(){
+		function __construct(){
 			
 		}
 		

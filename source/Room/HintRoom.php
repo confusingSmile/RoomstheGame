@@ -1,11 +1,16 @@
 <?php
-		class HintRoom extends Room{	
+		namespace Game\Room;
+		use Game\Room\Room;
+		use Game\Item;
+		use Game\DatabaseExtension;
+		
+		class HintRoom extends Room{
 			
 			private $hint;
 			private $answer;
 			//TODO getHint
 			
-			function HintRoom(){
+			function __construct(){
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}

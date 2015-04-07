@@ -1,8 +1,13 @@
 <?php
-		class LockedDoorRoom extends Room{	
+
+		namespace Game\Room;
+		use Game\Room\Room;
+		use Game\Item;
+		use Game\DatabaseExtension;
+		
+		class IntroRoom extends Room{	
 			
-			
-			function LockedDoorRoom(){
+			function __construct(){
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
@@ -14,14 +19,6 @@
 			}
 			
 			
-			
-			function getItem(){
-				if(isset($this->item)){
-					return $this->item;
-				}
-				return 0;
-			}
-			
 			function takeItem(){
 				$result=0;
 				if($this->item){
@@ -31,8 +28,17 @@
 				return $result;
 			}
 			
+			
+			function getItem(){
+				if(isset($this->item)){
+					return $this->item;
+				}
+				return 0;
+			}
+			
 			function welcomePlayer(){
-				return "welcome to a LockedDoorRoom.";
+				return "welcome to an IntroRoom.";
+				
 			}
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east

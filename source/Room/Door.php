@@ -1,9 +1,11 @@
 <?php
+	
+	namespace Game\Room;
 	class Door{
 		
 		private $blocked;
 		
-		function Door($blocked = false){
+		function __construct($blocked = false){
 			$this->blocked = $blocked;
 		}
 		

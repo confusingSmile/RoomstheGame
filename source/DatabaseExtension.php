@@ -1,9 +1,12 @@
 <?php
+
+	namespace Game;
+	
 	class DatabaseExtension{
 		
 		private $connection;
 			
-		function DatabaseExtension(){
+		function __construct(){
 			
 		}
 		

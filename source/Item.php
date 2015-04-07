@@ -1,4 +1,6 @@
 <?php
+
+	namespace Game;
 	class Item{
 		//itemID: an integer indicating which item it is (not unique outside the database).
 		//itemName: the name of the Item
@@ -7,7 +9,7 @@
 		private $itemName;
 		private $itemIcon;
 		
-		function Item($itemID = -1){
+		function __construct($itemID = -1){
 			$this->itemID = $itemID;
 			$db = new DatabaseExtension();
 			if($itemID == -1){

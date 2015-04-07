@@ -1,8 +1,12 @@
 <?php
+	
+	require('vendor/autoload.php');
+	use Game\DatabaseExtension;
+
 	$username = $_POST['username'];
 	$password = $_POST['password'];
 	
-	require('DatabaseExtension.php');
+	require('source/DatabaseExtension.php');
 	$db = new DatabaseExtension();
 	if($db->authenticate($username, $password)){
 		session_start();
