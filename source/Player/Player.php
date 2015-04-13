@@ -6,6 +6,7 @@
 	use Game\Room\IntroRoom;
 	use Game\Building;
 	use Game\DatabaseExtension;
+	use Doctrine\DBAL\Connection;
 	class Player{
 	
 		/*
@@ -145,7 +146,9 @@
 			//maybe send something to the CommandProcessor
 		}
 		
-		
+		function reconnect(Connection $conn){
+			$this->db->reconnect($conn);
+		}
 		
 	}
 ?>

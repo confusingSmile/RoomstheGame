@@ -5,7 +5,7 @@
 	</head>
 	<body>
 		<?php
-		
+			
 		require('vendor/autoload.php');
 		include('config/config_db_local.php');
 		use Doctrine\DBAL\Configuration;
@@ -69,6 +69,9 @@
 		} else {
 			
 			$player = unserialize($_SESSION['player']);
+			
+			$conn = DriverManager::getConnection($connectionParams, new Configuration());
+			$player->reconnect($conn);
 			
 			if(isset($_POST['input'])){
 				

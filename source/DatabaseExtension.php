@@ -13,9 +13,14 @@
 			$this->conn = $conn;
 		}
 		
+		function __sleep(){
+			return array();
+		} 
 		
 		
-		
+		function reconnect(Connection $conn){
+			$this->conn = $conn;
+		}
 		
 		//returns a random Question (actually just an array) 
 		function getQuestion(){
@@ -190,7 +195,7 @@
 		
 		//returns the IDs of Obstacles that can be cleared by any of the currently generated items. 
 		function getObstaclesClearedByItems($generatedItems){
-			foreach($generatedItems as $item){
+			for($i = 0;$i < count($generatedItems); $i++){
 				$sql = "SELECT obstacle_id
 						  FROM item_use, items
 						  WHERE item_use.item_id = items.item_id

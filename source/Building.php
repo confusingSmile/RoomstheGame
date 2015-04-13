@@ -47,9 +47,8 @@
 			$random = rand(0, 99);
 			$creation = '';
 			$obstacleRoomPossible = false; 
-			$db = new DatabaseExtension();
 			
-			if($db->getObstaclesClearedByItems($this->generatedItems)[0] != 'error'){
+			if($this->db->getObstaclesClearedByItems($this->generatedItems)[0] != 'error'){
 				$obstacleRoomPossible = true;
 			}
 			
