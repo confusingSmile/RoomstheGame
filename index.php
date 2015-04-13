@@ -5,7 +5,11 @@
 	</head>
 	<body>
 		<?php
+		
 		require('vendor/autoload.php');
+		include('config/config_db_local.php');
+		use Doctrine\DBAL\Configuration;
+		use Doctrine\DBAL\DriverManager;
 		use Game\Room\QuestionRoom;
 		use Game\Room\HintRoom;
 		use Game\Room\IntroRoom;
@@ -13,6 +17,7 @@
 		use Game\Room\LockedDoorRoom;
 		use Game\Player\Player;
 		use Game\CommandProcessor;
+		use Game\DatabaseExtension;
 		session_start();
 		
 		if(!isset($_SESSION['user'])){
@@ -54,7 +59,9 @@
 		$items = null;
 		if(!isset($_SESSION['player'])){
 			
-			$player = new Player();
+			$conn = DriverManager::getConnection($connectionParams, new Configuration());
+			$db = new DatabaseExtension($conn);
+			$player = new Player($db);
 			$output = $player->getCurrentRoom()->welcomePlayer();
 			$_SESSION['player'] = serialize($player);
 			$_SESSION['output'] = $output;

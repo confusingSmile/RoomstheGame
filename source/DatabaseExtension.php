@@ -1,49 +1,40 @@
 <?php
 
 	namespace Game;
+	use Doctrine\Common\ClassLoader;
+	use Doctrine\DBAL\Connection;
 	
 	class DatabaseExtension{
 		
-		private $connection;
-			
-		function __construct(){
-			
+		private $conn;
+		
+		function __construct(Connection $conn){
+			//"Yay, I exist!" - DatabaseExtension 
+			$this->conn = $conn;
 		}
+		
+		
+		
+		
 		
 		//returns a random Question (actually just an array) 
 		function getQuestion(){
 			$chosenQuestion["error"] = "404 question not found";
 			$result = "";
 			//open connection
-			include("dbconnectlocal.inc.php");
+			$sql = "SELECT * 
+					FROM questions;"; 
+					
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->execute();
 			
-			$query = "SELECT * 
-					  FROM questions;"; 
-			//execute multi query 
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result["question"][] = $row["question"];
-							$result["correct_answer"][] = $row["correct_answer"];
-							$result["wrong_answer1"][] = $row["wrong_answer1"];
-							$result["wrong_answer2"][] = $row["wrong_answer2"];
-							
-						}             
-					$queryResult->close();         
-					}          
-					if(!$mysqli->more_results()){
-						break;
-					}        
-					    
-				} 
-				while ($mysqli->next_result()); 
+			while ($row = $stmt->fetch()) {
+				$result["question"][] = $row["question"];
+				$result["correct_answer"][] = $row["correct_answer"];
+				$result["wrong_answer1"][] = $row["wrong_answer1"];
+				$result["wrong_answer2"][] = $row["wrong_answer2"];
+			}
 			
-			} 
-			//close connection  
-			$mysqli->close();
 			
 			$randomNumber = 0; 
 			$randomNumber = (rand(1, (count($result["question"]))) - 1); 
@@ -62,33 +53,19 @@
 			$hint = "";
 			$maxHintNumber = $this->getMaxHintNumber();
 			$hintNumber = rand(1, $maxHintNumber);
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT hint_text, hint_answer
+			$sql = "SELECT hint_text, hint_answer
 					  FROM hints
 					  WHERE hint_number = '".$hintNumber."'"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-						
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-							while ($row = $queryResult->fetch_assoc()) {                              
-							$hint["text"] = $row["hint_text"];
-							$hint["answer"] = $row["hint_answer"];
-						}             
-					$queryResult->close();         
-					}         
-					if(!$mysqli->more_results()){
-						break;
-					}         
-					     
-				} 
-				while ($mysqli->next_result()); 
+					  
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->execute();
 			
-			}
-			//close connection  
-			$mysqli->close();
+			while ($row = $stmt->fetch()) {                              
+				$hint["text"] = $row["hint_text"];
+				$hint["answer"] = $row["hint_answer"];
+				
+			} 
+			
 			return $hint;
 		}
 		
@@ -96,135 +73,74 @@
 		function authenticate($username, $password){
 			$result = false;
 			$correctPassword = "";
-			$username = addslashes($username);
-			$password = addslashes($password);
 			$password = md5($password);
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT password
+			$sql = "SELECT password
 					  FROM users
-					  WHERE username = '".$username."'"; 
-			//execute multi query  
+					  WHERE username = :username"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('username', $username);
+			$stmt->execute();
 			
-			
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$correctPassword = $row["password"]; 
-						
-						} 
-						
-					$queryResult->close();        
-					}
-				
-					  
-					if($password == $correctPassword){
-						$result = true;		
-					}	         
-					if(!$mysqli->more_results()){
-						break;
-					}				
-				} 
-				while ($mysqli->next_result()); 
-			
+			while ($row = $stmt->fetch()) {                              
+				$correctPassword = $row['password'];	
 			} 
-			//close connection  
-			$mysqli->close();
+			
+			if($correctPassword == $password){
+				$result = true; 
+			}
 			return $result;
 		}
 		
 		//related stuff should be implemented sometime. 
 		function getItemIcon($itemNumber){
 			$result = "";
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT item_icon
+			$sql = "SELECT item_icon
 					   FROM items
-					   WHERE item_id = '".$itemNumber."'"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["item_icon"];            
-						}             
-					$queryResult->close();         
-					}            
-					if(!$mysqli->more_results()){
-						break;
-					}      
-					     
-				} 
-				while ($mysqli->next_result()); 
+					   WHERE item_id = :itemNumber"; 
 			
-			} 
-			//close connection  
-			$mysqli->close();
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('itemNumber', $itemNumber);
+			$stmt->execute();
+			
+			while ($row = $stmt->fetch()) {                              
+				$result = $row['item_icon'];	
+			}
+			
 			return $result;
 		}
 		
 		//returns the name if an Item. 
 		function getItemName($itemNumber){
 			$result = "No item with number".$itemNumber;
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT item_name
+			$sql = "SELECT item_name
 					   FROM items
-					   WHERE item_id = '".$itemNumber."'"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["item_name"];            
-						}             
-					$queryResult->close();         
-					}              
-					if(!$mysqli->more_results()){
-						break;
-					}    
-					     
-				} 
-				while ($mysqli->next_result()); 
+					   WHERE item_id = :itemNumber"; 
 			
-			} 
-			//close connection  
-			$mysqli->close();
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('itemNumber', $itemNumber);
+			$stmt->execute();
+			
+			while ($row = $stmt->fetch()) {                              
+				$result = $row['item_name'];	
+			}
+			
 			return $result;
 		}
 		
 		//returns the ID of an Item. 
 		function getItemId($itemName){
 			$result = "No item with name".$itemName;
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT item_id
+			$sql = "SELECT item_id
 					   FROM items
-					   WHERE item_name = '".$itemName."'"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["item_id"];            
-						}             
-					$queryResult->close();         
-					}                  
-					if(!$mysqli->more_results()){
-						break;
-					}
-					     
-				} 
-				while ($mysqli->next_result()); 
+					   WHERE item_name = :itemName"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('itemName', $itemName);
+			$stmt->execute();
 			
-			} 
-			//close connection  
-			$mysqli->close();
+			while ($row = $stmt->fetch()) {                              
+				$result = $row['item_id'];	
+			}
+			
 			return $result;
 		}
 		
@@ -233,34 +149,22 @@
 			$itemUseResult = 0;
 			$obstacleId = $obstacle->getObstacleId();
 		
-			$itemName = addslashes($itemName);
 			$itemId = $this->getItemId($itemName);
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT result
+			$sql = "SELECT result
 					  FROM item_use
-					  WHERE item_id = '".$itemId."' 
-							AND obstacle_id = '".$obstacleId."'"; 
+					  WHERE item_id = :itemId 
+							AND obstacle_id = :obstacleId"; 
 			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$itemUseResult = $row["result"];            
-						}             
-					$queryResult->close();         
-					}              
-					if(!$mysqli->more_results()){
-						break;
-					}    
-						 
-				} 
-				while ($mysqli->next_result()); 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('itemId', $itemId);
+			$stmt->bindValue('obstacleId', $obstacleId);
+			$stmt->execute();
 			
+			while ($row = $stmt->fetch()) {                              
+				$result = $row['result'];	
 			} 
-			//close connection  
-			$mysqli->close();
+			 
+			
 			//making sure no invalid values are being returned
 			
 			if($itemUseResult != 2 && $itemUseResult != 1 && $itemUseResult != 0 && $itemUseResult != -1){
@@ -272,64 +176,37 @@
 		//returns the highest itemID currently in use. 
 		function getMaxItemID(){
 			$result = "";
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT max(item_id) 'item_id'
+			$sql = "SELECT max(item_id) 'item_id'
 					   FROM items"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["item_id"];            
-						}             
-					$queryResult->close();         
-					}         
-					if(!$mysqli->more_results()){
-						break;
-					}
-				} 
-				while ($mysqli->next_result()); 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->execute();
 			
-			} 
-			//close connection  
-			$mysqli->close();
+			while ($row = $stmt->fetch()) {                              
+				$result = $row['item_id'];	
+			}
+			
 			return $result;
 		}
 		
 		//returns the IDs of Obstacles that can be cleared by any of the currently generated items. 
 		function getObstaclesClearedByItems($generatedItems){
-			include("dbconnectlocal.inc.php");
-			for($i=0;$i < count($generatedItems); $i++){
-				$query = "SELECT obstacle_id
+			foreach($generatedItems as $item){
+				$sql = "SELECT obstacle_id
 						  FROM item_use, items
 						  WHERE item_use.item_id = items.item_id
-							AND items.item_name = '".$generatedItems[$i]->getItemName()."'
+							AND items.item_name = :itemName
 							AND result = '1'"; 
-				//execute multi query  
-				if ($mysqli->multi_query($query)) {
-					do {         
-					
-						//store result set 
-						if ($queryResult = $mysqli->use_result()) {             
-							while ($row = $queryResult->fetch_assoc()) {                              
-								$result[] = $row["obstacle_id"];            
-							}             
-						$queryResult->close();         
-						}                  
-					if(!$mysqli->more_results()){
-						break;
-					}
-							 
-					} 
-					while ($mysqli->next_result()); 
+				$stmt = $this->conn->prepare($sql); 
+				$stmt->bindValue('itemName', $generatedItems[$i]->getItemName());
+				$stmt->execute();
 				
-				} 
+				while ($row = $stmt->fetch()) {                              
+					$result[] = $row['obstacle_id'];	
+				}
 			}
 			
-			//close connection  
-			$mysqli->close();
+			 
+			
 			if(!(isset($result[0]))){
 				$result[0] = "error";
 			}
@@ -339,92 +216,52 @@
 		//returns the name of an Obstacle based on its ID 
 		function getObstacleName($obstacleId){
 			$result = "";
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT obstacle_name
+			$sql = "SELECT obstacle_name
 					   FROM obstacle
-					   WHERE obstacle_id ='".$obstacleId."'"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["obstacle_name"];            
-						}             
-					$queryResult->close();         
-					}                  
-					if(!$mysqli->more_results()){
-						break;
-					}
-					     
-				} 
-				while ($mysqli->next_result()); 
+					   WHERE obstacle_id = :obstacleId"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('obstacleId', $obstacleId);
+			$stmt->execute();
 			
+			while ($row = $stmt->fetch()) {                              
+				$result = $row['obstacle_name'];	
 			} 
-			//close connection  
-			$mysqli->close();
+			 
+			
 			return $result;
 		}
 		
 		//Still needs to be implemented. 
 		function getObstacleText($obstacleId){
 			$result = "";
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT obstacle_text
+			$sql = "SELECT obstacle_text
 					   FROM obstacle
-					   WHERE obstacle_id ='".$obstacleId."'"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["obstacle_text"];            
-						}             
-					$queryResult->close();         
-					}               
-					if(!$mysqli->more_results()){
-						break;
-					}   
-					     
-				} 
-				while ($mysqli->next_result()); 
+					   WHERE obstacle_id = :obstacleId"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('obstacleId', $obstacleId);
+			$stmt->execute();
 			
+			while ($row = $stmt->fetch()) {                              
+				$result = $row['obstacle_text'];	
 			} 
-			//close connection  
-			$mysqli->close();
+			 
+			
 			return $result;
 		}
 		
 		//returns the highest hint number currently in use 
 		function getMaxHintNumber(){
 			$result = "";
-			include("dbconnectlocal.inc.php");
-			$query = "SELECT max(hint_number) 'hint_number'
+			$sql = "SELECT max(hint_number) 'hint_number'
 					   FROM hints"; 
-			//execute multi query  
-			if ($mysqli->multi_query($query)) {
-				do {         
-				
-					//store result set 
-					if ($queryResult = $mysqli->use_result()) {             
-						while ($row = $queryResult->fetch_assoc()) {                              
-							$result = $row["hint_number"];            
-						}             
-					$queryResult->close();         
-					}                  
-					if(!$mysqli->more_results()){
-						break;
-					}
-					     
-				} 
-				while ($mysqli->next_result()); 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->execute();
 			
+			while ($row = $stmt->fetch()) {                              
+				$result = $row['hint_number'];	
 			} 
-			//close connection  
-			$mysqli->close();
+			 
+			
 			return $result;
 		}
 		

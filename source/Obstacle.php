@@ -8,9 +8,8 @@
 		private  $obstacleId;
 		private  $obstacleText;
 		
-		function __construct($generatedItems){
+		function __construct($generatedItems, DatabaseExtension $db){
 			//ask the database what the maximum is for a random obstacleId 
-			$db = new DatabaseExtension();
 			$possibleObstacleIds = $db->getObstaclesClearedByItems($generatedItems);
 			$this->obstacleId = $possibleObstacleIds[array_rand($possibleObstacleIds)];
 			$this->obstacleName = $db->getObstacleName($this->obstacleId);

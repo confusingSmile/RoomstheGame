@@ -5,6 +5,7 @@
 
 	use Game\Room\IntroRoom;
 	use Game\Building;
+	use Game\DatabaseExtension;
 	class Player{
 	
 		/*
@@ -21,12 +22,14 @@
 		private $gatheredItems = array();
 		private $doorsUnlocked;
 		private $building;
+		private $db;
 	
-		function __construct(){
+		function __construct(DatabaseExtension $db){
+			$this->db = $db;
 			$this->hunger = 300;
-			$this->currentRoom = new IntroRoom();
+			$this->currentRoom = new IntroRoom($this->db);
 			$this->currentRoom->welcomePlayer();
-			$this->building = new Building($this);
+			$this->building = new Building($this, $this->db);
 		}
 		
 		function getHunger(){

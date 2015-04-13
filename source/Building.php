@@ -6,6 +6,7 @@
 	use Game\Room\LockedDoorRoom;
 	use Game\Room\ObstacleRoom;
 	use Game\Room\QuestionRoom;
+	use Game\DatabaseExtension;
 	class Building{
 		
 		/*
@@ -14,9 +15,11 @@
 		*/
 		private $player;
 		private $generatedItems;
+		private $db;
 		
-		function __construct(Player $player){
+		function __construct(Player $player, DatabaseExtension $db){
 			$this->player = $player; 
+			$this->db = $db;
 		}
 		
 		function addGeneratedItem(Item $item){
@@ -62,25 +65,25 @@
 			switch($lastRoom){
 				case 'Game\Room\HintRoom':
 					if($correctExit == true && $random < 25 && $obstacleRoomPossible == true){
-						$creation = new ObstacleRoom(new Obstacle($this->generatedItems));
+						$creation = new ObstacleRoom(new Obstacle($this->generatedItems, $this->db));
 					} else {
-						$creation = new hintRoom();
+						$creation = new hintRoom($this->db);
 					}
 					break;
 				case 'Game\Room\IntroRoom':
 				case 'Game\Room\LockedDoorRoom':
-					$creation = new HintRoom();
+					$creation = new HintRoom($this->db);
 					break;
 				case 'Game\Room\ObstacleRoom':
-					$creation = new QuestionRoom();
+					$creation = new QuestionRoom($this->db);
 					break;
 				case 'Game\Room\QuestionRoom':
 					if($correctExit == true){
-						$creation = new LockedDoorRoom();
+						$creation = new LockedDoorRoom($this->db);
 					} else if($random < 60){
-						$creation = new HintRoom();
+						$creation = new HintRoom($this->db);
 					} else {
-						$creation = new QuestionRoom();
+						$creation = new QuestionRoom($this->db);
 					}
 					break;
 			}

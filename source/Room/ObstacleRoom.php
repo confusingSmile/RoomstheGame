@@ -11,15 +11,16 @@
 			private $obstacle;
 			private $clear; 
 			
-			function __construct($obstacle){
+			function __construct($obstacle, DatabaseExtension $db){
 				$this->obstacle = $obstacle;
+				$this->db = $db;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
 				
 				$random = rand(1, 2);
 				if($random == 1){
-					$this->item = new Item();
+					$this->item = new Item($this->db);
 				}
 			}
 			
@@ -30,8 +31,7 @@
 			function clearObstacle($itemName){
 				$result = "No obstacle to clear.";
 				if($this->clear == false){
-					$db = new DatabaseExtension();
-					$effect = $db -> getItemUseResult($itemName, $this->obstacle);
+					$effect = $this->db -> getItemUseResult($itemName, $this->obstacle);
 					if($effect == 2){
 							$result = "That...may not have been a good idea. Now you're Game Over.";
 

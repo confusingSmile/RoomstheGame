@@ -9,9 +9,8 @@
 		private $itemName;
 		private $itemIcon;
 		
-		function __construct($itemID = -1){
+		function __construct(DatabaseExtension $db, $itemID = -1){
 			$this->itemID = $itemID;
-			$db = new DatabaseExtension();
 			if($itemID == -1){
 				$max = $db->getMaxItemID();
 				$this->itemID = rand(1, $max);

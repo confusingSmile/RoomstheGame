@@ -8,19 +8,21 @@
 			
 			private $hint;
 			private $answer;
-			//TODO getHint
 			
-			function __construct(){
+			
+			function __construct(DatabaseExtension $db){
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
 				
 				$random = rand(1, 2);
 				if($random == 1){
-					$this->item = new Item();
+					$this->item = new Item($db);
 				}
 				
-				$this->prepareHint();			
+				$hintData = $db->getHint();
+				$this->hint = $hintData["text"];
+				$this->answer = $hintData["answer"];			
 				
 			}
 			
@@ -67,13 +69,6 @@
 					return $this->neighbours[$direction];
 				}
 				return null;
-			}
-			
-			function prepareHint(){
-				$db = new DatabaseExtension();
-				$hintData = $db->getHint();
-				$this->hint = $hintData["text"];
-				$this->answer = $hintData["answer"];
 			}
 			
 		}	
