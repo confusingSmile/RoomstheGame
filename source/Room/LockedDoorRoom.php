@@ -8,7 +8,8 @@
 		class LockedDoorRoom extends Room{	
 			
 			
-			function __construct(DatabaseExtension $db){
+			function __construct(DatabaseExtension $db, $id){
+				$this->ID = $id;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}

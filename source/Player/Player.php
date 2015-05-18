@@ -12,6 +12,7 @@
 		/*
 		*	hunger: integer starting at 300, indicating how not-hungry the player is. 
 		*		If it reaches 0, the player "dies".
+		*	name: the username. This exist because of the save function, which needs a username/save game 
 		*	currentRoom: the Room that the player is visiting.
 		*	gatheredItems: items the player can use
 		*	generatedItems: items that the player can obtain or has obtained
@@ -19,6 +20,7 @@
 		*	building: the place with the Rooms. The Player and the Room should know each other (right?) 
 		*/
 		private $hunger;
+		private $name; 
 		private $currentRoom;
 		private $gatheredItems = array();
 		private $doorsUnlocked;
@@ -28,9 +30,9 @@
 		function __construct(DatabaseExtension $db){
 			$this->db = $db;
 			$this->hunger = 300;
-			$this->currentRoom = new IntroRoom($this->db);
+			$this->doorsUnlocked = 0;
+			$this->currentRoom = new IntroRoom($this->db, 1);
 			$this->currentRoom->welcomePlayer();
-			$this->building = new Building($this, $this->db);
 		}
 		
 		function getHunger(){
@@ -53,6 +55,11 @@
 		//integer indicating the amount of keyDoors the player has unlocked
 		function getDoorsUnlocked(){
 			return $this->doorsUnlocked;
+		}
+		
+		function setBuilding($building){
+			$this->building = $building;
+			var_dump($building);
 		}
 		
 		//unlocks the Door if it's locked. 

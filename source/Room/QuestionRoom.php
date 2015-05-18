@@ -9,8 +9,9 @@
 			private $question; 
 			private $answer;
 			
-			function __construct(DatabaseExtension $db){
+			function __construct(DatabaseExtension $db, $id){
 				
+				$this->ID = $id;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
@@ -34,6 +35,10 @@
 			
 			function getQuestion(){
 				return $this->question;
+			}
+			
+			function getID(){
+				return $this->ID;
 			}
 			
 			function getAnswer(){

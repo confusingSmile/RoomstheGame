@@ -12,6 +12,7 @@
 		private $neighbours;
 		private $item;
 		private $doors;
+		private $ID;
 		
 		
 		abstract function getItem();

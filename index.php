@@ -15,9 +15,10 @@
 		use Game\Room\IntroRoom;
 		use Game\Room\ObstacleRoom;
 		use Game\Room\LockedDoorRoom;
-		use Game\Player\Player;
+		use Game\Player\Player;//
 		use Game\CommandProcessor;
 		use Game\DatabaseExtension;
+		
 		session_start();
 		
 		if(!isset($_SESSION['user'])){
@@ -35,25 +36,27 @@
 		$output = '';
 		
 		//starting the game
-		$player = '';
+		$player = '';//
 		$hunger = 'Hunger: ';
 		$progress = 'Progress: ';
 		$items = null;
-		if(!isset($_SESSION['player'])){
+		if(!isset($_SESSION['game'])){
 			
 			$conn = DriverManager::getConnection($connectionParams, new Configuration());
 			$db = new DatabaseExtension($conn);
 			$player = new Player($db);
-			$output = $player->getCurrentRoom()->welcomePlayer();
-			$_SESSION['player'] = serialize($player);
+			$game = new Game($db, $player);
+			$game->registratePlayer($player);
+			$output = '<PH> Welcome, player.';
+			$_SESSION['game'] = serialize($game);
 			$_SESSION['output'] = $output;
 			
 		} else {
 			
-			$player = unserialize($_SESSION['player']);
-			
+			$game = unserialize($_SESSION['game']);
+			//var_dump($player);
 			$conn = DriverManager::getConnection($connectionParams, new Configuration());
-			$player->reconnect($conn);
+			$game->reconnect($conn);
 			
 			if(isset($_POST['input'])){
 				
@@ -70,7 +73,7 @@
 			//for some reason '\n' needs to be specified in this function. 
 			$output = ltrim($output, '\n');
 			$_SESSION['output'] = $output;
-			$_SESSION['player'] = serialize($player);
+			$_SESSION['game'] = serialize($game);
 			$hunger = 'Hunger: '.$player->getHunger();
 			$items = $player->getGatheredItems();
 			if($player->getDoorsUnlocked() != null){
@@ -78,6 +81,8 @@
 			} else {
 				$progress = 'Progress: 0/10';
 			}
+			
+			//save the game
 			
 		}
 		

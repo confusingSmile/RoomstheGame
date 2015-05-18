@@ -16,14 +16,24 @@
 		private $player;
 		private $generatedItems;
 		private $db;
+		private $roomNextID;
+		private $game;
+		private $commandProcessor;
 		
-		function __construct(Player $player, DatabaseExtension $db){
+		function __construct(Player $player, DatabaseExtension $db, Game $game){
 			$this->player = $player; 
 			$this->db = $db;
+			$this->roomNextID = 2;
+			$this->game = $game;
+			$this->commandProcessor = new CommandProcessor(); 
 		}
 		
 		function addGeneratedItem(Item $item){
 			$this->generatedItems[] = $item;
+		}
+		
+		function getNeighbour($roomID, $direction){
+			//connect to db to ask for neighbour
 		}
 		
 		function createRoom($direction){
@@ -64,25 +74,25 @@
 			switch($lastRoom){
 				case 'Game\Room\HintRoom':
 					if($correctExit == true && $random < 25 && $obstacleRoomPossible == true){
-						$creation = new ObstacleRoom(new Obstacle($this->generatedItems, $this->db));
+						$creation = new ObstacleRoom(new Obstacle($this->generatedItems, $this->db), $this->db, $this->roomNextID);
 					} else {
-						$creation = new hintRoom($this->db);
+						$creation = new hintRoom($this->db, $this->roomNextID);
 					}
 					break;
 				case 'Game\Room\IntroRoom':
 				case 'Game\Room\LockedDoorRoom':
-					$creation = new HintRoom($this->db);
+					$creation = new HintRoom($this->db, $this->roomNextID);
 					break;
 				case 'Game\Room\ObstacleRoom':
-					$creation = new QuestionRoom($this->db);
+					$creation = new QuestionRoom($this->db, $this->roomNextID);
 					break;
 				case 'Game\Room\QuestionRoom':
 					if($correctExit == true){
-						$creation = new LockedDoorRoom($this->db);
+						$creation = new LockedDoorRoom($this->db, $this->roomNextID);
 					} else if($random < 60){
-						$creation = new HintRoom($this->db);
+						$creation = new HintRoom($this->db, $this->roomNextID);
 					} else {
-						$creation = new QuestionRoom($this->db);
+						$creation = new QuestionRoom($this->db, $this->roomNextID);
 					}
 					break;
 			}
