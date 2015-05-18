@@ -1,0 +1,17 @@
+body
+{
+	background-color:#450000;
+}
+
+#gameOver
+{
+	position: fixed;
+	top:35%;
+	left:35%;
+}
+
+#gameOver p 
+{
+	text-align: center;
+	font-size: 300%;
+}

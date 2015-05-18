@@ -5,7 +5,7 @@
 	</head>
 	<body>
 		<?php
-			
+		
 		require('vendor/autoload.php');
 		include('config/config_db_local.php');
 		use Doctrine\DBAL\Configuration;
@@ -33,24 +33,6 @@
 	
 		//resetting the output. 
 		$output = '';
-		
-		//importing the nessecary classes
-		
-		//include('Building.php');
-		//include('source/CommandProcessor.php');
-		//include('DatabaseExtension.php');
-		//include('Door.php');
-		//include('Item.php');
-		//include('Obstacle.php');
-		//include('Player.php');
-		
-		//include rooms
-		//include('room/Room.php');
-		//include('room/HintRoom.php');
-		//include('room/IntroRoom.php');
-		//include('room/LockedDoorRoom.php');
-		//include('room/ObstacleRoom.php');
-		//include('room/QuestionRoom.php');
 		
 		//starting the game
 		$player = '';

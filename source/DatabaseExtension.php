@@ -8,8 +8,10 @@
 		
 		private $conn;
 		
+		/**
+		* @param a connection with the database
+		*/
 		function __construct(Connection $conn){
-			//"Yay, I exist!" - DatabaseExtension 
 			$this->conn = $conn;
 		}
 		
@@ -17,12 +19,20 @@
 			return array();
 		} 
 		
-		
+		/**
+		* Re-initiates $conn, the variable containing the connection with the database .  
+		*
+		* @param a connection with the database
+		*/
 		function reconnect(Connection $conn){
 			$this->conn = $conn;
 		}
 		
-		//returns a random Question (actually just an array) 
+		/**
+		* Returns a random question 
+		* 
+		* @return array 
+		*/
 		function getQuestion(){
 			$chosenQuestion["error"] = "404 question not found";
 			$result = "";
@@ -53,7 +63,11 @@
 			return $chosenQuestion;
 		}
 		
-		//returns a random Hint (just an array) 
+		/**
+		* Returns a random hint. 
+		* 
+		* @return array 
+		*/		
 		function getHint(){
 			$hint = "";
 			$maxHintNumber = $this->getMaxHintNumber();
@@ -74,7 +88,11 @@
 			return $hint;
 		}
 		
-		//authenticates the user, logging in to the game. 	
+		/**
+		* Checks if the username matches the password. 
+		*
+		* @return boolean 
+		*/ 	
 		function authenticate($username, $password){
 			$result = false;
 			$correctPassword = "";
@@ -96,7 +114,12 @@
 			return $result;
 		}
 		
-		//related stuff should be implemented sometime. 
+		/**
+		* Returns the path to the item's icon. (NYI) 
+		* 
+		* @param itemNumber: the number of the item 
+		* of which we need the path 
+		*/		
 		function getItemIcon($itemNumber){
 			$result = "";
 			$sql = "SELECT item_icon
@@ -114,7 +137,13 @@
 			return $result;
 		}
 		
-		//returns the name if an Item. 
+		/**
+		* Returns the name of an item. 
+		* 
+		* @param the number of the item we need the name of. 
+		* 
+		* @return the item's name. 
+		*/
 		function getItemName($itemNumber){
 			$result = "No item with number".$itemNumber;
 			$sql = "SELECT item_name
@@ -132,7 +161,11 @@
 			return $result;
 		}
 		
-		//returns the ID of an Item. 
+		/**
+		* returns the ID of an Item. 
+		* 
+		* @param the name of the item we need the ID of. 
+		*/
 		function getItemId($itemName){
 			$result = "No item with name".$itemName;
 			$sql = "SELECT item_id

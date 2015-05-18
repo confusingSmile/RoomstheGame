@@ -1,0 +1,17 @@
+body
+{
+	background-color:#00FF00;
+}
+
+#victory
+{
+	position: fixed;
+	top:35%;
+	left:35%;
+}
+
+#victory p 
+{
+	text-align: center;
+	font-size: 300%;
+}
