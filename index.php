@@ -5,6 +5,19 @@
 	</head>
 	<body>
 		<?php
+		
+		require('vendor/autoload.php');
+		include('config/config_db_local.php');
+		use Doctrine\DBAL\Configuration;
+		use Doctrine\DBAL\DriverManager;
+		use Game\Room\QuestionRoom;
+		use Game\Room\HintRoom;
+		use Game\Room\IntroRoom;
+		use Game\Room\ObstacleRoom;
+		use Game\Room\LockedDoorRoom;
+		use Game\Player\Player;
+		use Game\CommandProcessor;
+		use Game\DatabaseExtension;
 		session_start();
 		
 		if(!isset($_SESSION['user'])){
@@ -19,33 +32,18 @@
 		}
 	
 		//resetting the output. 
-		$output = "";
-		
-		//importing the nessecary classes
-		include("Building.php");
-		include("CommandProcessor.php");
-		include("DatabaseExtension.php");
-		include("Door.php");
-		include("Item.php");
-		include("Obstacle.php");
-		include("Player.php");
-		
-		//include rooms
-		include("room/Room.php");
-		include("room/HintRoom.php");
-		include("room/IntroRoom.php");
-		include("room/LockedDoorRoom.php");
-		include("room/ObstacleRoom.php");
-		include("room/QuestionRoom.php");
+		$output = '';
 		
 		//starting the game
-		$player = "";
-		$hunger = "Hunger: ";
-		$progress = "Progress: ";
+		$player = '';
+		$hunger = 'Hunger: ';
+		$progress = 'Progress: ';
 		$items = null;
 		if(!isset($_SESSION['player'])){
 			
-			$player = new Player();
+			$conn = DriverManager::getConnection($connectionParams, new Configuration());
+			$db = new DatabaseExtension($conn);
+			$player = new Player($db);
 			$output = $player->getCurrentRoom()->welcomePlayer();
 			$_SESSION['player'] = serialize($player);
 			$_SESSION['output'] = $output;
@@ -53,6 +51,9 @@
 		} else {
 			
 			$player = unserialize($_SESSION['player']);
+			
+			$conn = DriverManager::getConnection($connectionParams, new Configuration());
+			$player->reconnect($conn);
 			
 			if(isset($_POST['input'])){
 				
@@ -65,16 +66,17 @@
 			}
 			
 			$commandProcessor = new CommandProcessor();
-			$output = $commandProcessor->processCommand($command, $player)."<br>".$_SESSION['output'];
-			$output = ltrim($output);
+			$output = $commandProcessor->processCommand($command, $player).'<br>'.$_SESSION['output'];
+			//for some reason '\n' needs to be specified in this function. 
+			$output = ltrim($output, '\n');
 			$_SESSION['output'] = $output;
 			$_SESSION['player'] = serialize($player);
-			$hunger = "Hunger: ".$player->getHunger();
+			$hunger = 'Hunger: '.$player->getHunger();
 			$items = $player->getGatheredItems();
 			if($player->getDoorsUnlocked() != null){
-				$progress = "Progress: ".$player->getDoorsUnlocked()."/10";
+				$progress = 'Progress: '.$player->getDoorsUnlocked().'/10';
 			} else {
-				$progress = "Progress: 0/10";
+				$progress = 'Progress: 0/10';
 			}
 			
 		}

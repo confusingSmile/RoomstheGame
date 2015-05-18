@@ -1,4 +1,12 @@
 <?php
+
+
+	namespace Game\Player;
+
+	use Game\Room\IntroRoom;
+	use Game\Building;
+	use Game\DatabaseExtension;
+	use Doctrine\DBAL\Connection;
 	class Player{
 	
 		/*
@@ -15,13 +23,14 @@
 		private $gatheredItems = array();
 		private $doorsUnlocked;
 		private $building;
+		private $db;
 	
-		function Player(){
+		function __construct(DatabaseExtension $db){
+			$this->db = $db;
 			$this->hunger = 300;
-			$this->currentRoom = new IntroRoom();
-			//doesn't do anything yet
+			$this->currentRoom = new IntroRoom($this->db);
 			$this->currentRoom->welcomePlayer();
-			$this->building = new Building($this);
+			$this->building = new Building($this, $this->db);
 		}
 		
 		function getHunger(){
@@ -48,47 +57,44 @@
 		
 		//unlocks the Door if it's locked. 
 		function unlockKeyDoor($direction){
-			$output = "Nothing to unlock.";
-			if(get_class($this->currentRoom) == "LockedDoorRoom"){
-				$output = $this->currentRoom->getDoor($direction)->unblock();	
-					$firstUnlockThisRoom = true; 
-					for($i=($direction+1);$i<($direction+3);$i++){
-						$j = $i%4;
-						if($this->currentRoom->getDoor($j)->getBlocked() == false){
-							$firstUnlockThisRoom = false;
-						}
+			if(get_class($this->currentRoom) == 'Game\Room\LockedDoorRoom'){	
+				$firstUnlockThisRoom = true; 
+				for($i=0;$i<4;$i++){
+					$j = $i%4;
+					if($this->currentRoom->getDoor($j)->getBlocked() == false){
+						$firstUnlockThisRoom = false;
 					}
-					if($firstUnlockThisRoom == true){
-						$this->doorsUnlocked ++;
-					}
+				}
+				if($firstUnlockThisRoom){
+					$this->doorsUnlocked ++;
+				}
+				return $this->currentRoom->getDoor($direction)->unblock();
 			}
-			return $output;
+			return 'Nothing to unlock.';
 		}
 		
 		function obtainItem(){
-			$result = "There is no item.";
-			if($this->currentRoom->getItem() != null){
+			if($this->currentRoom->getItem()){
 				$pickedUpItem = $this->currentRoom->getItem();
-								
+				
 				if(!(in_array($pickedUpItem, $this->gatheredItems)) ){
 					$this->gatheredItems[] = $pickedUpItem;
-					$result = 'Obtained a(n)' . $pickedUpItem->getItemName(). '.';
+					$this->currentRoom->takeItem();
+					return 'Obtained a(n)' . $pickedUpItem->getItemName(). '.';
 				} else {
-					$result = 'You already have this item: ' . $pickedUpItem->getItemName() . '.';
+					return 'You already have this item: ' . $pickedUpItem->getItemName() . '.';
 				}
 				
-				$this->currentRoom->takeItem();
 			}
 			
-			return $result;
+			return 'There is no item.';
 		}
 		
 		function searchRoomForItem(){
-			$result = "No items in this room.";
 			if($this->currentRoom->getItem() != null){
-				$result = "There seems to be something here.";
+				return 'There seems to be something here.';
 			}
-			return $result;
+			return 'No items in this room.';
 		}
 		
 		/**
@@ -104,7 +110,7 @@
 			}
 			
 			foreach($this->gatheredItems as $gatheredItem){
-				if($itemName === $gatheredItem->getItemName() && get_class($this->currentRoom) === "ObstacleRoom"){
+				if($itemName === $gatheredItem->getItemName() && get_class($this->currentRoom) === 'Game\Room\ObstacleRoom'){
 					return $this->currentRoom->clearObstacle($itemName);
 				}
 			}
@@ -116,34 +122,33 @@
 		
 		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 		function travel($direction){
-			$output = "";
-			$buildingOutput = "";
-			//if true the player is moving back into a room that has already generated. 
-			if($this->currentRoom->getNeighbour($direction) == null){	
-				if($this->currentRoom->getDoor($direction)->getBlocked() == false){
+			if(!$this->currentRoom->getNeighbour($direction)){	
+				if(!$this->currentRoom->getDoor($direction)->getBlocked()){
 					//create the room
 					$buildingOutput = $this->building->createRoom($direction);
 					//actually enter the next room, which costs hunger, so subtract 1 hunger;
 					$this->currentRoom = $this->currentRoom->getNeighbour($direction);
 					$this->hunger --;
 					
-					$output =  $this->currentRoom->welcomePlayer();
+					return $buildingOutput.'\n'.$this->currentRoom->welcomePlayer();
 				}else{
-					$output =  "The door won't open.";
+					return  'The door won\'t open.';
 				}
 			}else{
+				//the player is moving back into a room that has already generated. 
 				$this->currentRoom = $this->currentRoom->getNeighbour($direction);
-				$output = $this->currentRoom->welcomePlayer();
+				return $this->currentRoom->welcomePlayer();
 			}
 			
-			return $buildingOutput."\n".$output;
 		}
 		
 		function gameOver(){
 			//maybe send something to the CommandProcessor
 		}
 		
-		
+		function reconnect(Connection $conn){
+			$this->db->reconnect($conn);
+		}
 		
 	}
 ?>

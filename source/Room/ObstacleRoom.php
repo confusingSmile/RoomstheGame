@@ -1,20 +1,26 @@
 <?php
+		namespace Game\Room;
+		use Game\Room\Room;
+		use Game\Item;
+		use Game\DatabaseExtension;
+		
 		class ObstacleRoom extends Room{	
 		
 		
 			//$clear: whether or not the obstacle has been cleared. 
-			var $obstacle;
-			var $clear; 
+			private $obstacle;
+			private $clear; 
 			
-			function ObstacleRoom($obstacle){
+			function __construct($obstacle, DatabaseExtension $db){
 				$this->obstacle = $obstacle;
+				$this->db = $db;
 				for($i=0;$i<4;$i++){
-					$this->doors[$i] = new Door(true);
+					$this->doors[$i] = new Door();
 				}
 				
 				$random = rand(1, 2);
 				if($random == 1){
-					$this->item = new Item();
+					$this->item = new Item($this->db);
 				}
 			}
 			
@@ -25,8 +31,7 @@
 			function clearObstacle($itemName){
 				$result = "No obstacle to clear.";
 				if($this->clear == false){
-					$db = new DatabaseExtension();
-					$effect = $db -> getItemUseResult($itemName, $this->obstacle);
+					$effect = $this->db -> getItemUseResult($itemName, $this->obstacle);
 					if($effect == 2){
 							$result = "That...may not have been a good idea. Now you're Game Over.";
 
@@ -44,16 +49,15 @@
 			
 			
 			function getItem(){
-				$result=null;
-				if($this->item != null){
-					$result = $this->item;
+				if(isset($this->item)){
+					return $this->item;
 				}
-				return $result;
+				return 0;
 			}
 			
 			function takeItem(){
 				$result=0;
-				if($this->item != null){
+				if($this->item){
 					$this->result = $this->item;
 					$this->item = null;
 				}
@@ -68,11 +72,10 @@
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 			function getNeighbour($direction){
-				$output = null;
 				if(isset($this->neighbours[$direction])){
-					$output = $this->neighbours[$direction];
+					return $this->neighbours[$direction];
 				}
-				return $output;
+				return null;
 			}
 			
 			function getDoor($direction){

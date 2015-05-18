@@ -1,21 +1,28 @@
 <?php
-		class HintRoom extends Room{	
+		namespace Game\Room;
+		use Game\Room\Room;
+		use Game\Item;
+		use Game\DatabaseExtension;
+		
+		class HintRoom extends Room{
 			
-			var $hint;
-			var $answer;
-			//TODO getHint
+			private $hint;
+			private $answer;
 			
-			function HintRoom(){
+			
+			function __construct(DatabaseExtension $db){
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
 				
 				$random = rand(1, 2);
 				if($random == 1){
-					$this->item = new Item();
+					$this->item = new Item($db);
 				}
 				
-				$this->prepareHint();			
+				$hintData = $db->getHint();
+				$this->hint = $hintData["text"];
+				$this->answer = $hintData["answer"];			
 				
 			}
 			
@@ -29,7 +36,7 @@
 			
 			function takeItem(){
 				$result=0;
-				if($this->item != null){
+				if($this->item){
 					$result = $this->item;
 					$this->item = null;
 				}
@@ -38,15 +45,14 @@
 			
 			
 			function getItem(){
-				$result=0;
-				if($this->item != null){
-					$result = $this->item;
+				if(isset($this->item)){
+					return $this->item;
 				}
-				return $result;
+				return 0;
 			}
 			
 			function welcomePlayer(){
-				return "welcome to a HintRoom.\n".$this->hint;
+				return "welcome to a HintRoom.".$this->hint;
 			}
 			
 			function getDoor($direction){
@@ -59,18 +65,10 @@
 			
 			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 			function getNeighbour($direction){
-				$output = null;
 				if(isset($this->neighbours[$direction])){
-					$output = $this->neighbours[$direction];
+					return $this->neighbours[$direction];
 				}
-				return $output;
-			}
-			
-			function prepareHint(){
-				$db = new DatabaseExtension();
-				$hintData = $db->getHint();
-				$this->hint = $hintData["text"];
-				$this->answer = $hintData["answer"];
+				return null;
 			}
 			
 		}	

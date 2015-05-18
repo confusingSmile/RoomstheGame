@@ -1,13 +1,15 @@
 <?php
+	
+	namespace Game;
+	
 	class Obstacle{
 		
-		var $obstacleName;
-		var $obstacleId;
-		var $obstacleText;
+		private  $obstacleName;
+		private  $obstacleId;
+		private  $obstacleText;
 		
-		function Obstacle($generatedItems){
+		function __construct($generatedItems, DatabaseExtension $db){
 			//ask the database what the maximum is for a random obstacleId 
-			$db = new DatabaseExtension();
 			$possibleObstacleIds = $db->getObstaclesClearedByItems($generatedItems);
 			$this->obstacleId = $possibleObstacleIds[array_rand($possibleObstacleIds)];
 			$this->obstacleName = $db->getObstacleName($this->obstacleId);
