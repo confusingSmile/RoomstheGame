@@ -10,15 +10,16 @@
 	class Building{
 		
 		/*
-		*	player: the player
+		*	lastRoom: the last room so far
 		*	generatedItems: items present in this game of RoomsTheGame. 
 		*/
-		private $player;
+		private $lastRoom;
 		private $generatedItems;
+		private $nextRoomId;
 		private $db;
 		
-		function __construct(Player $player, DatabaseExtension $db){
-			$this->player = $player; 
+		function __construct(Room $lastRoom, DatabaseExtension $db){
+			$this->lastRoom = $lastRoom; 
 			$this->db = $db;
 		}
 		
@@ -26,7 +27,7 @@
 			$this->generatedItems[] = $item;
 		}
 		
-		function createRoom($direction){
+		function createRoom($direction, $correctExit = false){
 			//rules: 
 			/*
 				QuestionRoom -> correct -> LockedDoorRoom
@@ -53,36 +54,35 @@
 			}
 			
 			$lastRoom = get_class($this->player->getCurrentRoom());
-			$correctExit = false;
 			
 			if(($lastRoom == 'Game\Room\QuestionRoom' || $lastRoom == 'Game\Room\HintRoom') && $this->player->getCurrentRoom()->getAnswer() == $direction){
 				$correctExit = true;
-				$output = 'correct';
+				$output = 'correct<br>';
 			}
 			
 			//create the Room, based on the previous Room and how that Room has been handled by the Player. 
 			switch($lastRoom){
 				case 'Game\Room\HintRoom':
 					if($correctExit == true && $random < 25 && $obstacleRoomPossible == true){
-						$creation = new ObstacleRoom(new Obstacle($this->generatedItems, $this->db));
+						$creation = new ObstacleRoom($this->nextRoomId, new Obstacle($this->generatedItems, $this->db));
 					} else {
-						$creation = new hintRoom($this->db);
+						$creation = new hintRoom($this->nextRoomId, $this->db);
 					}
 					break;
 				case 'Game\Room\IntroRoom':
 				case 'Game\Room\LockedDoorRoom':
-					$creation = new HintRoom($this->db);
+					$creation = new HintRoom($this->nextRoomId, $this->db);
 					break;
 				case 'Game\Room\ObstacleRoom':
-					$creation = new QuestionRoom($this->db);
+					$creation = new QuestionRoom($this->nextRoomId, $this->db);
 					break;
 				case 'Game\Room\QuestionRoom':
 					if($correctExit == true){
-						$creation = new LockedDoorRoom($this->db);
+						$creation = new LockedDoorRoom($this->nextRoomId, $this->db);
 					} else if($random < 60){
-						$creation = new HintRoom($this->db);
+						$creation = new HintRoom($this->nextRoomId, $this->db);
 					} else {
-						$creation = new QuestionRoom($this->db);
+						$creation = new QuestionRoom($this->nextRoomId, $this->db);
 					}
 					break;
 			}

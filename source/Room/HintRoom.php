@@ -10,7 +10,8 @@
 			private $answer;
 			
 			
-			function __construct(DatabaseExtension $db){
+			function __construct($id, DatabaseExtension $db){
+				$this->id = $id;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}

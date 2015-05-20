@@ -11,7 +11,8 @@
 			private $obstacle;
 			private $clear; 
 			
-			function __construct($obstacle, DatabaseExtension $db){
+			function __construct($id, $obstacle, DatabaseExtension $db){
+				$this->id = $id;
 				$this->obstacle = $obstacle;
 				$this->db = $db;
 				for($i=0;$i<4;$i++){
