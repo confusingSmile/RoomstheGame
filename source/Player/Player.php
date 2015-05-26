@@ -27,6 +27,7 @@
 		function __construct($name){
 			$this->name = $name;
 			$this->hunger = 300;
+			$this->doorsUnlocked = 0;
 		}
 		
 		function getHunger(){
@@ -36,6 +37,7 @@
 		function getName(){
 			return $this->name;
 		}
+		
 		
 		/**
 		 * Returns a list of gathered items
@@ -55,12 +57,20 @@
 			return $this->doorsUnlocked;
 		}
 		
+		function becomeHungrier($byThisMuch){
+			if($byThisMuch > $this->hunger){
+				$this->hunger = 0;
+			} else {
+				$this->hunger = $this->hunger - $byThisMuch;
+			}
+		}
+		
 		//unlocks the Door if it's locked. 
 		function unlockKeyDoor(Room $currentRoom, $direction){
 			if(get_class($currentRoom) == 'Game\Room\LockedDoorRoom'){	
 				$firstUnlockThisRoom = true; 
 				for($i=0;$i<4;$i++){
-					$j = $i%4;
+					$j = $i%4; //useless?
 					if($currentRoom->getDoor($j)->getBlocked() == false){
 						$firstUnlockThisRoom = false;
 					}
@@ -118,27 +128,6 @@
 			
 			return 'Nothing happened...';
 		}
-		
-		
-		
-		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
-		function travel(Room $roomOfOrigin, Room $destinationRoom){	
-			if(!$roomOfOrigin->getDoor($direction)->getBlocked()){
-				//create the room
-				//actually enter the next room, which costs hunger, so subtract 1 hunger;
-				$this->currentRoom = $this->currentRoom->getNeighbour($direction);
-				$this->hunger --;
-				
-				return $destinationRoom->welcomePlayer();
-			}else{
-				return  'The door won\'t open.';
-			}
-			
-			
-		}
-		
-		
-		
 		
 		
 	}

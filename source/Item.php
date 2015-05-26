@@ -27,5 +27,9 @@
 		function getIcon(){
 			return $this->itemIcon;
 		}
+		
+		function getId(){
+			return $this->itemID;
+		}
 	}
 ?>

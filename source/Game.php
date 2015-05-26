@@ -3,7 +3,9 @@
 	namespace Game;
 	use Game\DatabaseExtension;
 	use Game\CommandProcessor;
-	use game\Player\Player;
+	use Game\Player\Player;
+	use Game\Room\IntroRoom;
+	use Doctrine\DBAL\Connection;
 	
 	class Game{
 		
@@ -13,22 +15,47 @@
 		private $currentRoom;
 		
 		
-		function __construct(DatabaseExtension $db){
+		function __construct(DatabaseExtension $db, $id, $playerName){
+			$this->id = $id;
 			$this->db = $db;
-			$this->player = new Player();
-			$this->building = new Building($this->player, $this->db);
-			$this->currentRoom = new IntroRoom(1, $this->db);
-			$this->currentRoom->welcomePlayer();
+			$this->player = new Player($playerName);
+			$this->building = new Building($this->db);
+			$this->currentRoom = new IntroRoom(1, $this->db); 
+			$this->db->insertGame($this->id, $playerName);
+			
+			if($this->currentRoom->getItem()){
+				$this->db->saveIntroRoom($this->currentRoom->getItem()->getId(), $this->id);
+			} else {
+				$this->db->saveIntroRoom(null, $this->id);
+			}
+			
+			$this->db->saveGame($this->id, $this->currentRoom->getID(), $this->player->getHunger(), $this->player->getDoorsUnlocked(), 
+								$this->player->getGatheredItems(), $this->building->getGeneratedItems());
+			
 		}
 		
 		function __wakeup(){
-			//reconstruct current room, game data, Player, items, doors
+			if($this->player->getHunger() < 1){
+				//game over 
+			} 
+			if($this->player->getDoorsUnlocked() > 9){
+				//victory
+			}
+		}
+		
+		function getWelcomeMessage(){
+			return $this->currentRoom->welcomePlayer();
 		}
 		
 		function newTurn($command){
-			//data new Room
-			$this->processCommand($command);
-			//current room is next room
+			//$currentRoom is there to remember what the current Room was before moving
+			$turnOutput = '';
+			$roomIdBeforeTraveling = $this->currentRoom->getId();
+			$turnOutput .= $this->processCommand($command);
+			if($this->currentRoom->getId() != roomIdBeforeTraveling){
+				$player->becomeHungrier(1);
+			}
+			$turnOutPut .= '<br>'.$this->getWelcomeMessage;
 		}
 		
 		function processCommand($command){
@@ -95,11 +122,25 @@
 					break;
 			
 			}
-			return 'Invalid command.';
+			return 'Invalid command.<br>';
 		}
 		
-		function movePlayer(){
-			//TODO code
+		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
+		function movePlayer($direction){
+			//asks what type of Room would be next when going this direction. 
+			$nextRoomType = $this->currentRoom->getNextRoom($direction);
+			$potentialNextRoom = $this->building->createRoom($nextRoomType, $this->id);
+			if(!$this->currentRoom->getDoor($direction)->getBlocked()){
+				$destination = $this->building->getRoomRebuilt($this->currentRoom, $direction, $this->id);
+				if($destination){
+					$this->currentRoom = $destination;
+				} else {
+					$this->currentRoom = $potentialNextRoom;
+					$this->db->saveRoom($this->currentRoom, $potentialNextRoom, $direction, $this->id);
+				}
+			}else{
+				return  'The door won\'t open.<br>';
+			}
 		}
 		
 		function reconnect(Connection $conn){

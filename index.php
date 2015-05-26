@@ -10,6 +10,7 @@
 		include('config/config_db_local.php');
 		use Doctrine\DBAL\Configuration;
 		use Doctrine\DBAL\DriverManager;
+		use Game\Game;
 		use Game\Room\QuestionRoom;
 		use Game\Room\HintRoom;
 		use Game\Room\IntroRoom;
@@ -19,6 +20,7 @@
 		use Game\CommandProcessor;
 		use Game\DatabaseExtension;
 		session_start();
+		
 		
 		if(!isset($_SESSION['user'])){
 			?>
@@ -40,21 +42,22 @@
 		$hunger = 'Hunger: ';
 		$progress = 'Progress: ';
 		$items = null;
-		if(!isset($_SESSION['player'])){
+		if(!isset($_SESSION['game'])){
 			
 			$conn = DriverManager::getConnection($connectionParams, new Configuration());
 			$db = new DatabaseExtension($conn);
-			$player = new Player($name, $db);
-			$output = $player->getCurrentRoom()->welcomePlayer();
-			$_SESSION['player'] = serialize($player);
+			$id = $db->generateGameId($name);
+			$game = new Game($db, $id, $name);
+			$output = $game->getWelcomeMessage();
+			$_SESSION['game'] = serialize($game);
 			$_SESSION['output'] = $output;
 			
 		} else {
 			
-			$player = unserialize($_SESSION['player']);
+			$game = unserialize($_SESSION['game']);
 			
 			$conn = DriverManager::getConnection($connectionParams, new Configuration());
-			$player->reconnect($conn);
+			$game->reconnect($conn);
 			
 			if(isset($_POST['input'])){
 				
@@ -67,13 +70,13 @@
 			}
 			
 			$commandProcessor = new CommandProcessor();
-			$output = $commandProcessor->processCommand($command, $player).'<br>'.$_SESSION['output'];
+			//$output = $commandProcessor->processCommand($command, $player).'<br>'.$_SESSION['output'];
 			//for some reason '\n' needs to be specified in this function. 
 			$output = ltrim($output, "\n"); //TODO validate nessicity
 			$_SESSION['output'] = $output;
-			$_SESSION['player'] = serialize($player);
-			$hunger = 'Hunger: '.$player->getHunger();
-			$items = $player->getGatheredItems();
+			$_SESSION['game'] = serialize($game);
+			//$hunger = 'Hunger: '.$game->getHunger();
+			//$items = $player->getGatheredItems();
 			if($player->getDoorsUnlocked() != null){
 				$progress = 'Progress: '.$player->getDoorsUnlocked().'/10';
 			} else {

@@ -20,13 +20,27 @@
 				}
 			}
 			
-			
+			function getId(){
+				return $this->id;
+			}
 			
 			function getItem(){
 				if(isset($this->item)){
 					return $this->item;
 				}
 				return 0;
+			}
+			
+			function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db){
+				
+			}
+			
+			function getNextRoom($direction){
+				return 'HintRoom';
+			}
+			
+			function getQuestionHintOrWhatever(){
+				return null;
 			}
 			
 			function takeItem(){
