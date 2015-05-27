@@ -29,10 +29,6 @@
 				return $this->obstacle;
 			}
 			
-			function getId(){
-				return $this->id;
-			}
-			
 			function clearObstacle($itemName){
 				$result = "No obstacle to clear.";
 				if($this->clear == false){
@@ -58,18 +54,6 @@
 					return $this->item;
 				}
 				return 0;
-			}
-			
-			function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db){
-				
-			}
-			
-			function getNextRoom($direction){
-				return 'QuestionRoom';
-			}
-			
-			function getQuestionHintOrWhatever(){
-				return null;
 			}
 			
 			function takeItem(){

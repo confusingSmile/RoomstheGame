@@ -8,13 +8,10 @@
 			
 			private $hint;
 			private $answer;
-			//because for getNextRoom I will need the database. 
-			private $db;
 			
 			
 			function __construct($id, DatabaseExtension $db){
 				$this->id = $id;
-				$this->db = $db;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
@@ -24,19 +21,14 @@
 					$this->item = new Item($db);
 				}
 				
-				$hintData = $this->db->getHint();
+				$hintData = $db->getHint();
 				$this->hint = $hintData["text"];
 				$this->answer = $hintData["answer"];			
 				
 			}
 			
-			function getQuestionHintOrWhatever(){
+			function getHint(){
 				return $this->hint;
-			}
-			
-			function hintToString(){
-				$hintString = $this->hint.', '.$this->answer;
-				return $hintString;
 			}
 			
 			function getAnswer(){
@@ -52,21 +44,6 @@
 				return $result;
 			}
 			
-			function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db){
-				
-			}
-			
-			function getNextRoom($direction){
-				$obstacleRoomPossible = $this->db->obstacleRoomPossible();
-				$random = rand(0, 99);
-				
-				if($random > 24 || $obstacleRoomPossible != true || $direction != $this->answer){
-					return 'HintRoom';
-				} 
-				
-				return 'ObstacleRoom';
-				
-			}
 			
 			function getItem(){
 				if(isset($this->item)){

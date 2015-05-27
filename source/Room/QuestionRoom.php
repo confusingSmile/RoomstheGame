@@ -33,18 +33,8 @@
 				
 			}
 			
-			function getId(){
-				return $this->id;
-			}
-			
-			function getQuestionHintOrWhatever(){
+			function getQuestion(){
 				return $this->question;
-			}
-			
-			function questionToString(){
-				$questionsString = $this->question["answer"][0].', '.$this->question["answer"][1].', '.$this->question["answer"][2].', '.
-				$this->question["correct_answer"].', '.$this->answer;
-				return $questionString;
 			}
 			
 			function getAnswer(){
@@ -56,37 +46,6 @@
 					return $this->item;
 				}
 				return 0;
-			}
-			
-			function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db){
-				$this->id = $id;
-				
-				for($i=0; $i<4; $i++){
-					$this->getDoor($i)->block();
-				}
-				$unlockedDoors = explode($unlockedDoors, ', ');
-				foreach($unlockedDoors as $doorNumber){
-					$this->getDoor($doorNumber)->unblock();
-				}
-				
-				$questionParts = explode($questionHintorWhatever, ', ');
-				
-				$this->item = new Item($db, $itemId);
-				
-				
-			}
-			
-			function getNextRoom($direction){
-				if($direction === $this->anwer){
-					return 'LockedDoorRoom';
-				}
-				
-				$random = rand(0, 99);
-				if($random < 60){
-					return 'HintRoom';
-				}
-				
-				return 'QuestionRoom';
 			}
 			
 			function takeItem(){

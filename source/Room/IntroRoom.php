@@ -19,9 +19,6 @@
 				}
 			}
 			
-			function getId(){
-				return $this->id;
-			}
 			
 			function takeItem(){
 				$result=0;
@@ -32,23 +29,12 @@
 				return $result;
 			}
 			
-			function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db){
-				
-			}
-			
-			function getNextRoom($direction){
-				return 'HintRoom';
-			}
 			
 			function getItem(){
 				if(isset($this->item)){
 					return $this->item;
 				}
 				return 0;
-			}
-			
-			function getQuestionHintOrWhatever(){
-				return null;
 			}
 			
 			function welcomePlayer(){

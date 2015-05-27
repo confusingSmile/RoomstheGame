@@ -14,30 +14,20 @@
 		*	generatedItems: items present in this game of RoomsTheGame. 
 		*/
 		private $lastRoom;
-		private $generatedItems = array();
+		private $generatedItems;
 		private $nextRoomId;
 		private $db;
 		
-		function __construct(DatabaseExtension $db){
+		function __construct(Room $lastRoom, DatabaseExtension $db){
+			$this->lastRoom = $lastRoom; 
 			$this->db = $db;
-			$this->nextRoomId = 2;
 		}
 		
 		function addGeneratedItem(Item $item){
 			$this->generatedItems[] = $item;
 		}
 		
-		function getGeneratedItems(){
-			return $this->generatedItems;
-		}
-		
-		function getRoomRebuilt($roomId, $direction, $gameId){
-			$dataToBuildFrom = $this->db->getNeighbour($roomId, $direction, $gameId);
-			
-			
-		}
-		
-		function createRoom($roomType, $gameId){
+		function createRoom($direction, $correctExit = false){
 			//rules: 
 			/*
 				QuestionRoom -> correct -> LockedDoorRoom
