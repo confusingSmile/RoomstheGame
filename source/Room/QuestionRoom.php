@@ -9,50 +9,28 @@
 			private $question; 
 			private $answer;
 			
-			function __construct($id, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
-								 $unlockedDoors = null){
+			function __construct($id, DatabaseExtension $db){
 				
 				$this->id = $id;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
-				if($unlockedDoors){
-					
-					foreach($unlockedDoors as $doorNumber){
-						$this->getDoor($doorNumber)->unblock();
+				
+				$random = rand(1, 2);
+				if($random == 1){
+					$this->item = new Item($db);
+				}
+				
+				$this->question = $db->getQuestion(); 
+				shuffle($this->question["answer"]); 
+				
+				$this->answer = "0";
+				for($j=0;$j<3;$j++){
+					if($this->question["answer"][($j)] == $this->question["correct_answer"]){
+						$this->answer = $j;
 					}
 				}
 				
-				if($thisRoomIsNew){
-					
-					$random = rand(1, 2);
-					if($random == 1){
-						$this->item = new Item($db);
-					}
-					
-				} else if($itemId){
-					$this->item = new Item($db, $itemId);
-				}
-				
-				if(!$questionHintorWhatever){
-					$this->question = $db->getQuestion(); 
-					shuffle($this->question["answer"]); 
-					
-					$this->answer = "0";
-					for($j=0;$j<3;$j++){
-						if($this->question["answer"][($j)] == $this->question["correct_answer"]){
-							$this->answer = $j;
-						}
-					}
-				} else{ 
-					$questionParts = explode($questionHintorWhatever, 'b.b');
-					$this->question["answer"][0] = $questionParts[0];
-					$this->question["answer"][1] = $questionParts[1];
-					$this->question["answer"][2] = $questionParts[2];
-					$this->question["correct_answer"] = $questionParts[3];
-					$this->answer = $questionParts[4];
-					$this->question["question"] = $questionParts[5];
-				} 
 			}
 			
 			function getId(){
@@ -60,8 +38,12 @@
 			}
 			
 			function getQuestionHintOrWhatever(){
-				$questionsString = $this->question["answer"][0].'b.b'.$this->question["answer"][1].'b.b'.$this->question["answer"][2].'b.b'.
-				$this->question["correct_answer"].'b.b'.$this->answer.'b.b'.$this->question["question"];
+				return $this->question;
+			}
+			
+			function questionToString(){
+				$questionsString = $this->question["answer"][0].', '.$this->question["answer"][1].', '.$this->question["answer"][2].', '.
+				$this->question["correct_answer"].', '.$this->answer;
 				return $questionString;
 			}
 			
@@ -74,6 +56,24 @@
 					return $this->item;
 				}
 				return 0;
+			}
+			
+			function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db){
+				$this->id = $id;
+				
+				for($i=0; $i<4; $i++){
+					$this->getDoor($i)->block();
+				}
+				$unlockedDoors = explode($unlockedDoors, ', ');
+				foreach($unlockedDoors as $doorNumber){
+					$this->getDoor($doorNumber)->unblock();
+				}
+				
+				$questionParts = explode($questionHintorWhatever, ', ');
+				
+				$this->item = new Item($db, $itemId);
+				
+				
 			}
 			
 			function getNextRoom($direction){

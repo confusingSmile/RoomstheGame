@@ -21,19 +21,7 @@
 			$this->player = new Player($playerName);
 			$this->building = new Building($this->db);
 			$this->currentRoom = new IntroRoom(1, $this->db); 
-			if(!($this->db->retreiveGameData() )){
-				$this->db->insertGame($this->id, $playerName);
-			} else {
-				$gameData = $this->db->retreiveGameData();
-				$currentRoomId = $gameData['current_room_id'];
-				$this->currentRoom = $this->db->getRoomFromDatabase($currentRoomId, $this->id);
-				$hungerLost = 300 - $gameData['current_hunger'];
-				$this-player->becomeHungrier($hungerLost);
-				$this->player->overwriteDoorsUnlocked($gameData['current_doors_unlocked']);
-				$this->player->overwriteItemsGathered($gameData['items_gathered']);
-				$this->building->overwriteItemsGenerated($gameData['items_generated']);
-			}
-			
+			$this->db->insertGame($this->id, $playerName);
 			
 			if($this->currentRoom->getItem()){
 				$this->db->saveIntroRoom($this->currentRoom->getItem()->getId(), $this->id);
@@ -57,14 +45,6 @@
 		
 		function getWelcomeMessage(){
 			return $this->currentRoom->welcomePlayer();
-		}
-		
-		function getGatheredItems(){
-			return $this->players->getGatheredItems();
-		}
-		
-		function getDoorsUnlocked(){
-			return $this->player->getDoorsUnlocked();
 		}
 		
 		function newTurn($command){
@@ -158,8 +138,6 @@
 					$this->currentRoom = $potentialNextRoom;
 					$this->db->saveRoom($this->currentRoom, $potentialNextRoom, $direction, $this->id);
 				}
-				
-				return $this->getWelcomeMessage();
 			}else{
 				return  'The door won\'t open.<br>';
 			}

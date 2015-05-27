@@ -12,38 +12,26 @@
 			private $db;
 			
 			
-			function __construct($id, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
-								 $unlockedDoors = null){
+			function __construct($id, DatabaseExtension $db){
 				$this->id = $id;
+				$this->db = $db;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
 				
-				if($thisRoomIsNew){
-					
-					$random = rand(1, 2);
-					if($random == 1){
-						$this->item = new Item($db);
-					}
-					
-				} else if($itemId){
-					$this->item = new Item($db, $itemId);
+				$random = rand(1, 2);
+				if($random == 1){
+					$this->item = new Item($db);
 				}
 				
-				if(!$questionHintorWhatever){
-					$hintData = $this->db->getHint();
-					$this->hint = $hintData["text"];
-					$this->answer = $hintData["answer"];
-				} else{
-					$hintParts = explode($questionHintorWhatever, 'b.b');
-					$this->hint = $hintParts[0];
-					$this->answer = $hintParts[1]; 
-				}				
+				$hintData = $this->db->getHint();
+				$this->hint = $hintData["text"];
+				$this->answer = $hintData["answer"];			
 				
 			}
 			
 			function getQuestionHintOrWhatever(){
-				return $this->hint.'b.b'.$this->answer;
+				return $this->hint;
 			}
 			
 			function hintToString(){
