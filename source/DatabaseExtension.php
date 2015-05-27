@@ -3,12 +3,18 @@
 	namespace Game;
 	use Doctrine\Common\ClassLoader;
 	use Doctrine\DBAL\Connection;
+	use Game\Item;
 	use Game\Room\Room;
 	use Game\Room\QuestionRoom;
 	use Game\Room\HintRoom;
 	use Game\Room\IntroRoom;
 	use Game\Room\ObstacleRoom;
 	use Game\Room\LockedDoorRoom;
+	use Game\Builder\IntroRoomBuilder;
+	use Game\Builder\HintRoomBuilder;
+	use Game\Builder\LockedDoorRoomBuilder;
+	use Game\Builder\ObstacleRoomBuilder;
+	use Game\Builder\QuestionRoomBuilder;
 	
 	class DatabaseExtension{
 		
@@ -368,25 +374,30 @@
 			$stmt->bindValue('neighbourId', $parent->getId());
 			$stmt->execute();
 		}
-		
+		//returns: Room
 		function getRoomFromDatabase($roomId, $gameId){
+			$queryResult = '';
 			$result = '';
-			$sql = "SELECT * FROM rooms WHERE room_id = :roomId AND game_id = :gameId"; 
+			$sql = "SELECT item_id, unlocked_doors, question_or_hint, room_type FROM rooms WHERE room_id = :roomId AND game_id = :gameId"; 
 			$stmt = $this->conn->prepare($sql); 
 			$stmt->bindValue('roomId', $roomId);
 			$stmt->bindValue('gameId', $gameId);
 			$stmt->execute();
 			
 			while ($row = $stmt->fetch()) {  
-				foreach(array_keys($row) as $index){
-					$result[$index] = $row[$index];
-				}
+				$queryResult['item_id'] = $row['item_id'];
+				$queryResult['unlocked_doors'] = $row['unlocked_doors'];
+				$queryResult['question_or_hint'] = $row['question_or_hint'];
+				$queryResult['room_type'] = $row['room_type'];
 			}
+			
+			$builder = new $queryResult['room_type']Builder();
+			$builder->createRoom($roomId, $gameId, $this, $queryResult['item_id'], false, $queryResult['unlocked_doors'], $queryResult['question_or_hint']);
 			
 			return $result;
 		}
 		
-		
+		//returns: Room
 		function getNeighbour($roomId, $direction, $gameId){
 			$queryResult = null;
 			$sql = "SELECT neighbour_id FROM rooms WHERE room_id = :roomId AND direction = :direction AND game_id = :gameId"; 
@@ -430,16 +441,29 @@
 		}
 		
 		function retreiveGameData($gameId){
-			$result = '';
+			$result = false;
 			$sql = "SELECT * FROM save_data WHERE game_id = :gameId"; 
 			$stmt = $this->conn->prepare($sql); 
 			$stmt->bindValue('gameId', $gameId);
 			$stmt->execute();
 			
 			while ($row = $stmt->fetch()) {  
-				foreach(array_keys($row) as $index){
-					$result[$index] = $row[$index];
-				}
+				$result['current_room_id'] = $row['current_room_id'];
+				$result['current_hunger'] = $row['current_hunger'];
+				$result['current_doors_unlocked'] = $row['current_doors_unlocked'];
+				$result['items_gathered'] = explode($row['items_gathered'], ', ');
+				$result['items_generated'] = explode($row['items_generated'], ', ');
+				
+			}
+			
+			foreach($result['items_generated'] as $item){
+				$item = new Item($this, $item);
+				unset($item);
+			}
+			
+			foreach($result['items_gathered'] as $itemGathered){
+				$itemGathered = new Item($this, $itemGathered);
+				unset($itemGathered);
 			}
 			
 			return $result;
@@ -465,11 +489,13 @@
 			$generatedItems = '';
 			foreach($itemsGathered as $item){
 				$gatheredItems .= $item->getId().', ';
+				unset($item);
 			}
 			$gatheredItems = rtrim($gatheredItems, ', ');
 			
 			foreach($itemsGenerated as $item){
 				$generatedItems .= $item->getId().', ';
+				unset($item);
 			}
 			$generatedItems = rtrim($generatedItems, ', ');
 			

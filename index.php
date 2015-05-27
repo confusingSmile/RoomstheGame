@@ -69,16 +69,15 @@
 				
 			}
 			
-			$commandProcessor = new CommandProcessor();
-			//$output = $commandProcessor->processCommand($command, $player).'<br>'.$_SESSION['output'];
+			$output = $game->processCommand($command).'<br>'.$_SESSION['output'];
 			//for some reason '\n' needs to be specified in this function. 
 			$output = ltrim($output, "\n"); //TODO validate nessicity
 			$_SESSION['output'] = $output;
 			$_SESSION['game'] = serialize($game);
-			//$hunger = 'Hunger: '.$game->getHunger();
-			//$items = $player->getGatheredItems();
-			if($player->getDoorsUnlocked() != null){
-				$progress = 'Progress: '.$player->getDoorsUnlocked().'/10';
+			$hunger = 'Hunger: '.$game->getHunger();
+			$items = $game->getGatheredItems();
+			if($game->getDoorsUnlocked() != null){
+				$progress = 'Progress: '.$game->getDoorsUnlocked().'/10';
 			} else {
 				$progress = 'Progress: 0/10';
 			}

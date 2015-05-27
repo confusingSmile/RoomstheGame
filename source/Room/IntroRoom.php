@@ -7,15 +7,22 @@
 		
 		class IntroRoom extends Room{	
 			
-			function __construct($id, DatabaseExtension $db){
+			function __construct($id, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
+								 $unlockedDoors = null){
 				$this->id = $id;
 				for($i=0;$i<4;$i++){
-					$this->doors[$i] = new Door();
+					$this->doors[$i] = new Door($thisRoomIsNew);
 				}
 				
-				$random = rand(1, 2);
-				if($random == 1){
-					$this->item = new Item($db);
+				if($thisRoomIsNew){
+					
+					$random = rand(1, 2);
+					if($random == 1){
+						$this->item = new Item($db);
+					}
+					
+				} else if($itemId){
+					$this->item = new Item($db, $itemId);
 				}
 			}
 			
