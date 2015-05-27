@@ -65,6 +65,16 @@
 			}
 		}
 		
+		//used when loading the game
+		function overwriteDoorsUnlocked($newValue){
+			$this->doorsUnlocked = $newvalue;
+		} 
+		
+		//used when loading the game
+		function overwriteItemsGathered($newItems){
+			$this->gatheredItems = $newItems;
+		}
+		
 		//unlocks the Door if it's locked. 
 		function unlockKeyDoor(Room $currentRoom, $direction){
 			if(get_class($currentRoom) == 'Game\Room\LockedDoorRoom'){	
