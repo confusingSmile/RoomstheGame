@@ -11,30 +11,17 @@
 			private $obstacle;
 			private $clear; 
 			
-			function __construct($id, $obstacle, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
-								 $unlockedDoors = null){
+			function __construct($id, $obstacle, DatabaseExtension $db){
 				$this->id = $id;
 				$this->obstacle = $obstacle;
 				$this->db = $db;
 				for($i=0;$i<4;$i++){
-					$this->doors[$i] = new Door($thisRoomIsNew);
-				}
-				if($unlockedDoors){
-					
-					foreach($unlockedDoors as $doorNumber){
-						$this->getDoor($doorNumber)->unblock();
-					}
+					$this->doors[$i] = new Door();
 				}
 				
-				if($thisRoomIsNew){
-					
-					$random = rand(1, 2);
-					if($random == 1){
-						$this->item = new Item($db);
-					}
-					
-				} else if($itemId){
-					$this->item = new Item($db, $itemId);
+				$random = rand(1, 2);
+				if($random == 1){
+					$this->item = new Item($this->db);
 				}
 			}
 			
@@ -82,7 +69,7 @@
 			}
 			
 			function getQuestionHintOrWhatever(){
-				return $this->obstacle->getObstacleId();
+				return null;
 			}
 			
 			function takeItem(){

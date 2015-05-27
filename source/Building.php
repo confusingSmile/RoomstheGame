@@ -7,11 +7,6 @@
 	use Game\Room\ObstacleRoom;
 	use Game\Room\QuestionRoom;
 	use Game\DatabaseExtension;
-	use Game\Builder\IntroRoomBuilder;
-	use Game\Builder\HintRoomBuilder;
-	use Game\Builder\LockedDoorRoomBuilder;
-	use Game\Builder\ObstacleRoomBuilder;
-	use Game\Builder\QuestionRoomBuilder;
 	class Building{
 		
 		/*
@@ -36,11 +31,6 @@
 			return $this->generatedItems;
 		}
 		
-		//used when loading the game
-		function overwriteItemsGenerated($newItems){
-			$this->generatedItems = $newItems;
-		}
-		
 		function getRoomRebuilt($roomId, $direction, $gameId){
 			$dataToBuildFrom = $this->db->getNeighbour($roomId, $direction, $gameId);
 			
@@ -48,7 +38,6 @@
 		}
 		
 		function createRoom($roomType, $gameId){
-			//roomType is the classname without namespace indications
 			//rules: 
 			/*
 				QuestionRoom -> correct -> LockedDoorRoom
