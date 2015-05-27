@@ -11,22 +11,39 @@
 			private $obstacle;
 			private $clear; 
 			
-			function __construct($obstacle, DatabaseExtension $db, $id){
+			function __construct($id, $obstacle, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
+								 $unlockedDoors = null){
+				$this->id = $id;
 				$this->obstacle = $obstacle;
-				$this->ID = $id;
 				$this->db = $db;
 				for($i=0;$i<4;$i++){
-					$this->doors[$i] = new Door();
+					$this->doors[$i] = new Door($thisRoomIsNew);
+				}
+				if($unlockedDoors){
+					
+					foreach($unlockedDoors as $doorNumber){
+						$this->getDoor($doorNumber)->unblock();
+					}
 				}
 				
-				$random = rand(1, 2);
-				if($random == 1){
-					$this->item = new Item($this->db);
+				if($thisRoomIsNew){
+					
+					$random = rand(1, 2);
+					if($random == 1){
+						$this->item = new Item($db);
+					}
+					
+				} else if($itemId){
+					$this->item = new Item($db, $itemId);
 				}
 			}
 			
 			function getObstacle(){
 				return $this->obstacle;
+			}
+			
+			function getId(){
+				return $this->id;
 			}
 			
 			function clearObstacle($itemName){
@@ -54,6 +71,18 @@
 					return $this->item;
 				}
 				return 0;
+			}
+			
+			function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db){
+				
+			}
+			
+			function getNextRoom($direction){
+				return 'QuestionRoom';
+			}
+			
+			function getQuestionHintOrWhatever(){
+				return $this->obstacle->getObstacleId();
 			}
 			
 			function takeItem(){

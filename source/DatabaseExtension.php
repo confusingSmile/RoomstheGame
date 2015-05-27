@@ -3,6 +3,18 @@
 	namespace Game;
 	use Doctrine\Common\ClassLoader;
 	use Doctrine\DBAL\Connection;
+	use Game\Item;
+	use Game\Room\Room;
+	use Game\Room\QuestionRoom;
+	use Game\Room\HintRoom;
+	use Game\Room\IntroRoom;
+	use Game\Room\ObstacleRoom;
+	use Game\Room\LockedDoorRoom;
+	use Game\Builder\IntroRoomBuilder;
+	use Game\Builder\HintRoomBuilder;
+	use Game\Builder\LockedDoorRoomBuilder;
+	use Game\Builder\ObstacleRoomBuilder;
+	use Game\Builder\QuestionRoomBuilder;
 	
 	class DatabaseExtension{
 		
@@ -226,6 +238,23 @@
 			return $result;
 		}
 		
+		function obstacleRoomPossible(){
+			$result = "";
+			$sql = "SELECT count(*) 'count'
+				    FROM rooms
+					WHERE item_id is not null"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->execute();
+			
+			while ($row = $stmt->fetch()) {                              
+				if ($row['count'] > 0){
+					return true;
+				}				
+			}
+			
+			return false;
+		}
+		
 		//returns the IDs of Obstacles that can be cleared by any of the currently generated items. 
 		function getObstaclesClearedByItems($generatedItems){
 			for($i = 0;$i < count($generatedItems); $i++){
@@ -303,5 +332,200 @@
 			return $result;
 		}
 		
+		function saveIntroRoom($introRoomItemId, $gameId){
+			$sql = "INSERT INTO rooms (room_id, item_id, unlocked_doors, game_id, question_or_hint, room_type) 
+					VALUES (1, :itemId, '0, 1, 2, 3', :gameId, null, 'Game\Room\IntroRoom')"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('itemId', $introRoomItemId);
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->execute();
+		}
+		
+		function saveRoom(Room $parent, Room $room, $direction, $gameId){ 
+		
+			//small preparation in order to know the unlocked doors 
+			$unlockedDoors = '';
+			for($i=0; $i<4; $i++){
+				if(!$room->getDoor($i)->getBlocked()){
+					$unlockedDoors .= $i.', ';	
+				}
+			}
+			$unlockedDoors = rtrim($unlockedDoors, ', ');
+			
+			
+			
+		
+			$sql = "INSERT INTO rooms (room_id, item_id, unlocked_doors, game_id, question_or_hint, room_type) 
+					VALUES (:roomId, :itemId, ':doorsUnlocked', :gameId, :questionOrHint, 'Game\Room\IntroRoom')"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('roomId', $room->getId());
+			$stmt->bindValue('itemId', $room->getItem()->getId());
+			$stmt->bindValue('doorsUnlocked', $unlockedDoors);
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->bindValue(':questionOrHint', $room->getQuestionHintOrWhatever());
+			$stmt->execute();
+			
+			$sql = "INSERT INTO neighbours (room_id, game_id, direction, neighbour_id)
+					VALUES (:roomId, :gameId, :direction, :neighbourId)";
+			$stmt = $this->conn->prepare($sql);
+			$stmt->bindValue('roomId', $room->getId());
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->bindValue('direction', $direction);
+			$stmt->bindValue('neighbourId', $parent->getId());
+			$stmt->execute();
+		}
+		//returns: Room
+		function getRoomFromDatabase($roomId, $gameId){
+			$queryResult = '';
+			$result = '';
+			$sql = "SELECT item_id, unlocked_doors, question_or_hint, room_type FROM rooms WHERE room_id = :roomId AND game_id = :gameId"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('roomId', $roomId);
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->execute();
+			
+			while ($row = $stmt->fetch()) {  
+				$queryResult['item_id'] = $row['item_id'];
+				$queryResult['unlocked_doors'] = $row['unlocked_doors'];
+				$queryResult['question_or_hint'] = $row['question_or_hint'];
+				$queryResult['room_type'] = $row['room_type'];
+			}
+			
+			$builder = new $queryResult['room_type']Builder();
+			$builder->createRoom($roomId, $gameId, $this, $queryResult['item_id'], false, $queryResult['unlocked_doors'], $queryResult['question_or_hint']);
+			
+			return $result;
+		}
+		
+		//returns: Room
+		function getNeighbour($roomId, $direction, $gameId){
+			$queryResult = null;
+			$sql = "SELECT neighbour_id FROM rooms WHERE room_id = :roomId AND direction = :direction AND game_id = :gameId"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('roomId', $roomId);
+			$stmt->bindValue('direction', $direction);
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->execute();
+			
+			while ($row = $stmt->fetch()) {  
+				$queryResult = $row['neighbour_id'];
+			}
+			
+			if($queryResult){
+				$result = $this->getRoomFromDatabase($queryResult, $gameId);
+			} else {
+				return null;
+			}
+			
+			return $result;
+		}
+		
+		function generateGameId(){
+			$minimum = '';
+			$maximum = '';
+			$sql = "SELECT min(game_id) 'minimum', max(game_id) 'maximum'
+					   FROM games"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->execute();
+			
+			while ($row = $stmt->fetch()) {                              
+				$minimum = $row['minimum'];
+				$maximum = $row['maximum'];
+			} 
+			
+			if($minimum > 1){
+				return $minimum - 1;
+			}
+			
+			return $maximum + 1;
+		}
+		
+		function retreiveGameData($gameId){
+			$result = false;
+			$sql = "SELECT * FROM save_data WHERE game_id = :gameId"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->execute();
+			
+			while ($row = $stmt->fetch()) {  
+				$result['current_room_id'] = $row['current_room_id'];
+				$result['current_hunger'] = $row['current_hunger'];
+				$result['current_doors_unlocked'] = $row['current_doors_unlocked'];
+				$result['items_gathered'] = explode($row['items_gathered'], ', ');
+				$result['items_generated'] = explode($row['items_generated'], ', ');
+				
+			}
+			
+			foreach($result['items_generated'] as $item){
+				$item = new Item($this, $item);
+				unset($item);
+			}
+			
+			foreach($result['items_gathered'] as $itemGathered){
+				$itemGathered = new Item($this, $itemGathered);
+				unset($itemGathered);
+			}
+			
+			return $result;
+		}
+		
+		function retreiveGameList($username){
+			$result = array();
+			$sql = "SELECT game_id FROM games WHERE username = :username"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('username', $username);
+			$stmt->execute();
+			
+			while ($row = $stmt->fetch()) {                              
+				$result[] = $row['game_id'];	
+			} 
+			 
+			
+			return $result;
+		}
+		
+		function saveGame($gameId, $currentRoomId, $currentHunger, $currentDoorsUnlocked, $itemsGathered, $itemsGenerated){
+			$gatheredItems = '';
+			$generatedItems = '';
+			foreach($itemsGathered as $item){
+				$gatheredItems .= $item->getId().', ';
+				unset($item);
+			}
+			$gatheredItems = rtrim($gatheredItems, ', ');
+			
+			foreach($itemsGenerated as $item){
+				$generatedItems .= $item->getId().', ';
+				unset($item);
+			}
+			$generatedItems = rtrim($generatedItems, ', ');
+			
+			$sql = "INSERT INTO save_data (game_id, current_room_id, current_hunger, current_doors_unlocked, items_gathered, items_generated) 
+					VALUES (:gameId, :currentRoomId, :currentHunger, :currentDoorsUnlocked, :itemsGathered, :itemsGenerated)"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->bindValue('currentRoomId', $currentRoomId);
+			$stmt->bindValue('currentHunger', $currentHunger);
+			$stmt->bindValue('currentDoorsUnlocked', $currentDoorsUnlocked);
+			$stmt->bindValue('itemsGathered', $gatheredItems);
+			$stmt->bindValue('itemsGenerated', $generatedItems);
+			$stmt->execute();
+		}
+			
+		function insertGame($gameId, $username, $gameName = "New game 1"){
+			$sql = "INSERT INTO games (game_id, username, game_name) 
+					VALUES (:gameId, :username, :game_name)"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->bindValue('username', $username);
+			$stmt->bindValue('game_name', $gameName);
+			$stmt->execute();
+		}
+			
+		function deleteGame($gameId){
+			$sql = "DELETE FROM games WHERE game_id = :gameId"; 
+			$stmt = $this->conn->prepare($sql); 
+			$stmt->bindValue('gameId', $gameId);
+			$stmt->execute();
+		}
 	}
 ?>

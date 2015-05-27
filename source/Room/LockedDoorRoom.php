@@ -8,25 +8,52 @@
 		class LockedDoorRoom extends Room{	
 			
 			
-			function __construct(DatabaseExtension $db, $id){
-				$this->ID = $id;
+			function __construct($id, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
+								 $unlockedDoors = null){
+				$this->id = $id;
 				for($i=0;$i<4;$i++){
-					$this->doors[$i] = new Door();
+					$this->doors[$i] = new Door($thisRoomIsNew);
+				}
+				if($unlockedDoors){
+					
+					foreach($unlockedDoors as $doorNumber){
+						$this->getDoor($doorNumber)->unblock();
+					}
 				}
 				
-				$random = rand(1, 2);
-				if($random == 1){
-					$this->item = new Item($db);
+				if($thisRoomIsNew){
+					
+					$random = rand(1, 2);
+					if($random == 1){
+						$this->item = new Item($db);
+					}
+					
+				} else if($itemId){
+					$this->item = new Item($db, $itemId);
 				}
 			}
 			
-			
+			function getId(){
+				return $this->id;
+			}
 			
 			function getItem(){
 				if(isset($this->item)){
 					return $this->item;
 				}
 				return 0;
+			}
+			
+			function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db){
+				
+			}
+			
+			function getNextRoom($direction){
+				return 'HintRoom';
+			}
+			
+			function getQuestionHintOrWhatever(){
+				return null;
 			}
 			
 			function takeItem(){

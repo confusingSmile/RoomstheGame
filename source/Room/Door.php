@@ -21,6 +21,10 @@
 			return 'The door won\'t open.';
 		}
 		
+		function block(){
+			$this->blocked = true;
+		}
+		
 		function getBlocked(){
 			return $this->blocked;
 		}

@@ -12,7 +12,7 @@
 		/*
 		*	hunger: integer starting at 300, indicating how not-hungry the player is. 
 		*		If it reaches 0, the player "dies".
-		*	name: the username. This exist because of the save function, which needs a username/save game 
+		*	name: the username of the current user 
 		*	currentRoom: the Room that the player is visiting.
 		*	gatheredItems: items the player can use
 		*	generatedItems: items that the player can obtain or has obtained
@@ -21,23 +21,23 @@
 		*/
 		private $hunger;
 		private $name; 
-		private $currentRoom;
 		private $gatheredItems = array();
 		private $doorsUnlocked;
-		private $building;
-		private $db;
 	
-		function __construct(DatabaseExtension $db){
-			$this->db = $db;
+		function __construct($name){
+			$this->name = $name;
 			$this->hunger = 300;
 			$this->doorsUnlocked = 0;
-			$this->currentRoom = new IntroRoom($this->db, 1);
-			$this->currentRoom->welcomePlayer();
 		}
 		
 		function getHunger(){
 			return $this->hunger;
 		}
+		
+		function getName(){
+			return $this->name;
+		}
+		
 		
 		/**
 		 * Returns a list of gathered items
@@ -57,36 +57,49 @@
 			return $this->doorsUnlocked;
 		}
 		
-		function setBuilding($building){
-			$this->building = $building;
-			var_dump($building);
+		function becomeHungrier($byThisMuch){
+			if($byThisMuch > $this->hunger){
+				$this->hunger = 0;
+			} else {
+				$this->hunger = $this->hunger - $byThisMuch;
+			}
+		}
+		
+		//used when loading the game
+		function overwriteDoorsUnlocked($newValue){
+			$this->doorsUnlocked = $newvalue;
+		} 
+		
+		//used when loading the game
+		function overwriteItemsGathered($newItems){
+			$this->gatheredItems = $newItems;
 		}
 		
 		//unlocks the Door if it's locked. 
-		function unlockKeyDoor($direction){
-			if(get_class($this->currentRoom) == 'Game\Room\LockedDoorRoom'){	
+		function unlockKeyDoor(Room $currentRoom, $direction){
+			if(get_class($currentRoom) == 'Game\Room\LockedDoorRoom'){	
 				$firstUnlockThisRoom = true; 
 				for($i=0;$i<4;$i++){
-					$j = $i%4;
-					if($this->currentRoom->getDoor($j)->getBlocked() == false){
+					$j = $i%4; //useless?
+					if($currentRoom->getDoor($j)->getBlocked() == false){
 						$firstUnlockThisRoom = false;
 					}
 				}
 				if($firstUnlockThisRoom){
 					$this->doorsUnlocked ++;
 				}
-				return $this->currentRoom->getDoor($direction)->unblock();
+				return $currentRoom->getDoor($direction)->unblock();
 			}
 			return 'Nothing to unlock.';
 		}
 		
-		function obtainItem(){
-			if($this->currentRoom->getItem()){
-				$pickedUpItem = $this->currentRoom->getItem();
+		function obtainItem(Room $currentRoom){
+			if($currentRoom->getItem()){
+				$pickedUpItem = $currentRoom->getItem();
 				
 				if(!(in_array($pickedUpItem, $this->gatheredItems)) ){
 					$this->gatheredItems[] = $pickedUpItem;
-					$this->currentRoom->takeItem();
+					$currentRoom->takeItem();
 					return 'Obtained a(n)' . $pickedUpItem->getItemName(). '.';
 				} else {
 					return 'You already have this item: ' . $pickedUpItem->getItemName() . '.';
@@ -97,8 +110,8 @@
 			return 'There is no item.';
 		}
 		
-		function searchRoomForItem(){
-			if($this->currentRoom->getItem() != null){
+		function searchRoomForItem(Room $room){
+			if($room->getItem() != null){
 				return 'There seems to be something here.';
 			}
 			return 'No items in this room.';
@@ -108,54 +121,24 @@
 		 * uses an item
 		 *
 		 * @param string $itemName the Item the player wants to use
+		 * @param obstacleRoom boolean wether or not this happens in an obstacleRoom, as opposed to other rooms
 		 *
 		 * @return string for the textarea in index.php
 		 */
-		function useItem($itemName){		
+		function useItem($itemName, $obstacleRoom){		
 			if (empty($this->gatheredItems)) {
 				return 'You don\'t have any items...';
 			}
 			
 			foreach($this->gatheredItems as $gatheredItem){
-				if($itemName === $gatheredItem->getItemName() && get_class($this->currentRoom) === 'Game\Room\ObstacleRoom'){
-					return $this->currentRoom->clearObstacle($itemName);
+				if($itemName === $gatheredItem->getItemName() && $obstacleRoom == true){
+					return $room->clearObstacle($itemName);
 				}
 			}
 			
 			return 'Nothing happened...';
 		}
 		
-		
-		
-		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
-		function travel($direction){
-			if(!$this->currentRoom->getNeighbour($direction)){	
-				if(!$this->currentRoom->getDoor($direction)->getBlocked()){
-					//create the room
-					$buildingOutput = $this->building->createRoom($direction);
-					//actually enter the next room, which costs hunger, so subtract 1 hunger;
-					$this->currentRoom = $this->currentRoom->getNeighbour($direction);
-					$this->hunger --;
-					
-					return $buildingOutput.'\n'.$this->currentRoom->welcomePlayer();
-				}else{
-					return  'The door won\'t open.';
-				}
-			}else{
-				//the player is moving back into a room that has already generated. 
-				$this->currentRoom = $this->currentRoom->getNeighbour($direction);
-				return $this->currentRoom->welcomePlayer();
-			}
-			
-		}
-		
-		function gameOver(){
-			//maybe send something to the CommandProcessor
-		}
-		
-		function reconnect(Connection $conn){
-			$this->db->reconnect($conn);
-		}
 		
 	}
 ?>

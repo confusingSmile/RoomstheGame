@@ -10,16 +10,17 @@
 		include('config/config_db_local.php');
 		use Doctrine\DBAL\Configuration;
 		use Doctrine\DBAL\DriverManager;
+		use Game\Game;
 		use Game\Room\QuestionRoom;
 		use Game\Room\HintRoom;
 		use Game\Room\IntroRoom;
 		use Game\Room\ObstacleRoom;
 		use Game\Room\LockedDoorRoom;
-		use Game\Player\Player;//
+		use Game\Player\Player;
 		use Game\CommandProcessor;
 		use Game\DatabaseExtension;
-		
 		session_start();
+		
 		
 		if(!isset($_SESSION['user'])){
 			?>
@@ -36,7 +37,8 @@
 		$output = '';
 		
 		//starting the game
-		$player = '';//
+		$player = '';
+		$name = $_SESSION['user'];
 		$hunger = 'Hunger: ';
 		$progress = 'Progress: ';
 		$items = null;
@@ -44,17 +46,16 @@
 			
 			$conn = DriverManager::getConnection($connectionParams, new Configuration());
 			$db = new DatabaseExtension($conn);
-			$player = new Player($db);
-			$game = new Game($db, $player);
-			$game->registratePlayer($player);
-			$output = '<PH> Welcome, player.';
+			$id = $db->generateGameId($name);
+			$game = new Game($db, $id, $name);
+			$output = $game->getWelcomeMessage();
 			$_SESSION['game'] = serialize($game);
 			$_SESSION['output'] = $output;
 			
 		} else {
 			
 			$game = unserialize($_SESSION['game']);
-			//var_dump($player);
+			
 			$conn = DriverManager::getConnection($connectionParams, new Configuration());
 			$game->reconnect($conn);
 			
@@ -68,21 +69,18 @@
 				
 			}
 			
-			$commandProcessor = new CommandProcessor();
-			$output = $commandProcessor->processCommand($command, $player).'<br>'.$_SESSION['output'];
+			$output = $game->processCommand($command).'<br>'.$_SESSION['output'];
 			//for some reason '\n' needs to be specified in this function. 
-			$output = ltrim($output, '\n');
+			$output = ltrim($output, "\n"); //TODO validate nessicity
 			$_SESSION['output'] = $output;
 			$_SESSION['game'] = serialize($game);
-			$hunger = 'Hunger: '.$player->getHunger();
-			$items = $player->getGatheredItems();
-			if($player->getDoorsUnlocked() != null){
-				$progress = 'Progress: '.$player->getDoorsUnlocked().'/10';
+			$hunger = 'Hunger: '.$game->getHunger();
+			$items = $game->getGatheredItems();
+			if($game->getDoorsUnlocked() != null){
+				$progress = 'Progress: '.$game->getDoorsUnlocked().'/10';
 			} else {
 				$progress = 'Progress: 0/10';
 			}
-			
-			//save the game
 			
 		}
 		

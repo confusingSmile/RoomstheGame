@@ -12,7 +12,7 @@
 		private $neighbours;
 		private $item;
 		private $doors;
-		private $ID;
+		private $id;
 		
 		
 		abstract function getItem();
@@ -21,7 +21,16 @@
 		
 		abstract function getDoor($direction);
 		
+		abstract function getId();
+		
 		abstract function registrateNeigbour(Room $room, $direction);
+		
+		abstract function getNextRoom($direction);
+		
+		abstract function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db);
+		
+		//OCP, am I doing it right? 
+		abstract function getQuestionHintOrWhatever(); 
 		
 		//executes a script; normally some flavour text, or the introduction to the game. 
 		abstract function welcomePlayer();
