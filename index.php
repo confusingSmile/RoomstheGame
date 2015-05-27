@@ -36,7 +36,6 @@
 		
 		//starting the game
 		$player = '';
-		$name = $_SESSION['user'];
 		$hunger = 'Hunger: ';
 		$progress = 'Progress: ';
 		$items = null;
@@ -44,7 +43,7 @@
 			
 			$conn = DriverManager::getConnection($connectionParams, new Configuration());
 			$db = new DatabaseExtension($conn);
-			$player = new Player($name, $db);
+			$player = new Player($db);
 			$output = $player->getCurrentRoom()->welcomePlayer();
 			$_SESSION['player'] = serialize($player);
 			$_SESSION['output'] = $output;
@@ -69,7 +68,7 @@
 			$commandProcessor = new CommandProcessor();
 			$output = $commandProcessor->processCommand($command, $player).'<br>'.$_SESSION['output'];
 			//for some reason '\n' needs to be specified in this function. 
-			$output = ltrim($output, "\n"); //TODO validate nessicity
+			$output = ltrim($output, '\n');
 			$_SESSION['output'] = $output;
 			$_SESSION['player'] = serialize($player);
 			$hunger = 'Hunger: '.$player->getHunger();

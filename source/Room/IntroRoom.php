@@ -7,8 +7,7 @@
 		
 		class IntroRoom extends Room{	
 			
-			function __construct($id, DatabaseExtension $db){
-				$this->id = $id;
+			function __construct(DatabaseExtension $db){
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
