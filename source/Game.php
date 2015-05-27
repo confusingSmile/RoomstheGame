@@ -10,6 +10,7 @@
 	class Game{
 		
 		private $id;
+		private $db;
 		private $player;
 		private $building;
 		private $currentRoom;
@@ -21,14 +22,14 @@
 			$this->player = new Player($playerName);
 			$this->building = new Building($this->db);
 			$this->currentRoom = new IntroRoom(1, $this->db); 
-			if(!($this->db->retreiveGameData() )){
+			if(!($this->db->retreiveGameData($id) )){
 				$this->db->insertGame($this->id, $playerName);
 			} else {
-				$gameData = $this->db->retreiveGameData();
+				$gameData = $this->db->retreiveGameData($this->id);
 				$currentRoomId = $gameData['current_room_id'];
 				$this->currentRoom = $this->db->getRoomFromDatabase($currentRoomId, $this->id);
 				$hungerLost = 300 - $gameData['current_hunger'];
-				$this-player->becomeHungrier($hungerLost);
+				$this->player->becomeHungrier($hungerLost);
 				$this->player->overwriteDoorsUnlocked($gameData['current_doors_unlocked']);
 				$this->player->overwriteItemsGathered($gameData['items_gathered']);
 				$this->building->overwriteItemsGenerated($gameData['items_generated']);
@@ -60,7 +61,11 @@
 		}
 		
 		function getGatheredItems(){
-			return $this->players->getGatheredItems();
+			return $this->player->getGatheredItems();
+		}
+		
+		function getHunger(){
+			return $this->player->getHunger();
 		}
 		
 		function getDoorsUnlocked(){
@@ -99,13 +104,13 @@
 					return $this->movePlayer(0);
 					break;
 				case 'left':
-					return $player->movePlayer(1);
+					return $this->movePlayer(1);
 					break;
 				case 'up':
-					return $player->movePlayer(2);
+					return $this->movePlayer(2);
 					break;
 				case 'right':
-					return $this->player->movePlayer(3);
+					return $this->movePlayer(3);
 					break;
 				case 'search':
 					return $this->player->searchRoomForItem($this->currentRoom);
@@ -149,14 +154,14 @@
 		function movePlayer($direction){
 			//asks what type of Room would be next when going this direction. 
 			$nextRoomType = $this->currentRoom->getNextRoom($direction);
-			$potentialNextRoom = $this->building->createRoom($nextRoomType, $this->id);
+			$cloneCurrentRoom = clone($this->currentRoom);
 			if(!$this->currentRoom->getDoor($direction)->getBlocked()){
-				$destination = $this->building->getRoomRebuilt($this->currentRoom, $direction, $this->id);
+				$destination = $this->db->getNeighbour($this->currentRoom->getId(), $direction, $this->id);
 				if($destination){
 					$this->currentRoom = $destination;
 				} else {
-					$this->currentRoom = $potentialNextRoom;
-					$this->db->saveRoom($this->currentRoom, $potentialNextRoom, $direction, $this->id);
+					$this->currentRoom = $this->building->createRoom($nextRoomType, $this->id);
+					$this->db->saveRoom($cloneCurrentRoom, $this->currentRoom, $direction, $this->id);
 				}
 				
 				return $this->getWelcomeMessage();

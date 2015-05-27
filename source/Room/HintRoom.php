@@ -15,6 +15,7 @@
 			function __construct($id, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
 								 $unlockedDoors = null){
 				$this->id = $id;
+				$this->db = $db;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door();
 				}
@@ -44,6 +45,10 @@
 			
 			function getQuestionHintOrWhatever(){
 				return $this->hint.'b.b'.$this->answer;
+			}
+			
+			function getId(){
+				return $this->id;
 			}
 			
 			function hintToString(){

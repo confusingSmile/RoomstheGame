@@ -342,7 +342,8 @@
 		}
 		
 		function saveRoom(Room $parent, Room $room, $direction, $gameId){ 
-		
+			//being neighbours goes both ways..calculating other direction
+			$oppositeDirection = ($direction + 2) % 4;
 			//small preparation in order to know the unlocked doors 
 			$unlockedDoors = '';
 			for($i=0; $i<4; $i++){
@@ -351,33 +352,39 @@
 				}
 			}
 			$unlockedDoors = rtrim($unlockedDoors, ', ');
-			
-			
+			//checking for items
+			$itemId = null;
+			if($room->getItem()){
+				$itemId = $room->getItem()->getId();
+			}
 			
 		
 			$sql = "INSERT INTO rooms (room_id, item_id, unlocked_doors, game_id, question_or_hint, room_type) 
-					VALUES (:roomId, :itemId, ':doorsUnlocked', :gameId, :questionOrHint, 'Game\Room\IntroRoom')"; 
+					VALUES (:roomId, :itemId, :doorsUnlocked, :gameId, :questionOrHint, 'Game\Room\IntroRoom')"; 
 			$stmt = $this->conn->prepare($sql); 
 			$stmt->bindValue('roomId', $room->getId());
-			$stmt->bindValue('itemId', $room->getItem()->getId());
+			$stmt->bindValue('itemId', $itemId);
 			$stmt->bindValue('doorsUnlocked', $unlockedDoors);
 			$stmt->bindValue('gameId', $gameId);
 			$stmt->bindValue(':questionOrHint', $room->getQuestionHintOrWhatever());
 			$stmt->execute();
 			
 			$sql = "INSERT INTO neighbours (room_id, game_id, direction, neighbour_id)
-					VALUES (:roomId, :gameId, :direction, :neighbourId)";
+					VALUES (:roomId, :gameId, :direction, :neighbourId), 
+						   (:neighbourId, :gameId, :oppositeDirection, :roomId)";
 			$stmt = $this->conn->prepare($sql);
-			$stmt->bindValue('roomId', $room->getId());
+			$stmt->bindValue('roomId', $parent->getId());
 			$stmt->bindValue('gameId', $gameId);
 			$stmt->bindValue('direction', $direction);
-			$stmt->bindValue('neighbourId', $parent->getId());
+			$stmt->bindValue('oppositeDirection', $oppositeDirection);
+			$stmt->bindValue('neighbourId', $room->getId());
 			$stmt->execute();
+			
 		}
 		//returns: Room
 		function getRoomFromDatabase($roomId, $gameId){
 			$queryResult = '';
-			$result = '';
+			$result = null;
 			$sql = "SELECT item_id, unlocked_doors, question_or_hint, room_type FROM rooms WHERE room_id = :roomId AND game_id = :gameId"; 
 			$stmt = $this->conn->prepare($sql); 
 			$stmt->bindValue('roomId', $roomId);
@@ -389,10 +396,18 @@
 				$queryResult['unlocked_doors'] = $row['unlocked_doors'];
 				$queryResult['question_or_hint'] = $row['question_or_hint'];
 				$queryResult['room_type'] = $row['room_type'];
-			}
 			
-			$builder = new $queryResult['room_type']Builder();
-			$builder->createRoom($roomId, $gameId, $this, $queryResult['item_id'], false, $queryResult['unlocked_doors'], $queryResult['question_or_hint']);
+			
+				$className = 'Game\\Builder\\'.ltrim($queryResult['room_type'], 'GameRoom').'Builder';
+				if($queryResult['room_type']){	
+					$builder = new $className();
+					echo "old $className being made";
+					$result = $builder->createRoom($roomId, $gameId, $this, false, 
+												   $queryResult['item_id'], $queryResult['unlocked_doors'], 
+												   $queryResult['question_or_hint']);
+				}
+				
+			}
 			
 			return $result;
 		}
@@ -400,7 +415,7 @@
 		//returns: Room
 		function getNeighbour($roomId, $direction, $gameId){
 			$queryResult = null;
-			$sql = "SELECT neighbour_id FROM rooms WHERE room_id = :roomId AND direction = :direction AND game_id = :gameId"; 
+			$sql = "SELECT neighbour_id FROM neighbours WHERE room_id = :roomId AND direction = :direction AND game_id = :gameId"; 
 			$stmt = $this->conn->prepare($sql); 
 			$stmt->bindValue('roomId', $roomId);
 			$stmt->bindValue('direction', $direction);
@@ -412,6 +427,7 @@
 			}
 			
 			if($queryResult){
+				echo $queryResult;
 				$result = $this->getRoomFromDatabase($queryResult, $gameId);
 			} else {
 				return null;
@@ -454,17 +470,19 @@
 				$result['items_gathered'] = explode($row['items_gathered'], ', ');
 				$result['items_generated'] = explode($row['items_generated'], ', ');
 				
-			}
-			
-			foreach($result['items_generated'] as $item){
+				foreach($result['items_generated'] as $item){
 				$item = new Item($this, $item);
 				unset($item);
+				}
+				
+				foreach($result['items_gathered'] as $itemGathered){
+					$itemGathered = new Item($this, $itemGathered);
+					unset($itemGathered);
+				}
+				
 			}
 			
-			foreach($result['items_gathered'] as $itemGathered){
-				$itemGathered = new Item($this, $itemGathered);
-				unset($itemGathered);
-			}
+			
 			
 			return $result;
 		}

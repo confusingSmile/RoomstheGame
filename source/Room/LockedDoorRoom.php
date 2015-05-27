@@ -12,7 +12,7 @@
 								 $unlockedDoors = null){
 				$this->id = $id;
 				for($i=0;$i<4;$i++){
-					$this->doors[$i] = new Door($thisRoomIsNew);
+					$this->doors[$i] = new Door(true);
 				}
 				if($unlockedDoors){
 					

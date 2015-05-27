@@ -21,7 +21,6 @@
 		use Game\DatabaseExtension;
 		session_start();
 		
-		
 		if(!isset($_SESSION['user'])){
 			?>
 			<form action="login.php" method="post">

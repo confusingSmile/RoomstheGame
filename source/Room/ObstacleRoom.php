@@ -17,7 +17,7 @@
 				$this->obstacle = $obstacle;
 				$this->db = $db;
 				for($i=0;$i<4;$i++){
-					$this->doors[$i] = new Door($thisRoomIsNew);
+					$this->doors[$i] = new Door(true);
 				}
 				if($unlockedDoors){
 					

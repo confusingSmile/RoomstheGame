@@ -9,7 +9,7 @@
 			
 		}
 		
-		function createRoom($id, $gameId, $db, $itemId, $new, $unlockedDoors, $questionHintorWhatever){
+		function createRoom($id, $gameId, $db, $new = true, $itemId = null, $unlockedDoors = null, $questionHintorWhatever = null){
 			$creation = new LockedDoorRoom($id, $db, $new, $itemId, $questionHintorWhatever, $unlockedDoors); 
 			return $creation; 
 		}

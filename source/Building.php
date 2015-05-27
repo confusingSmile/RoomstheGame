@@ -41,12 +41,6 @@
 			$this->generatedItems = $newItems;
 		}
 		
-		function getRoomRebuilt($roomId, $direction, $gameId){
-			$dataToBuildFrom = $this->db->getNeighbour($roomId, $direction, $gameId);
-			
-			
-		}
-		
 		function createRoom($roomType, $gameId){
 			//roomType is the classname without namespace indications
 			//rules: 
@@ -64,63 +58,15 @@
 			/*
 			
 			*/
-			$output = '';
-			//a random number, used for chance-based events (in this case: which Room to generate) 
-			$random = rand(0, 99);
 			$creation = '';
-			$obstacleRoomPossible = false; 
-			
-			if($this->db->getObstaclesClearedByItems($this->generatedItems)[0] != 'error'){
-				$obstacleRoomPossible = true;
-			}
-			
-			$lastRoom = get_class($this->player->getCurrentRoom());
-			
-			if(($lastRoom == 'Game\Room\QuestionRoom' || $lastRoom == 'Game\Room\HintRoom') && $this->player->getCurrentRoom()->getAnswer() == $direction){
-				$correctExit = true;
-				$output = 'correct<br>';
-			}
-			
-			//create the Room, based on the previous Room and how that Room has been handled by the Player. 
-			switch($lastRoom){
-				case 'Game\Room\HintRoom':
-					if($correctExit == true && $random < 25 && $obstacleRoomPossible == true){
-						$creation = new ObstacleRoom($this->nextRoomId, new Obstacle($this->generatedItems, $this->db));
-					} else {
-						$creation = new hintRoom($this->nextRoomId, $this->db);
-					}
-					break;
-				case 'Game\Room\IntroRoom':
-				case 'Game\Room\LockedDoorRoom':
-					$creation = new HintRoom($this->nextRoomId, $this->db);
-					break;
-				case 'Game\Room\ObstacleRoom':
-					$creation = new QuestionRoom($this->nextRoomId, $this->db);
-					break;
-				case 'Game\Room\QuestionRoom':
-					if($correctExit == true){
-						$creation = new LockedDoorRoom($this->nextRoomId, $this->db);
-					} else if($random < 60){
-						$creation = new HintRoom($this->nextRoomId, $this->db);
-					} else {
-						$creation = new QuestionRoom($this->nextRoomId, $this->db);
-					}
-					break;
-			}
-			
-			//make the next room know the way back here
-			$creation->registrateNeigbour($this->player->getCurrentRoom(), (($direction + 2)%4));
-			//keeping track of generated items
-					$generatingItem = $creation->getItem();
-					if($generatingItem){
-						$this->addGeneratedItem($generatingItem);
-					}
-			//make this room know the next room
-					$this->player->getCurrentRoom()->registrateNeigbour($creation, $direction);
+			$roomType = 'Game\\Builder\\'.$roomType.'Builder';
+			$builder = new $roomType(); 
+			echo 'new $roomType being made';
+			$creation = $builder->createRoom($this->nextRoomId, $gameId, $this->db);
+			$this->nextRoomId ++;
 			
 			
-			
-			return $output;
+			return $creation;
 		}
 	}
 
