@@ -76,7 +76,7 @@
 		}
 		
 		//unlocks the Door if it's locked. 
-		function unlockKeyDoor(Room $currentRoom, $direction){
+		function unlockKeyDoor($currentRoom, $direction){
 			if(get_class($currentRoom) == 'Game\Room\LockedDoorRoom'){	
 				$firstUnlockThisRoom = true; 
 				for($i=0;$i<4;$i++){
@@ -93,7 +93,7 @@
 			return 'Nothing to unlock.';
 		}
 		
-		function obtainItem(Room $currentRoom){
+		function obtainItem($currentRoom){
 			if($currentRoom->getItem()){
 				$pickedUpItem = $currentRoom->getItem();
 				
@@ -110,7 +110,7 @@
 			return 'There is no item.';
 		}
 		
-		function searchRoomForItem(Room $room){
+		function searchRoomForItem($room){
 			if($room->getItem() != null){
 				return 'There seems to be something here.';
 			}
@@ -125,13 +125,13 @@
 		 *
 		 * @return string for the textarea in index.php
 		 */
-		function useItem($itemName, $obstacleRoom){		
+		function useItem($itemName, $room){		
 			if (empty($this->gatheredItems)) {
 				return 'You don\'t have any items...';
 			}
 			
 			foreach($this->gatheredItems as $gatheredItem){
-				if($itemName === $gatheredItem->getItemName() && $obstacleRoom == true){
+				if($itemName === $gatheredItem->getItemName() && $room instanceof \Game\Room\ObstacleRoom){
 					return $room->clearObstacle($itemName);
 				}
 			}

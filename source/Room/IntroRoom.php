@@ -43,7 +43,7 @@
 				
 			}
 			
-			function getNextRoom($direction){
+			function getNextRoom($direction, $gameId){
 				return 'HintRoom';
 			}
 			

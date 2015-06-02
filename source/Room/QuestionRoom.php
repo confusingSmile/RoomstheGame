@@ -18,6 +18,8 @@
 				}
 				if($unlockedDoors){
 					
+					$unlockedDoors = explode(', ', $unlockedDoors);
+					
 					foreach($unlockedDoors as $doorNumber){
 						$this->getDoor($doorNumber)->unblock();
 					}
@@ -45,7 +47,7 @@
 						}
 					}
 				} else{ 
-					$questionParts = explode($questionHintorWhatever, 'b.b');
+					$questionParts = explode($questionHintorWhatever, '<seperator>');
 					$this->question["answer"][0] = $questionParts[0];
 					$this->question["answer"][1] = $questionParts[1];
 					$this->question["answer"][2] = $questionParts[2];
@@ -60,8 +62,8 @@
 			}
 			
 			function getQuestionHintOrWhatever(){
-				$questionsString = $this->question["answer"][0].'b.b'.$this->question["answer"][1].'b.b'.$this->question["answer"][2].'b.b'.
-				$this->question["correct_answer"].'b.b'.$this->answer.'b.b'.$this->question["question"];
+				$questionString = $this->question["answer"][0].'<seperator>'.$this->question["answer"][1].'<seperator>'.$this->question["answer"][2].'<seperator>'.
+				$this->question["correct_answer"].'<seperator>'.$this->answer.'<seperator>'.$this->question["question"];
 				return $questionString;
 			}
 			
@@ -76,8 +78,8 @@
 				return 0;
 			}
 			
-			function getNextRoom($direction){
-				if($direction === $this->anwer){
+			function getNextRoom($direction, $gameId){
+				if($direction === $this->answer){
 					return 'LockedDoorRoom';
 				}
 				

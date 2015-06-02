@@ -60,6 +60,10 @@
 			return $this->currentRoom->welcomePlayer();
 		}
 		
+		function getId(){
+			return $this->id;
+		}
+		
 		function getGatheredItems(){
 			return $this->player->getGatheredItems();
 		}
@@ -73,21 +77,18 @@
 		}
 		
 		function newTurn($command){
-			//$currentRoom is there to remember what the current Room was before moving
-			$turnOutput = '';
-			$roomIdBeforeTraveling = $this->currentRoom->getId();
-			$turnOutput .= $this->processCommand($command);
-			if($this->currentRoom->getId() != roomIdBeforeTraveling){
-				$player->becomeHungrier(1);
-			}
-			$turnOutPut .= '<br>'.$this->getWelcomeMessage;
+			//this method is mainly for processing a command and saving the game. 
+			$turnOutput = $this->processCommand($command);
+			$this->db->saveGame($this->id, $this->currentRoom->getID(), $this->player->getHunger(), $this->player->getDoorsUnlocked(), 
+								$this->player->getGatheredItems(), $this->building->getGeneratedItems());
+			
+			return $turnOutput;
 		}
 		
 		function processCommand($command){
 			//the intention was for commands to start with '/', but for now it will be optional 
 			//Anyway, the '/' is pretty useless. (just for style/tradition?) 
 			$command = ltrim($command, '/');
-			$command = ltrim($command, '<br>');
 			strip_tags($command);
 			$command = explode(' ', $command);
 			switch($command[0]){
@@ -124,7 +125,7 @@
 					break;
 				case 'use':
 					if(isset($command[1])){
-						return $this->player->useItem($command[1], ($this->currentRoom instanceof Game\Room\ObstacleRoom));
+						return $this->player->useItem($command[1], ($this->currentRoom));
 					}	
 					break;
 				case 'unlock':
@@ -147,27 +148,36 @@
 					break;
 			
 			}
-			return 'Invalid command.<br>';
+			return 'Invalid command.'.$command[0].'<br>';
 		}
 		
 		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
 		function movePlayer($direction){
 			//asks what type of Room would be next when going this direction. 
-			$nextRoomType = $this->currentRoom->getNextRoom($direction);
+			$nextRoomType = $this->currentRoom->getNextRoom($direction, $this->id);
 			$cloneCurrentRoom = clone($this->currentRoom);
-			if(!$this->currentRoom->getDoor($direction)->getBlocked()){
-				$destination = $this->db->getNeighbour($this->currentRoom->getId(), $direction, $this->id);
-				if($destination){
-					$this->currentRoom = $destination;
-				} else {
+			$destination = $this->db->getNeighbour($this->currentRoom->getId(), $direction, $this->id);
+			
+			//if moving back to previous rooms
+			if($destination){
+				
+				$this->currentRoom = $destination;
+				return $this->getWelcomeMessage();
+				
+			}else{
+				if(!$this->currentRoom->getDoor($direction)->getBlocked()){
+					
 					$this->currentRoom = $this->building->createRoom($nextRoomType, $this->id);
 					$this->db->saveRoom($cloneCurrentRoom, $this->currentRoom, $direction, $this->id);
+					$this->player->becomeHungrier(1);
+					return $this->getWelcomeMessage();
+				} else {
+					return  'The door won\'t open.<br>';
 				}
 				
-				return $this->getWelcomeMessage();
-			}else{
-				return  'The door won\'t open.<br>';
 			}
+			
+			return 'error. This statemen shouldn\'t be reached';
 		}
 		
 		function reconnect(Connection $conn){

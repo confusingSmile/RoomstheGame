@@ -9,8 +9,8 @@
 			
 		}
 		
-		function createRoom($id, $gameId, $db, $new = true, $itemId = null, $unlockedDoors = null, $questionHintorWhatever = null){
-			$creation = new HintRoom($id, $db, $new, $itemId, $questionHintorWhatever, $unlockedDoors); 
+		function createRoom($id, $gameId, $db, $new = true, $questionHintorWhatever = null, $itemId = null, $unlockedDoors = null){
+			$creation = new HintRoom($id, $db, $new, $questionHintorWhatever, $itemId, $unlockedDoors); 
 			return $creation; 
 		}
 		

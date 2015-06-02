@@ -8,11 +8,11 @@
 			
 			private $hint;
 			private $answer;
-			//because for getNextRoom I will need the database. 
+			//due to getNextRoom() I will need the database. 
 			private $db;
 			
 			
-			function __construct($id, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
+			function __construct($id, DatabaseExtension $db, $thisRoomIsNew = true, $questionHintorWhatever = null, $itemId = null,  
 								 $unlockedDoors = null){
 				$this->id = $id;
 				$this->db = $db;
@@ -36,7 +36,7 @@
 					$this->hint = $hintData["text"];
 					$this->answer = $hintData["answer"];
 				} else{
-					$hintParts = explode($questionHintorWhatever, 'b.b');
+					$hintParts = explode('<seperator>', $questionHintorWhatever);
 					$this->hint = $hintParts[0];
 					$this->answer = $hintParts[1]; 
 				}				
@@ -44,7 +44,8 @@
 			}
 			
 			function getQuestionHintOrWhatever(){
-				return $this->hint.'b.b'.$this->answer;
+				$questionHintorWhatever = $this->hint.'<seperator>'.$this->answer;
+				return $questionHintorWhatever;
 			}
 			
 			function getId(){
@@ -73,11 +74,11 @@
 				
 			}
 			
-			function getNextRoom($direction){
-				$obstacleRoomPossible = $this->db->obstacleRoomPossible();
+			function getNextRoom($direction, $gameId){
+				$obstacleRoomPossible = ($this->db->getObstaclesClearedByItems($gameId) != 'error');
 				$random = rand(0, 99);
 				
-				if($random > 24 || $obstacleRoomPossible != true || $direction != $this->answer){
+				if($random < 24 || $obstacleRoomPossible != true || $direction != $this->answer){
 					return 'HintRoom';
 				} 
 				

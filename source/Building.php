@@ -61,7 +61,6 @@
 			$creation = '';
 			$roomType = 'Game\\Builder\\'.$roomType.'Builder';
 			$builder = new $roomType(); 
-			echo 'new $roomType being made';
 			$creation = $builder->createRoom($this->nextRoomId, $gameId, $this->db);
 			$this->nextRoomId ++;
 			

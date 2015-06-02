@@ -8,10 +8,10 @@
 		private  $obstacleId;
 		private  $obstacleText;
 		
-		function __construct($generatedItems, DatabaseExtension $db, $obstacleId = null){
+		function __construct($gameId, DatabaseExtension $db, $obstacleId = null){
 			
 			if(!$obstacleId){ 
-				$possibleObstacleIds = $db->getObstaclesClearedByItems($generatedItems);
+				$possibleObstacleIds = $db->getObstaclesClearedByItems($gameId);
 				$this->obstacleId = $possibleObstacleIds[array_rand($possibleObstacleIds)];
 			} else {
 				$this->obstacleId = $obstacleId;

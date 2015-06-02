@@ -2,6 +2,7 @@
 		namespace Game\Room;
 		use Game\Room\Room;
 		use Game\Item;
+		use Game\Obstacle;
 		use Game\DatabaseExtension;
 		
 		class ObstacleRoom extends Room{	
@@ -11,15 +12,18 @@
 			private $obstacle;
 			private $clear; 
 			
-			function __construct($id, $obstacle, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
+			function __construct($id, Obstacle $obstacle, DatabaseExtension $db, $thisRoomIsNew = true, $itemId = null, $questionHintorWhatever = null, 
 								 $unlockedDoors = null){
 				$this->id = $id;
 				$this->obstacle = $obstacle;
 				$this->db = $db;
+				$this->clear = false;
 				for($i=0;$i<4;$i++){
 					$this->doors[$i] = new Door(true);
 				}
 				if($unlockedDoors){
+					
+					$unlockedDoors = explode(', ', $unlockedDoors);
 					
 					foreach($unlockedDoors as $doorNumber){
 						$this->getDoor($doorNumber)->unblock();
@@ -49,19 +53,20 @@
 			function clearObstacle($itemName){
 				$result = "No obstacle to clear.";
 				if($this->clear == false){
-					$effect = $this->db -> getItemUseResult($itemName, $this->obstacle);
+					$effect = $this->db->getItemUseResult($itemName, $this->obstacle);
 					if($effect == 2){
 							$result = "That...may not have been a good idea. Now you're Game Over.";
 
 							
-						} else if($effect == 1){
-							$result = "Obstacle cleared";
-							for($i=0;$i<4;$i++){
-								$uselessVariable = $this->doors[$i]->unblock();
-							}
-							$this->clear = true;
+					} else if($effect == 1){
+						$result = "Obstacle cleared";
+						for($i=0;$i<4;$i++){
+							$uselessVariable = $this->doors[$i]->unblock();
 						}
+						$this->clear = true;
+					}
 				}
+				
 				return $result;
 			}
 			
@@ -77,7 +82,7 @@
 				
 			}
 			
-			function getNextRoom($direction){
+			function getNextRoom($direction, $gameId){
 				return 'QuestionRoom';
 			}
 			

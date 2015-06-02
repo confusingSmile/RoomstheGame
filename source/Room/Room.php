@@ -23,11 +23,7 @@
 		
 		abstract function getId();
 		
-		abstract function registrateNeigbour(Room $room, $direction);
-		
-		abstract function getNextRoom($direction);
-		
-		abstract function reconstruct($room_id, $unlockedDoors, $itemId, $questionHintorWhatever, $db);
+		abstract function getNextRoom($direction, $gameId);
 		
 		//OCP, am I doing it right? 
 		abstract function getQuestionHintOrWhatever(); 

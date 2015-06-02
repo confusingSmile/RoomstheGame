@@ -55,6 +55,8 @@
 			
 			$game = unserialize($_SESSION['game']);
 			
+			echo 'Game-id: '. $game->getId();
+			
 			$conn = DriverManager::getConnection($connectionParams, new Configuration());
 			$game->reconnect($conn);
 			
@@ -68,7 +70,7 @@
 				
 			}
 			
-			$output = $game->processCommand($command).'<br>'.$_SESSION['output'];
+			$output = $game->newTurn($command).'<br>'.$_SESSION['output'];
 			//for some reason '\n' needs to be specified in this function. 
 			$output = ltrim($output, "\n"); //TODO validate nessicity
 			$_SESSION['output'] = $output;

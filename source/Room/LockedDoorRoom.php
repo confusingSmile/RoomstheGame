@@ -16,6 +16,8 @@
 				}
 				if($unlockedDoors){
 					
+					$unlockedDoors = explode(', ', $unlockedDoors);
+					
 					foreach($unlockedDoors as $doorNumber){
 						$this->getDoor($doorNumber)->unblock();
 					}
@@ -48,7 +50,7 @@
 				
 			}
 			
-			function getNextRoom($direction){
+			function getNextRoom($direction, $gameId){
 				return 'HintRoom';
 			}
 			
