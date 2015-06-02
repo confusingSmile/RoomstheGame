@@ -72,6 +72,7 @@
 			$chosenQuestion["answer"][] = $result["correct_answer"][$randomNumber];
 			$chosenQuestion["answer"][] = $result["wrong_answer1"][$randomNumber];
 			$chosenQuestion["answer"][] = $result["wrong_answer2"][$randomNumber];
+			$chosenQuestion["answer"][] = 'filler';
 			return $chosenQuestion;
 		}
 		

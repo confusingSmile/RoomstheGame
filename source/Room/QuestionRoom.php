@@ -47,13 +47,14 @@
 						}
 					}
 				} else{ 
-					$questionParts = explode($questionHintorWhatever, '<seperator>');
+					$questionParts = explode('<seperator>', $questionHintorWhatever);
 					$this->question["answer"][0] = $questionParts[0];
 					$this->question["answer"][1] = $questionParts[1];
 					$this->question["answer"][2] = $questionParts[2];
-					$this->question["correct_answer"] = $questionParts[3];
-					$this->answer = $questionParts[4];
-					$this->question["question"] = $questionParts[5];
+					$this->question["answer"][2] = $questionParts[3];
+					$this->question["correct_answer"] = $questionParts[4];
+					$this->answer = $questionParts[5];
+					$this->question["question"] = $questionParts[6];
 				} 
 			}
 			
@@ -63,7 +64,7 @@
 			
 			function getQuestionHintOrWhatever(){
 				$questionString = $this->question["answer"][0].'<seperator>'.$this->question["answer"][1].'<seperator>'.$this->question["answer"][2].'<seperator>'.
-				$this->question["correct_answer"].'<seperator>'.$this->answer.'<seperator>'.$this->question["question"];
+				$this->question["answer"][3].'<seperator>'.$this->question["correct_answer"].'<seperator>'.$this->answer.'<seperator>'.$this->question["question"];
 				return $questionString;
 			}
 			
@@ -104,7 +105,7 @@
 				$result = "welcome to a QuestionRoom. this room's question is: ".$this->question["question"]."<br>";
 				$directions = array("down: ", "left: ", "up: ", "right: ");
 				for($i=0;$i<4;$i++){
-					if(isset($this->question["answer"][$i]) && $this->question["answer"][$i] != null){
+					if(isset($this->question["answer"][$i]) && $this->question["answer"][$i] != 'filler'){
 						$result .= $directions[$i]."".$this->question["answer"][$i].", ";
 					}
 				}
@@ -116,19 +117,21 @@
 				return $this->doors[$direction];
 			}
 			
-			//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
-			function getNeighbour($direction){
-				if(isset($this->neighbours[$direction])){
-					return $this->neighbours[$direction];
-				}
-				return null;
-			}
-			
-			function registrateNeigbour(Room $room, $direction){
-				$this->neighbours[$direction] = $room;
+			function excludeFromAnswers($direction){
 				if(isset($this->question["answer"][$direction])){
-					$this->question["answer"][] = $this->question["answer"][$direction];
-					$this->question["answer"][$direction] = null;
+					
+					for($i=0;$i<4;$i++){
+						if($this->question["answer"][$i] == 'filler'){
+							$this->question["answer"][$i] = $this->question["answer"][$direction];
+							
+							if($this->answer == $direction){
+								$this->answer = $i;
+							}
+						}
+					}
+					
+					
+					$this->question["answer"][$direction] = 'filler';
 				}
 			}
 			

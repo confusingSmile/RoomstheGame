@@ -148,7 +148,7 @@
 					break;
 			
 			}
-			return 'Invalid command.'.$command[0].'<br>';
+			return 'Invalid command.'.$command[0].'';
 		}
 		
 		//direction is an integer ranging from 0-3, 0 being south, 1 being west, 2 being north and 3 being east
@@ -168,16 +168,20 @@
 				if(!$this->currentRoom->getDoor($direction)->getBlocked()){
 					
 					$this->currentRoom = $this->building->createRoom($nextRoomType, $this->id);
+					if($this->currentRoom instanceof \Game\Room\QuestionRoom){
+						$excludeThisDirection = ($direction + 2) % 4;
+						$this->currentRoom->excludeFromAnswers($excludeThisDirection);
+					}
 					$this->db->saveRoom($cloneCurrentRoom, $this->currentRoom, $direction, $this->id);
 					$this->player->becomeHungrier(1);
 					return $this->getWelcomeMessage();
 				} else {
-					return  'The door won\'t open.<br>';
+					return  'The door won\'t open.';
 				}
 				
 			}
 			
-			return 'error. This statemen shouldn\'t be reached';
+			return 'error. This statement shouldn\'t be reached';
 		}
 		
 		function reconnect(Connection $conn){
